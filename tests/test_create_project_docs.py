@@ -53,6 +53,29 @@ class ProjectRootTests(unittest.TestCase):
         self.assertEqual(second.returncode, 1)
 
 
+class ExistingDefinitionNoteTests(unittest.TestCase):
+    """A project root that already holds the definition note, and nothing
+    else. The script must refuse rather than overwrite it."""
+
+    SENTINEL = 'sentinel body the script must not touch\n'
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.root = self.tmp.name
+        self.note = os.path.join(self.root, 'lorebook.md')
+        with open(self.note, 'w', encoding='utf-8', newline='') as f:
+            f.write(self.SENTINEL)
+        self.result = run(self.root)
+
+    def test_the_run_refuses(self):
+        self.assertNotEqual(self.result.returncode, 0, self.result.stdout)
+
+    def test_the_existing_note_is_byte_for_byte_unchanged(self):
+        with open(self.note, 'rb') as f:
+            self.assertEqual(f.read(), self.SENTINEL.encode('utf-8'))
+
+
 class DefinitionNoteTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
