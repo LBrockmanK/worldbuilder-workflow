@@ -5,7 +5,6 @@ filters:
   - '!file.inFolder("_templates")'
   - '!file.inFolder("rules")'
   - file.basename != "Home"
-  - file.basename != "glossary"
   - file.basename != "inbox"
   - file.basename != "index"
   - file.basename != "log"

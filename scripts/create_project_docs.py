@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Create the three worldbuilder project documents and glossary in one call.
+"""Create the three worldbuilder project documents and the lorebook
+definition note in one call.
 
 Replaces the multi-step agent-executed prose of worldbuilder-setup Step 4
 with a single mechanical invocation.
@@ -24,11 +25,20 @@ PROJECT_DOCS = [
     ('direction', 'Story Direction', 'Standing creative brief for'),
 ]
 
-GLOSSARY = (
-    '**lorebook** — the platform term is "world info" on '
-    'ainime/isekaizero; both name the same thing. '
-    '_Avoid_: world info (in vault docs).\n'
-)
+LOREBOOK_NOTE = """---
+created: "[[{date}]]"
+modified:
+aliases: []
+tags:
+  - todo
+subjects: []
+type: "[[definition]]"
+description: "This project's term for the world's reference entries: the platform term is world info on ainime and isekaizero, and both name the same thing."
+---
+**Lorebook** is this project's term for the world's reference entries — the entries an export ships alongside the story so the platform can recall the world. The platform term is "world info" on ainime and isekaizero; both name the same thing.
+
+**Avoid.** "world info" in vault documents; it is the platform's word, kept for exports.
+"""
 
 
 def read_template(doc_type, types_data):
@@ -67,7 +77,8 @@ def create_doc(project_dir, doc_type, title, description, template_content):
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Create the three worldbuilder project documents and glossary')
+        description='Create the three worldbuilder project documents and '
+                    'the lorebook definition note')
     parser.add_argument('--project-root', required=True,
                         help='Root directory of the worldbuilder project')
     parser.add_argument('--name', required=True,
@@ -97,15 +108,14 @@ def main():
             print('ERROR: plan.md missing Phase Status table', file=sys.stderr)
             sys.exit(1)
 
-    glossary_dir = os.path.join(args.project_root, '.claude')
-    os.makedirs(glossary_dir, exist_ok=True)
-    glossary_path = os.path.join(glossary_dir, 'glossary.md')
-    if os.path.exists(glossary_path):
-        print(f'Glossary already exists: {glossary_path}', file=sys.stderr)
+    note_path = os.path.join(args.project_root, 'lorebook.md')
+    if os.path.exists(note_path):
+        print(f'Already exists: {note_path}', file=sys.stderr)
         sys.exit(1)
-    with open(glossary_path, 'w', encoding='utf-8') as f:
-        f.write(GLOSSARY)
-    print(f'Created {glossary_path}')
+    today = datetime.now(timezone.utc).date().isoformat()
+    with open(note_path, 'w', encoding='utf-8') as f:
+        f.write(LOREBOOK_NOTE.format(date=today))
+    print(f'Created {note_path}')
 
 
 if __name__ == '__main__':

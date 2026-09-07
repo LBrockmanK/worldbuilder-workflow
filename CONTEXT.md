@@ -10,11 +10,11 @@ A player project after `worldbuilder-setup`:
 
 ```
 <project>/
-  .claude/glossary.md   ← seeded with platform terms ("world info" = lorebook)
   .claude/inbox.md
   .obsidian/            ← scraibe defaults + app.json overlay (attachmentFolderPath)
   _templates/           ← generated (generate_templates.py)
   Home.md  _bases/  _attachments/   ← chrome
+  lorebook.md           ← definition note: the platforms' "world info" is this project's lorebook
   project/              ← seed.md, plan.md, direction.md
   notes/                ← all entity notes, flat
 ```

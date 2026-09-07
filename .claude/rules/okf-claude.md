@@ -43,7 +43,6 @@ Behavioral: `priority`, `deferred`
 - `index.md` — auto-generated directory listing. Never hand-edit.
 - `log.md` — recognized but unused.
 - `inbox.md` — capture buffer, no frontmatter.
-- `glossary.md` — project term glossary, no frontmatter. Edit entries in place; a term graduates to its own document only when content outgrows the format, and the entry keeps its definition plus a link.
 - `rules/` (directory) — generated rule files, exempt from vault schema. Never hand-edit; regenerate with generate_rules.py.
 - `_templates/` (directory) — generated Templater creation templates, exempt
   from vault schema. Never hand-edit; regenerate with generate_templates.py.
@@ -56,10 +55,6 @@ Behavioral: `priority`, `deferred`
 - In document bodies, use relative markdown links (`[title](../specs/target.md)`).
 - In frontmatter, any value in wikilink form (`[[filename-stem]]`) is a link edge — on any field, not just `output`/`superseded-by`. Bare names are plain text.
 - Illustrative or example links belong in backticks or fenced code blocks — code is excluded from link validation.
-
-## Glossary
-
-- `.claude/glossary.md` holds canonical project terms (bold term, one-to-two-sentence definition, `_Avoid_:` synonyms). Check it before introducing or renaming terminology; it is read on demand, not auto-loaded.
 
 ## Lifecycle conventions
 
