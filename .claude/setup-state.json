@@ -1,9 +1,0 @@
-{
-  "configuredPlugins": {
-    "core-workflow": {"configuredAt": "2026-07-11"},
-    "fleet": {"configuredAt": "2026-07-11"},
-    "obsidian": {"configuredAt": "2026-07-11"},
-    "secret-guard": {"configuredAt": "2026-07-11"},
-    "scraibe": {"configuredAt": "2026-07-11"}
-  }
-}
