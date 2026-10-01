@@ -54,6 +54,7 @@ These apply to the one section that is rewritten (Future Storylines) and to any 
 - **Write plainly. No flair.** The card's prose style becomes the engine's narration style.
 - **No literary flair or metaphor** in descriptive text — that register belongs in dialogue.
 - **Numbers as numerals.** 27, not twenty-seven.
+- **Pronouns follow the `sex` field.** The character note's `sex` frontmatter field is internal worldbuilder schema and never ships in the card. Read it before reframing Story Seeds, and keep every pronoun for the character in agreement with it.
 
 ---
 
@@ -70,3 +71,4 @@ These apply to the one section that is rewritten (Future Storylines) and to any 
 - [ ] Design Notes excluded
 - [ ] No content rewritten, paraphrased, or summarized beyond the Story Seeds → Future Storylines reframing
 - [ ] Factual accuracy — no reversed attributions, no invented details
+- [ ] Pronouns agree with the character note's `sex` field
