@@ -118,6 +118,11 @@ physical mannerisms (entries). The preamble covers static appearance
 at all depths; the depth-of-access grid guides behavioral entries
 only.
 
+**Background guidance:** Alongside the depth-of-access questions, ask these two prompts for the Background section.
+
+- Cultural shorthand: "For real-world or historically grounded characters: what music, media, fashion, food, or subcultures does this character belong to or consume? These references activate existing model associations cheaply — a character who listens to top-40 pop resolves differently from one who listens to jazz or punk. Skip for original-fantasy characters where the model has no real-world associations to draw on."
+- Location as pressure: "What about where this character lives or grew up creates pressure on them? Economic conditions, climate, social expectations, isolation, proximity to danger? The connection between place and psychology is a Background entry: [location fact] → [what it made true about this character]."
+
 Ask one question at a time. Wait for the answer before asking the next. Follow threads: when an answer implies something about a different section, surface it immediately and pursue it before changing topics.
 
 After each answer, propose how the answer translates into a card entry. Apply the section-scoped writing rules from `card-format.md`. The rules are overridable defaults; the user can override any rule for their project.
@@ -152,6 +157,11 @@ coverage is a bigger risk than generous coverage. See
 `card-format.md` for entry format, writing rules, and distinctions
 from other sections.
 
+Ask the growth-trigger prompt: "What experience or evidence could
+make this character reconsider their false belief, shift their value
+hierarchy, or change a core behavior?" Answers become Story Seeds.
+This prompt is not a coverage requirement.
+
 ---
 
 ## Coverage Checking
@@ -170,6 +180,7 @@ Check for missing required doctrine entries (defined in `card-format.md`). The r
 4. Value-conflict stance (Soul)
 5. At least one unresolved tension or competing pull (Soul)
 6. Values with costs (Background or Soul)
+7. Protective strategy (behavioral, Soul)
 
 Missing required entries must be addressed before finalization or explicitly waived by the user with a recorded reason.
 
