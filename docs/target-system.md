@@ -48,6 +48,7 @@ All field names below are the exact JSON keys. These fields are produced by `wor
 | `initialStoryArc` | Opening Story Arc | string | `worldbuilder-world-foundation` → `seed.md` |
 | `arcManagerGuidance` | Ongoing Story Direction | string | `worldbuilder-story` → `notes/` |
 | `storyTriggers` | Story Triggers (Events) | StoryTrigger[ ] | `worldbuilder-story` (intention notes) + `worldbuilder-concept` (recurring event notes) → `notes/` |
+| `generateSideCharacterOnNewGame` | AI generate side character | boolean | Builder choice in the platform; no note source |
 
 ### Field notes
 
@@ -64,9 +65,14 @@ StoryTrigger schema:
   "name": "Event name",
   "triggerOnDay": 8,
   "promptInjection": "Narrative direction text injected on this day.",
-  "recurring": false
+  "recurring": false,
+  "hiddenFromPlayer": true
 }
 ```
+
+`hiddenFromPlayer` (boolean, optional) marks a trigger as hidden from the player. Exports set it on scripted story beats and introductions and leave public festivals visible; the runtime behavior (the trigger still fires, the player is not shown it in advance) is inferred, not confirmed against the platform.
+
+**`generateSideCharacterOnNewGame`** — When `true`, the platform has the AI generate a side character at New Game (count and basis not yet verified). A builder choice set in the platform; the export preserves the existing value and never derives it from notes. The Adventure tab's other New Game toggles (randomize the opening arc, ignore the opening arc, random NPC romance pair) are app-level settings and never appear in the `.sbworld`.
 
 Set `recurring: true` for annual events (festivals, observances). One-time events use `recurring: false`. Recurrence is yearly only — there is no weekly or monthly repeat. To make a weekly event (e.g., a Saturday market), create a separate `storyTrigger` entry for every instance across the first year, each with its own `triggerOnDay` and `recurring: true` so it repeats in subsequent years.
 
@@ -84,8 +90,13 @@ Set `recurring: true` for annual events (festivals, observances). One-time event
 | `calendarConfig.weatherPools` | Weather Pools | object | `worldbuilder-calendar` → `events/` |
 | `storyTriggers` | Events / Recurring Events | StoryTrigger[ ] | `worldbuilder-calendar` → `events/` |
 | `eventCalendarSummary` | Event Calendar Summary | string | `worldbuilder-calendar` → `events/` |
+| `calendarConfig.startingYear`, `calendarConfig.baseYear` | Starting Year | integer | Builder choice; both keys present, equal |
+| `calendarConfig.dailyInfluenceCapGain` / `dailyInfluenceCapLoss` | Daily Influence Cap (Gain / Loss) | integer | Builder choice (default 5) |
+| `calendarConfig.influenceMagnitudeTiers` | Influence Magnitude Ladder | string (one rung per line) | Builder choice, written in the world's terms |
+| `calendarConfig.earliestClosePrompts` / `minPromptsBeforeTransition` / `usualMaxPrompts` | Scene Ending Guidance | integer | Builder choice (platform values 6 / 10 / 16) |
+| `yearContexts` | Life Stages | object keyed `"0"`, `"1"`, … | `project/direction.md` + arc notes; see the export skill's Life Stages section |
 
-> **`dailyPlannerDirective`** — Present in the format as a string field but typically empty. Planner-style guidance belongs in `arcManagerGuidance`.
+> **`dailyPlannerDirective`** — String field, labelled "Daily Directive" in the platform UI. The scene AI sees it at every scene opening as the standing shape of the day (for example, what each day segment is for). Story-level guidance belongs in `arcManagerGuidance`.
 
 ### Field notes
 
@@ -153,7 +164,10 @@ One object per character in the `characters` array.
 | `type` | Type | `"main"` or `"side"` |
 | `availableFromDay` | Available Day | Earliest possible introduction day |
 | `spriteSets` | Sprite Sets | Visual states for artwork |
-| `color` | Color | UI display color (CSS class string) |
+| `startingInfluence` | Starting Influence | Integer, may be negative; omit for the platform default ("Auto" in the UI) |
+| `color` | Name Color | Tailwind CSS text-color class string, e.g. `"text-pink-400"` |
+
+The character note also carries a `sex` field. It is internal worldbuilder schema, never written to `world.json`: the export reads it to keep pronouns accurate in `appearance`, per-set `appearance` and the card's Future Storylines.
 
 ### `baseProfile` — structure
 
@@ -174,12 +188,21 @@ Physical description for image generation and LLM reference. Cover: species/type
     "description": "Casual, at rest — the character's natural state",
     "expressions": {
       "neutral": "image generation prompt for this state"
-    }
+    },
+    "appearance": "Physical-features preamble, then this set's outfit.",
+    "baseImage": "asset://sandboxWorldAssets/<uuid>",
+    "basePrompt": "image generation prompt for this set's base image"
   }
 ]
 ```
 
 Each sprite set is a named visual state (Casual, Working, Formal, etc.). The `description` guides art generation; the `expressions` object maps each expression name to an image — either a generation prompt (at skill output time) or an `asset://` URL (in the final `.sbworld`). Expression keys must be drawn from the world's `availableExpressions` list.
+
+| Sprite set field | Type | Purpose |
+|---|---|---|
+| `appearance` | string | This set's look: the character's invariant physical-features preamble, then the set's outfit |
+| `baseImage` | string (`asset://` URL) | The set's reference image, normally the same asset as `expressions.neutral` |
+| `basePrompt` | string | Generation prompt for the set's base image when no `baseImage` is bundled (not yet seen in an inspected export; purpose unverified) |
 
 ---
 
@@ -204,15 +227,9 @@ Worlds may define a custom set with more or fewer entries. Define `availableExpr
 
 ### Expression Tiers
 
-For monolithic AI-generated sprites (one image per expression), three standard tiers balance cost and coverage:
+For monolithic AI-generated sprites (one image per expression), three tiers balance cost and coverage: **Essential**, **Standard** (the recommended default) and **Expansive**, each a strict superset of the one before. The names carry no counts, so a change in membership never renames a tier.
 
-| Tier | Expressions | Cost vs. Expansive |
-|---|---|---|
-| Essential-12 | neutral, happy, sad, angry, annoyed, surprised, laughing, crying, embarrassed, nervous, confident, flirty | 54% cheaper |
-| Standard-18 (recommended) | Essential-12 + beaming, blushing, emotional, upset, wary, worried\_or\_concerned | 31% cheaper |
-| Expansive-26 | Standard-18 + amused, comedic\_shock, emotional\_shock, intimate, shy, sleepy\_or\_tired, smiling, stoic | Full set |
-
-Standard-18 is the recommended default for new projects. For a 20-character project with 2 sprite sets: Essential-12 produces 480 images, Standard-18 produces 720, Expansive-26 produces 1,040.
+This document does not define the tiers. Membership, counts, narrative roles and the cost table live in the Image Gen expression standard, the shared Ainime reference for sprite expressions: `Projects/Ainime/Image Gen/Expression standard.md` in the Anima vault. Until that note is written, the same standard is at `Projects/Ainime/Fields of Mistria/repo/Fields-of-Mistria/Sprite Expression Workflow/Expression Standard.md`.
 
 ---
 
@@ -255,6 +272,7 @@ The Art Style tab configures image generation prompts for backgrounds and charac
 | `artStyle.sprite.style_prefix` | Prefix for all sprite generation prompts |
 | `artStyle.sprite.style_suffix` | Suffix for all sprite prompts |
 | `artStyle.sprite.negative_prompt` | Negative prompt for sprites |
+| `artStyle.sprite.clothingRules` | String array of clothing directives for sprite generation, one rule per entry |
 
 The Seed phase produces a **plain-language art style reference** describing the desired visual style, color palette, and reference works. This is translated into prompt-engineering format during export.
 
@@ -393,13 +411,14 @@ UI color theme. Not part of the worldbuilding workflow. Configure after content 
 
 ---
 
-## Custom Prompts Tab
+## Prompts Tab (formerly Custom Prompts)
 
-Advanced overrides for specific engine prompts. Not part of the standard worldbuilding workflow.
+Advanced overrides for specific engine prompts, organized into switchable prompt sets. Not part of the standard worldbuilding workflow.
 
 | JSON field | Content |
 |---|---|
-| `customPrompts` | Object with keys: `dm` (director), `am` (arc manager), `na` (narrator), `td` (translator), and others |
+| `customPrompts` | Object with keys: `dm` (director), `am` (arc manager), `na` (narrator), `td` (translator), and others; holds persona sub-section and World Builder generation-template overrides from a user-created prompt set; empty while the Default prompt set is active |
+| `activePromptSet` | Reference to the active prompt set, e.g. `{ "kind": "default" }` |
 
 ---
 
@@ -425,7 +444,10 @@ story/direction.md     → arcManagerGuidance
 story/intention-*.md   → storyTriggers[] (story events, where trigger day exists)
 
 characters/*.md        → characters[].name, lastName, type, role, availableFromDay,
-                         baseProfile, appearance, spriteSets[]
+                         baseProfile, appearance, spriteSets[] (incl. per-set
+                         appearance, baseImage, basePrompt); sex is read for
+                         pronouns, never exported
+                         [Body sections → artStyle.sprite.clothingRules]
 
 seed.md (music ref)    → moods[] (system, standard, ambient mood entries),
                          musicStyle.prefix, musicStyle.suffix
@@ -444,10 +466,9 @@ The `worldbuilder-ainime-export` skill produces formatted output ready for entry
 These fields are auto-generated or configured by the platform — do not produce content for them:
 
 - `worldId` — UUID assigned by the platform
-- `dailyPlannerDirective` — present for compatibility, typically empty; use `arcManagerGuidance` instead
-- `generateSideCharacterOnNewGame` — platform toggle
-- `characters[].color` — UI display color, set in platform
+- `generateSideCharacterOnNewGame` — builder's platform toggle; preserved on re-export, never derived from notes (see the Adventure tab)
 - `characters[].image` — generated artwork
+- `activePromptSet` — prompt-set reference; prompt sets are builder customization
 - `locations[].url` — when platform-generated; bundled location images use `asset://sandboxWorldAssets/<uuid>` and are export-produced
 - `artStyle.sprite.same_character_consistency` — platform setting
 - `artStyle.sprite.use_tag_style_prompts` — platform setting

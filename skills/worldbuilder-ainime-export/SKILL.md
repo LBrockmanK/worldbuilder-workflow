@@ -42,16 +42,22 @@ Fields are marked **required** or **optional**. Required fields must be present 
 | `project/seed.md` — Opening Situation | `initialStoryArc` | opt |
 | builder-specified | `authorCredit` | opt |
 | `project/seed.md` — era (from story direction or seed) | `calendarConfig.eraReminder` | opt |
-| builder-specified | `calendarConfig.startingYear` | opt |
-| builder-specified | `calendarConfig.dailyInfluenceCap` | opt |
+| builder-specified | `calendarConfig.startingYear`, `calendarConfig.baseYear` | opt |
+| builder-specified | `calendarConfig.dailyInfluenceCapGain`, `calendarConfig.dailyInfluenceCapLoss` | opt |
+| builder-specified (derived from the world's stakes) | `calendarConfig.influenceMagnitudeTiers` | opt |
+| builder-specified | `calendarConfig.earliestClosePrompts`, `minPromptsBeforeTransition`, `usualMaxPrompts` | opt |
 | builder-specified | `calendarConfig.dailyPlannerDirective` | opt |
+| `project/direction.md` + story arc notes in `notes/` | `yearContexts` | opt |
+| builder-specified (set in the platform's Adventure tab) | `generateSideCharacterOnNewGame` | opt |
 | `project/direction.md` | `arcManagerGuidance` | opt |
-| intention story notes + event notes in `notes/` | `storyTriggers[]` | opt |
+| intention story notes + event notes in `notes/` | `storyTriggers[]` (including `hiddenFromPlayer`) | opt |
 | event notes in `notes/` | `calendarConfig.weatherPools`, `eventCalendarSummary` | opt |
 | concept notes in `notes/` | `loreEntries[]` | opt |
 | character notes in `notes/` | `characters[]` | **req** |
 | `project/seed.md` — Art style | `artStyle.background.*`, `artStyle.sprite.*` | opt |
 | `project/seed.md` — Art style | `artStyle.timeOfDayLighting.*` | opt |
+| character notes (Body sections) | `artStyle.sprite.clothingRules[]` | opt |
+| `project/seed.md` — expression tier | `availableExpressions[]` | opt |
 | builder-specified | `locations[]` | opt |
 | builder-specified | `moods` | opt |
 | builder-specified | `theme` | opt |
@@ -110,7 +116,9 @@ Read `project/seed.md` and extract the following. The section names in the seed 
 
 **`calendarConfig.seasons`, `daysPerSeason`, `daysOfWeek`, `daySegments`** — Structural calendar configuration. Defaults: 4 seasons, 28 days/season, standard day names. Day segments default to Morning/Afternoon/Evening/Night — 4 segments is the recommended sweet spot (the engine is tuned for it), but 3 works fine. Change any of these to fit the world.
 
-**`calendarConfig.startingYear`** (optional) — The calendar year Day 1 starts in. Use 1400 for medieval, 3025 for sci-fi, etc.
+**`calendarConfig.startingYear`** / **`calendarConfig.baseYear`** (optional, integer) — The calendar year Day 1 starts in. Use 1400 for medieval, 3025 for sci-fi, etc. Newer platform builds read `baseYear`; current exports carry both keys with the same value. Write both, and keep them equal.
+
+**`generateSideCharacterOnNewGame`** (optional, boolean) — The Adventure tab's "AI generate side character" toggle. When `true`, the platform has the AI generate a side character at New Game (how many, and on what basis, is not yet verified against the platform). This is a builder choice, not world content: no note supplies it, and the export never sets it from the notes. A re-export preserves whatever value the existing `.sbworld` holds. The Adventure tab's other New Game toggles (randomize the opening arc, ignore the opening arc, random NPC romance pair) are app-level settings that never appear in the `.sbworld`.
 
 ---
 
@@ -118,11 +126,23 @@ Read `project/seed.md` and extract the following. The section names in the seed 
 
 Read `calendar.md` (this skill's reference file) for design guidance on weather pools, festival layout, and day-segment defaults before building this section.
 
-**`calendarConfig.dailyInfluenceCap.gain`** (optional) — Maximum positive influence a character can gain per day. Lower values mean slower relationship growth. Default is 5.
+**`calendarConfig.dailyInfluenceCapGain`** (optional, integer) — Maximum positive influence a character can gain per day. Lower values mean slower relationship growth. Default is 5.
 
-**`calendarConfig.dailyInfluenceCap.loss`** (optional) — Maximum negative influence a character can lose per day. Lower values mean slower relationship decay. Default is 5.
+**`calendarConfig.dailyInfluenceCapLoss`** (optional, integer) — Maximum negative influence a character can lose per day. Lower values mean slower relationship decay. Default is 5.
 
-**`calendarConfig.dailyPlannerDirective`** (optional) — Standing rules about daily structure that the AI planner sees every day, before any day-specific events. Examples: "On weekdays, morning and afternoon MUST be classroom lessons. Evenings are free." / "Every day must include at least one scene in the guild hall." / "Weekend days are fully open for character-driven activities."
+Older exports carry a single `calendarConfig.dailyInfluenceCap` field. Where an existing `.sbworld` still has it alongside the split keys, the split keys take precedence; write the split keys.
+
+**`calendarConfig.influenceMagnitudeTiers`** (optional, multi-line string) — The influence magnitude ladder: one rung per line, value first, each naming the kind of act worth that many points in this world. The highest rung is the ceiling the AI cannot pass, and each rung spends that many points of the daily cap. Write the rungs in the world's own terms:
+
+```
+±1: A small daily kindness or friction — a compliment on their work, a careless remark
+±2: A meaningful gesture or genuine hurt — a thoughtful gift, a broken confidence
+±3: A life-shaping act — saving someone from danger, a deep betrayal of trust
+```
+
+**Scene-ending guidance** (optional, integers) — `calendarConfig.earliestClosePrompts` (the earliest prompt count at which a scene may close cleanly), `calendarConfig.minPromptsBeforeTransition` (the usual minimum), and `calendarConfig.usualMaxPrompts` (the usual maximum). Platform values in current exports are 6, 10 and 16. Change them only when the world's scenes should run deliberately shorter or longer.
+
+**`calendarConfig.dailyPlannerDirective`** (optional) — Standing rules about daily structure. The platform UI now labels it "Daily Directive": the scene AI sees it at every scene opening as the standing shape of the day, before any day-specific events. The JSON key is unchanged. Examples: "On weekdays, morning and afternoon MUST be classroom lessons. Evenings are free." / "Every day must include at least one scene in the guild hall." / "Weekend days are fully open for character-driven activities."
 
 **`calendarConfig.weatherPools`** (optional) — Nested object: season → day segment → string array. Each string is a one-line weather description. 10–16 entries per season/segment. The segments must match the project's `daySegments` configuration. Derive from `project/seed.md` and the world's setting; see `calendar.md` for writing guidance.
 
@@ -148,11 +168,50 @@ Note: if the project uses 4 day segments (the platform default), add a `"Night"`
   "name": "Event name",
   "triggerOnDay": 8,
   "promptInjection": "Active creative direction injected on this day.",
-  "recurring": true
+  "recurring": true,
+  "hiddenFromPlayer": false
 }
 ```
 
 `triggerOnDay` is the absolute calendar day (1–112 for the 4×28 default). `promptInjection` is active direction to the story engine, not a neutral description of the event.
+
+**`hiddenFromPlayer`** (optional, boolean) — Marks a trigger as hidden from the player. The intended reading is that the trigger still fires and injects its `promptInjection` while the player is not shown it in advance; that runtime behavior is inferred from the field name and from how existing exports use it, not confirmed against the platform. Set it on scripted story beats and introductions the player should meet in play rather than see announced (an arrival sequence, a character's first appearance, a story gate). Leave it `false` or absent on public festivals and observances the townsfolk would know about.
+
+### Life Stages (`yearContexts`, optional)
+
+Life stages describe how the world changes from one in-game year to the next. `yearContexts` is a top-level object keyed by string numbers (`"0"`, `"1"`, …), one entry per year. Source the content from `project/direction.md` and the arc notes that span years. Each entry is a full creative brief for one year of play:
+
+```json
+{
+  "name": "Year One — The Rebuilding",
+  "transition_warning_days": 7,
+  "world_context": "...",
+  "player_context": "...",
+  "schedule_context": "...",
+  "npc_concerns": "...",
+  "world_pressures": "...",
+  "sprite_set_guidance": "...",
+  "transition_context": "...",
+  "arc_resolution_guidance": "...",
+  "next_year_preview": "..."
+}
+```
+
+| Field | Purpose |
+|---|---|
+| `name` | Display name for the stage |
+| `transition_warning_days` | Days before the stage ends that the player is warned |
+| `world_context` | The state of the world during this stage |
+| `player_context` | The player character's situation and constraints |
+| `schedule_context` | Scheduling rules for the stage (week structure, work timing) |
+| `npc_concerns` | What the characters want and are doing during this stage |
+| `world_pressures` | External pressures, deadlines and constraints |
+| `sprite_set_guidance` | Which sprite sets characters use during this stage |
+| `transition_context` | What happens at the stage boundary |
+| `arc_resolution_guidance` | How story arcs resolve at stage end |
+| `next_year_preview` | What the next stage holds, for continuity |
+
+A world with no year-over-year change omits `yearContexts`.
 
 ---
 
@@ -219,6 +278,8 @@ For each character note in `notes/`, produce a character record. Process one cha
 | Sprite sets (see below) | `spriteSets[]` | opt |
 | Available Day (see below) | `availableFromDay` | opt |
 | Builder-specified | `startingInfluence` | opt |
+| Builder-specified (from the character's palette) | `color` | opt |
+| `sex` frontmatter field | none — read for pronoun accuracy, never exported | — |
 
 **`name`** (required) / **`lastName`** (optional) — Extract from the character note filename.
 
@@ -230,7 +291,11 @@ For each character note in `notes/`, produce a character record. Process one cha
 
 **`appearance`** (optional) — Used for sprite generation and as context for all in-game AIs. Use the Body section's appearance preamble of the character note verbatim or lightly condensed. Cover species/type and sex if relevant, age presentation and body type, notable features, clothing style.
 
-**`startingInfluence`** (optional) — Initial relationship value for this character. Default is `"Auto"` (the platform assigns a starting value). Set manually to override.
+**`startingInfluence`** (optional, integer) — Initial relationship value for this character, which may be negative (`-10` for a character who starts out hostile to the player). Omit the key to let the platform assign its default; the UI shows the omitted state as "Auto". Never write the string `"Auto"`.
+
+**`color`** (optional, string) — The character's name color in dialogue, as a Tailwind CSS text-color class: `"text-pink-400"`, `"text-emerald-400"`, `"text-rose-700"`. Pick a hue from the character's own palette (hair, signature garment) and keep colors distinct across the main cast so speakers are easy to tell apart. Do not write a hex value or a bare color name.
+
+**`sex`** (internal, character note only) — The character note's `sex` field records the character's sex so every generated text uses the right pronouns. It is worldbuilder schema, not ainime schema: the export never writes a `sex` key to `world.json`. Read it before writing `appearance`, per-set `appearance` and Future Storylines, and check that every pronoun in those fields agrees with it. Where the character's sex matters to how they look, state it in `appearance` in plain words.
 
 **Body preamble → appearance:** The Body appearance preamble provides
 the character's physical description for the appearance field.
@@ -268,10 +333,19 @@ Check all introduction notes to ensure each character's introduction scene can a
     "description": "Casual, at rest — the character's natural default state",
     "expressions": {
       "neutral": "image generation prompt for this state and expression"
-    }
+    },
+    "appearance": "Physical-features preamble, then this set's outfit.",
+    "baseImage": "asset://sandboxWorldAssets/<uuid>",
+    "basePrompt": "image generation prompt for this set's base image"
   }
 ]
 ```
+
+Each sprite set carries three fields beyond `name`, `description` and `expressions`:
+
+- **`appearance`** (optional, string) — What the character looks like in this set. Start with the character's physical-features preamble (hair, eyes, skin, build, species features), written identically in every set, then describe this set's outfit. Only the outfit part varies between sets. No personality, story or pose content. The character-level `appearance` equals the default set's `appearance`.
+- **`baseImage`** (optional, string) — The set's reference image: an `asset://sandboxWorldAssets/<uuid>` reference. Set it to the same asset as the set's `expressions.neutral` when that image exists, so the platform generates the other expressions from the same base.
+- **`basePrompt`** (optional, string) — The image-generation prompt for the set's base image. Not yet seen in an inspected export: the purpose here is read from the field name and its pairing with `baseImage`, and is unverified. Until it is confirmed, write it from the set's `appearance` only when the platform is to generate the base image, and leave it out when `baseImage` points to a bundled asset.
 
 Every character needs at minimum:
 - **Casual** (`name: "default"`) — at rest, natural state
@@ -281,7 +355,11 @@ Add additional states only where they're meaningfully distinct from the above (F
 
 The `description` drives art generation context; keep it concrete and consistent with the character's Body preamble. The `expressions.neutral` prompt is the base image generation prompt for that state.
 
-The number of expressions per sprite set depends on the project's chosen expression tier (see Expression Tiers in `../../docs/target-system.md`). Standard-18 is the recommended default; Essential-12 for budget-constrained projects; Expansive-26 for maximum emotional range.
+### Expression tier
+
+The number of expressions per sprite set depends on the project's chosen expression tier: **Essential**, **Standard** or **Expansive**, each a strict superset of the one before. Standard is the recommended default; Essential suits large casts or tight generation budgets; Expansive gives the full emotional range. The tier names carry no counts on purpose, so a change in membership never renames a tier.
+
+This skill does not hold the tier definitions. Tier membership, expression counts, narrative roles and the cost table live in the Image Gen expression standard, the shared Ainime reference for sprite expressions: `Projects/Ainime/Image Gen/Expression standard.md` in the Anima vault. Until that note is written, the same standard is at `Projects/Ainime/Fields of Mistria/repo/Fields-of-Mistria/Sprite Expression Workflow/Expression Standard.md`. Read it when choosing the tier, then write the chosen tier's expressions to `availableExpressions` (snake_case, as the platform requires).
 
 ---
 
@@ -304,6 +382,8 @@ Per-segment lighting descriptions injected into every background prompt between 
 ### Sprite Generation
 
 **`artStyle.sprite.style_prefix`** / **`style_suffix`** / **`negative_prompt`** (optional) — Same structure for character sprites. Sprite style should be consistent with background style but may have different technical requirements (transparent background, consistent character proportions). Negative prompt is SDXL only — ignored by Gemini/Imagen.
+
+**`artStyle.sprite.clothingRules`** (optional, string array) — Clothing directives for sprite generation, one rule per array entry (the UI shows one per line). Use them for world-wide costume rules: recognizable silhouettes and color motifs per character, a uniform element a faction always wears, a ban on copying costumes from existing franchises. Derive them from the character notes' Body sections and the seed's art style reference.
 
 **`artStyle.sprite.maintainConsistency`** (optional) — When enabled, appends "Same character, same background." during sprite generation to improve visual consistency across expressions.
 
@@ -348,11 +428,15 @@ Visual customization of the game UI. Not world content — purely presentation.
 
 ---
 
-## Custom Prompts (optional)
+## Prompts (optional)
 
-Per-AI-persona prompt overrides. These inject directly into each AI persona's system prompt and take highest priority, overriding any conflicting built-in instructions. Use to customize how the AI writes, what it focuses on, and how it handles the game.
+Per-AI-persona prompt overrides, on the platform's Prompts tab (formerly Custom Prompts). These inject directly into each AI persona's system prompt and take highest priority, overriding any conflicting built-in instructions. Use to customize how the AI writes, what it focuses on, and how it handles the game.
 
-Available personas: Dungeon Master (scene narration, NPC dialogue, player interactions), Transition Director, Arc Manager, Narrative Architect, Relationship Analyst, Cast Analyst, Novelist, Psychoanalyst, VN Director.
+Available personas: Dungeon Master (scene narration, NPC dialogue, player interactions), Arc Manager, Narrative Architect, Relationship Analyst, Cast Analyst, Novelist, Psychoanalyst, VN Director, Volume Synopsis, Bio Compressor, Character Developer, Canon Archivist, Video Director. The Transition Director persona no longer exists.
+
+Overrides are organized into prompt sets: named, switchable collections, of which one is active. The built-in Default set is read-only. The export records only a reference to the active set (`activePromptSet`, e.g. `{ "kind": "default" }`), and `customPrompts` stays empty while the Default set is active. Prompt sets are the builder's customization, not world content: the export does not produce them and leaves `activePromptSet` as it finds it.
+
+Each persona's override is split into sub-sections (System Prompt, Story Cache, User Prompt, Scene opening + scene plan writing, Every turn). The Prompts tab also exposes the generation templates the World Builder itself uses (setting and lore, arc builder, character fields, expression prompts, time lighting, weather, events, life stages, moods and music style, player appearance, the in-game and World Builder character cards, character appearance, clothing rules). Both the sub-sections and the generation-template overrides are stored in `customPrompts` when a user-created set overrides them.
 
 The AI is already handling complex instructions — keep custom prompts clear and concise. The only hard constraint is the JSON response schema; everything else (NPC behavior, writing style, pacing, tone) is yours to shape.
 
@@ -378,6 +462,9 @@ Most worlds do not need custom prompts. Use them when the world has specific mec
 - [ ] `dailyPlannerDirective` set if the world has standing daily-structure rules
 - [ ] No `triggerOnDay` exceeds calendar year length (112 for 4×28)
 - [ ] No duplicate non-recurring triggers on the same day
+- [ ] `hiddenFromPlayer: true` on scripted beats the player should not see announced; public festivals visible
+- [ ] `dailyInfluenceCapGain` / `dailyInfluenceCapLoss` written as split keys; `startingYear` and `baseYear` equal
+- [ ] `influenceMagnitudeTiers` rungs written in the world's own terms, if set
 
 **Lorebook**
 - [ ] Every major location has a concept note → lore entry
@@ -397,7 +484,11 @@ Most worlds do not need custom prompts. Use them when the world has specific mec
 - [ ] All six influence bands present in the card
 - [ ] Sprite sets include at minimum Casual and Working/Active
 - [ ] Introduction Story Seed present, introduction scenario plausible before `availableFromDay`
-- [ ] Expression count matches project's chosen tier (12 / 18 / 26)
+- [ ] Expressions match the project's chosen tier (Essential / Standard / Expansive) as the Image Gen expression standard defines it
+- [ ] Every sprite set has its own `appearance`, starting with the character's unchanged physical-features preamble
+- [ ] `baseImage` matches the set's `expressions.neutral` where both exist
+- [ ] `color` is a Tailwind text class (`text-<hue>-<shade>`); `startingInfluence` is an integer or absent
+- [ ] Every pronoun in `appearance`, per-set `appearance` and Future Storylines agrees with the note's `sex` field
 
 **Art style**
 - [ ] Background and sprite prefix/suffix present if using AI generation
