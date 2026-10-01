@@ -87,6 +87,8 @@ A card is not finalized until all of the following are present or the user expli
 
 6. **Values with costs** (Background or Soul). At least one top value with its stated price. A value without a cost is decoration. Provenance: Character Builder v3 via Hoplight review.
 
+7. **Protective strategy** (behavioral, Soul). The habitual first response to any perceived threat — what the character does before they identify what they are afraid of. Observable action, not a coping label. Provenance: Writer's Workbench 'protective strategy' field; Character Codex 'override specification'; community consensus on default defensive behavior.
+
 **Finalization gate:** the card is not finalized until every required entry above is present or explicitly waived.
 
 ---
