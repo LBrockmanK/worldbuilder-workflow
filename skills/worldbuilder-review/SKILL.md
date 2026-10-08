@@ -1,19 +1,23 @@
 ---
 name: worldbuilder-review
-description: Use when a worldbuilder document is drafted and needs adversarial review against its governing format document before it is treated as complete.
+description: Use when the critic step of a worldbuilder entity item checks drafted entity notes against their governing format document and sorts each finding into auto-fix or escalate.
 ---
 
 # Worldbuilder Review
 
-Governed by the spec "2026-08-15-worldbuilder-document-review-gate" in the Anima vault's worldbuilder-workflow domain.
+This skill is the critic's instructions. The critic is the checking step of a worldbuilder entity item. Governed by the spec "2026-08-15-worldbuilder-document-review-gate" in the Anima vault's worldbuilder-workflow domain.
 
 *All prose this skill produces follows `../writing-style.md`. Read it before writing.*
+
+## How the critic runs
+
+The critic runs read-only on Sol through the codex CLI: `codex exec --sandbox read-only`, as the fleet plugin's codex document describes. It never changes a file. The orchestrator records the critic's report as the critic's callout in the entity item. The creative revision step reads that report and applies it (see `../creative-step.md`).
 
 ## Inputs
 
 - **Document to review** (required) — path to the worldbuilder document.
 - **Governing format document** (required) — path to the format doc (e.g., `card-format.md`).
-- **Reference material** (required when the document was produced from Q&A or source ingestion; omitted only when no source material exists) — paths to source documents (behavioral evidence, data profiles, Q&A transcripts, or equivalent).
+- **Reference material** (required when the document was produced from Q&A or source ingestion; omitted only when no source material exists) — paths to source documents (behavioral evidence, data profiles, Q&A transcripts, or equivalent), or the item's Specification when it holds the interview answers.
 
 ---
 
@@ -32,30 +36,29 @@ Read each entry in the document. For each entry, check it against every applicab
 For each finding, apply the two-part test:
 
 1. **Is the violation clear?** The rule text unambiguously matches the entry.
-2. **Is the repair safe?** The fix requires only mechanical restructuring (splitting sentences, removing a word, reformatting a bullet to prose) without changing semantic content. Tense changes are not inherently safe — changing past to present can turn a historical event into an ongoing behavior.
+2. **Is the repair mechanical?** The fix requires only mechanical restructuring (splitting sentences, removing a word, reformatting a bullet to prose) without changing semantic content. Tense changes are not inherently safe — changing past to present can turn a historical event into an ongoing behavior.
 
-Auto-fix applies only when both are true. If either is ambiguous — the rule application is debatable, the repair requires new behavioral content, sourcing from reference material, or a characterization choice — the finding escalates. Check the Judgment calls section of the review criteria for format-specific classification guidance.
+A finding is `auto-fix` only when both are true. If either is ambiguous — the rule application is debatable, the repair requires new behavioral content, sourcing from reference material, or a characterization choice — the finding is `escalate`. Check the Judgment calls section of the review criteria for format-specific classification guidance. Check exempt content types before classifying — exempt sections and content produce no finding.
 
-### Phase 4: Apply auto-fixes
+When reference material is provided, an `auto-fix` repair must preserve semantic fidelity to the source data. If a repair would need detail the source does not hold, classify the finding as `escalate`.
 
-For each auto-fix finding, rewrite the entry to comply with the rule. Preserve semantic content. When reference material is provided, verify the fix preserves semantic fidelity to the source data. If a fix would require inventing detail not in the source, reclassify as escalated. Check exempt content types before fixing — do not modify exempt sections or content.
+### Phase 4: Write the report
 
-### Phase 5: Generate report
+The report has one section named `## Critic report`. It is a numbered list of findings, and every finding carries exactly these fields, with these labels:
 
-Produce a completion report with three sections:
+- **Rule** — the rule violated, by name and location.
+- **Quoted text** — the entry text, copied word for word.
+- **Class** — `auto-fix` or `escalate`.
+- **Repair text** — for an `auto-fix`: the exact replacement text for the quoted text, ready to paste. For an `escalate`: the reason the finding failed the two-part test (which part), and a proposed repair when one can be offered without a characterization choice.
 
-- **Auto-fixed** — for each: rule cited (name and location), before text, after text.
-- **Escalated** — for each: rule cited, entry text, why it is ambiguous (which part of the two-part test failed), and a proposed repair when one can be offered without a characterization choice.
-- **Scoped out** — for each: rule name, exemption cited (from the Exempt list).
+After the `## Critic report` section, a `## Scoped out` section lists, for each exempt item, the rule name and the exemption cited. A report with no findings says so under `## Critic report`.
 
 ---
 
-## Presenting results
+## Using the report
 
-Present the report to the user. The user reviews the diff (this is the quality check on auto-fixes). The user can revert any auto-fix. Each escalated finding requires resolution before the document is marked complete:
+The critic does not resolve findings. The creative revision step applies every `auto-fix` finding without asking. The orchestrator puts every `escalate` finding to the human as a question of the revision step. The human sees every change at the item's final review.
 
-- **Fix** — write and apply a repair (the user or agent creates the fix, using the proposed repair as a starting point when one was offered).
-- **Reject** — the finding is invalid (record reason).
-- **Defer** — acknowledged, not addressing now (record reason).
+## Review
 
-A second review pass is warranted only when fixes rewrote the document substantially enough that the user would otherwise approve materially unreviewed text.
+None here — this skill is the critic and produces reviews rather than deliverables; no deliverable checks off at this skill.
