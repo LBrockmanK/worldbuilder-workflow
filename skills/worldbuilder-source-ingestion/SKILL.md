@@ -15,7 +15,7 @@ it into reference documents. It does not interpret what the material
 means. The Q&A workflow (worldbuilder-character and other entity
 skills) handles interpretation when it consumes the references.
 
-**Governing spec:** [Source Ingestion Skill Spec](../../.claude/specs/2026-08-15-source-ingestion-skill-reference-document-structure-and-extraction-principles.md)
+**Governing spec:** "2026-08-15-source-ingestion-skill-reference-document-structure-and-extraction-principles" in the Anima vault's worldbuilder-workflow domain.
 
 ---
 

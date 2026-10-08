@@ -63,6 +63,6 @@ The Phase Status table in `project/plan.md` is the tracker; the export skill gat
 
 ## Pointers
 
-- Spec for this architecture: `.claude/specs/2026-07-04-retool-worldbuilder-workflow-on-scraibe-base.md`
+- Spec for this architecture: the note "2026-07-04-retool-worldbuilder-skills-on-scraibe-base" in the Anima vault's worldbuilder-workflow domain
 - Type roster: `defaults/types.json`, with type bodies in `defaults/templates/*.md`; both hand-edited, no build step. `scripts/generate_templates.py` reads them to emit a project's Templater templates.
 - Target platform field reference: `docs/target-system.md`

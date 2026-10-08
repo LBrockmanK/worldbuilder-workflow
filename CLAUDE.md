@@ -8,9 +8,11 @@ conventions govern this repo's own `.claude/`.
 ## Working in this repo
 
 - **Domain docs:** `CONTEXT.md` (single-context terminology) and
-  `.claude/adr/` at the repo root. Use the established vocabulary in
-  issue titles, proposals, and test names; if your output contradicts an
-  ADR, surface the conflict explicitly instead of silently overriding.
+  the decision notes in the Anima vault's worldbuilder-workflow domain
+  (0001 three-phase architecture, 0003 platform decoupling, 0004 action-line
+  style model). Use the established vocabulary in issue titles, proposals,
+  and test names; if your output contradicts a decision note, surface the
+  conflict explicitly instead of silently overriding.
 - **Shipped content is model-neutral:** never name a specific AI model
   in templates, stub notes, or skill instructions that reach end users —
   "for future agents", never a product name. Some users run these skills
@@ -35,11 +37,3 @@ conventions govern this repo's own `.claude/`.
 - **Adversarial review uses codex.** Pre-completion adversarial review
   runs through `codex exec --sandbox read-only` for cross-provider
   independence. The same model that wrote the content cannot review it.
-
-## Review records
-
-Review documents for this project live in `.claude/reviews/`.
-Interim assignment (2026-07-28, Kevin): set directly across all projects
-in lieu of a fleet:setup walk; superseded when the vault-merger
-migration lands. The scraibe:adversarial-review skill follows this
-declaration and stops if it is absent.

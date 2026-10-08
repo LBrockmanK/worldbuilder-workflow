@@ -5,7 +5,7 @@ description: Use when a worldbuilder document is drafted and needs adversarial r
 
 # Worldbuilder Review
 
-Governed by the [worldbuilder document review gate spec](../../.claude/specs/2026-08-15-worldbuilder-document-review-gate.md).
+Governed by the spec "2026-08-15-worldbuilder-document-review-gate" in the Anima vault's worldbuilder-workflow domain.
 
 *All prose this skill produces follows `../writing-style.md`. Read it before writing.*
 
