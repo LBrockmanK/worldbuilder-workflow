@@ -10,23 +10,23 @@ Claude Code skills for building a game world on the [ainime-games.com](https://a
 
 ## What these skills do
 
-The skills guide you through three sequential phases:
+The skills guide you through three phases. Each phase is a kind of tracked item: the work runs as items in the world's Anima domain folder, each with an interview, an approved Specification and a final review.
 
-### Seed phase (Phase 1)
+### Foundation phase (Phase 1)
 
-The clarification-heavy opening phase. Claude asks the foundational questions — setting, tone, household structure, hidden layer — and produces `project/seed.md`, a platform-agnostic world proposal that every later phase builds on.
+A work item whose builder uses `worldbuilder-world-foundation`. The interview asks the foundational questions — setting, tone, household structure, hidden layer — and the builder produces `project/seed.md`, a platform-agnostic world proposal that every later phase builds on.
 
 **Key output:** `project/seed.md`
 
 ### Wide phase (Phase 2)
 
-The expansive generative phase. With the seed confirmed, Claude builds out the world's content: concept notes (lore), story notes (narrative direction), location notes, faction notes, cast planning, and individual character notes. All creative decisions live here. Nothing in Phase 2 is ainime-specific.
+A set of worldbuilder entity items. Each item covers a related group of entities (for example a household and its home). A creative step writes the notes, a critic step checks them, and a revision step applies the mechanical fixes. Concept, story, location, faction, event and character notes are built this way. All creative decisions live here. Nothing in Phase 2 is ainime-specific.
 
 **Key outputs:** character notes, concept notes, story notes, location notes, faction notes, event notes in `notes/`
 
 ### Export phase (Phase 3)
 
-The conversion phase. Wide-phase notes are read by the export skill and packaged into ainime-games.com format. This is the only phase that writes ainime field names.
+A work item whose builder runs `worldbuilder-ainime-export`. Wide-phase notes are packaged into ainime-games.com format. This is the only phase that writes ainime field names.
 
 **Key output:** ainime character cards and supporting JSON fields
 
@@ -37,7 +37,7 @@ The conversion phase. Wide-phase notes are read by the export skill and packaged
 | Skill | When to use |
 |---|---|
 | `worldbuilder-setup` | Starting a brand-new project — run once; adopts scraibe with the worldbuilder preset |
-| `worldbuilder-world-foundation` | Seed phase — fills `project/seed.md` and plans the Wide phase |
+| `worldbuilder-world-foundation` | Foundation phase — fills `project/seed.md` and plans the Wide phase |
 | `worldbuilder-concept` | Wide phase — writes concept notes |
 | `worldbuilder-event` | Wide phase — writes event notes |
 | `worldbuilder-story` | Wide phase — writes story notes and the direction document |
@@ -72,8 +72,9 @@ Once installed, invoke any skill using the `/` command prefix in Claude Code (e.
 
 The skills use consistent terminology throughout. Key terms:
 
-- **Seed phase / Wide phase / Export phase** — the three pipeline phases
-- **`project/seed.md`** — the world foundation document produced in Phase 1
+- **Foundation phase / Wide phase / Export phase** — the three phases, each a kind of tracked item
+- **Seed note** — a spin-off tracking note in the world's Anima domain folder, not the seed document
+- **`project/seed.md`** — the seed document, produced in the Foundation phase
 - **Character note** — the comprehensive Wide-phase document for a single character
 - **Concept note** — a discrete piece of world knowledge (exported as a lorebook entry)
 - **Story note** — a narrative direction document (direction, arc, or intention scope)

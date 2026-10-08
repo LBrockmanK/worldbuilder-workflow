@@ -13,11 +13,17 @@ This skill covers two things: the structural decisions that shape the world, and
 
 The seed document is a starting point, not a finished world — it will grow in directions it does not anticipate.
 
+This skill is the builder's instruction for the Foundation work item. The definer of that item runs the interview in `## Interview` below and records the answers in the item's Specification. The builder reads the Specification and writes the seed document from it, as the Seed Document section describes. The builder does not ask the human questions: a gap in the Specification is returned as a question.
+
 ---
 
-## Opening Act: Ingestion
+## Interview
 
-Before asking any questions, check whether the user has reference material to provide.
+The definer draws on the three parts of this section: the opening act, the intimate-dynamics scope question and the six foundational questions. The definer's rounds run on the answer page, and the human's answers go into the item's Specification.
+
+### Opening Act: Ingestion
+
+Before asking any questions, check whether the human has reference material to provide.
 
 Ask: "Do you have any existing material for this world — notes, documents, previous writing, URLs, or reference media you want to draw from?"
 
@@ -25,17 +31,22 @@ If yes:
 - Run `scraibe:ingest` first — each source becomes a reference document with provenance before anything is extracted from it
 - Then extract any decisions already made (setting name, tone, existing characters, world details) from the reference documents
 - Note contradictions or gaps to resolve during the questions phase
-- Do not discard or override anything the user has already decided
+- Do not discard or override anything the human has already decided
+- Then ask the intimate-dynamics scope question and the six foundational questions below; both are always asked.
 
-If no: proceed directly to the six foundational questions.
+If no: proceed directly to the intimate-dynamics scope question, then the six foundational questions.
 
 ---
 
-## The Six Foundational Questions
+### Intimate-dynamics scope
 
-Work through these before writing any part of the seed document. They are not a form to fill in — they are decisions to make. Stop and ask the user at each one. Do not assume or fill in gaps.
+Ask once: does this project include explicit intimate content — all romance-eligible characters, a specific subset, or none? The answer goes into the Specification. The decision is not revisited character by character.
 
-### 1. What is the setting's wound?
+### The Six Foundational Questions
+
+Work through these before the seed document is written. They are not a form to fill in — they are decisions to make. Stop and ask the human at each one. Do not assume or fill in gaps.
+
+#### 1. What is the setting's wound?
 
 Every good setting has something wrong with it — something it lost, something that divided it, something it has been unable to face. This determines what the player's presence means, what the opening arc is, and what long-term healing looks like.
 
@@ -45,15 +56,15 @@ Examples:
 - A founding betrayal the community has never fully reckoned with
 - A loss so old it has become local myth
 
-### 2. What is the community's character?
+#### 2. What is the community's character?
 
 Not just a name — its personality. Is it proud of its history or embarrassed by it? Tightly knit or full of old grudges? Welcoming to outsiders or suspicious? The community's personality is the default filter every character's behavior runs through.
 
-### 3. What is the player's connection to this place?
+#### 3. What is the player's connection to this place?
 
 Inherited property? Drawn here by something? Washed up by accident? The connection determines who knew the predecessor, what the player's presence means to different characters, and what stakes the player has from day one.
 
-### 4. What is the setting's hidden layer?
+#### 4. What is the setting's hidden layer?
 
 If the setting includes supernatural elements, the origin shapes tone:
 - A catastrophe long ago (the world is in recovery; magic is a relic)
@@ -63,7 +74,7 @@ If the setting includes supernatural elements, the origin shapes tone:
 
 If the setting has no magic, this becomes: what is the setting's concealed depth? Every good setting has something beneath the surface — a secret, a history, a truth the surface doesn't advertise.
 
-### 5. What is the era?
+#### 5. What is the era?
 
 Approximate technology and cultural reference point. Affects every character's daily life and what kinds of problems are plausible:
 - Contemporary with poor infrastructure
@@ -71,7 +82,7 @@ Approximate technology and cultural reference point. Affects every character's d
 - Pastoral (no technology, not medieval)
 - Fantasy-modern (technology alongside magic)
 
-### 6. How many household clusters, and what are they?
+#### 6. How many household clusters, and what are they?
 
 Design the setting as 6–8 household clusters before naming any individuals. Characters gain meaning from their relationships with each other, not just with the player.
 
@@ -151,9 +162,7 @@ Build the roster from the household design, with user input, before any characte
 
 The user seeds the cast — names they already have, roles they know they want, characters with personal significance. From each seed, branch through relationships: who is in their household, who do they conflict with, who do they depend on? Fill structural gaps (unfilled archetype slots, households without characters) with proposals for the user to accept, modify, or reject. Never assign a character to a slot without the user's knowledge.
 
-Ask the intimate-dynamics scope question once, here: does this project include explicit intimate content — all romance-eligible characters, a specific subset, or none? Record the answer in `project/plan.md` and flag affected cast entries with `Intimate Dynamics: Yes`. The decision is not revisited character by character.
-
-Record the confirmed cast in the `## Cast Plan` section of `project/plan.md`. This is a planning document, not the character notes themselves — each character note is created later and carries the authoritative information.
+Record the Specification's answer to the intimate-dynamics scope question (asked once, in the Interview) in `project/plan.md`, and flag affected cast entries with `Intimate Dynamics: Yes`. Record the confirmed cast in the `## Cast Plan` section of `project/plan.md`. This is a planning document, not the character notes themselves — each character note is created later and carries the authoritative information.
 
 Cast plan entry format:
 
@@ -273,4 +282,18 @@ Desired audio atmosphere: genre, tempo, instrumentation reference, how mood shif
 
 **All characters get equal depth.** The main/side toggle is a player-facing engagement setting, not a signal to write a thinner character card.
 
-**Ask at every decision point.** The cost of fixing errors in generated documents is higher than the cost of answering an upfront question. When anything is ambiguous, surface it.
+**Ask at every decision point.** The cost of fixing errors in generated documents is higher than the cost of answering an upfront question. The definer asks during the interview. When the builder finds anything ambiguous in the Specification, it surfaces it as a question and does not fill the gap.
+
+---
+
+## Review
+
+The seed document is a deliverable of the Foundation item. The scraibe adversarial-review skill defines this block's shape and runs the loop.
+
+- **Deliverable:** the seed document, `project/seed.md`, and the direction document, `project/direction.md`.
+- **Shape:** document — the rounds are capped and the human's approval is the gate.
+- **Criteria:** the "Seed complete" entry under Phase completion criteria in this skill, the Sections and Additional seed outputs lists under Seed Document, and `../writing-style.md` (the World Introduction and the Opening Situation are exempt, as the style note at the top of this skill says); for `project/direction.md`, the "Direction complete" entry under Phase completion criteria in this skill and the Ongoing Story Direction structure in `../worldbuilder-story/SKILL.md`.
+- **Scope:** named files — `project/seed.md` and `project/direction.md`.
+- **Reference inputs:** the source material the human provided and the reference documents made from it; the item's Specification.
+- **Stakes default:** durable.
+- **Overrides:** none.

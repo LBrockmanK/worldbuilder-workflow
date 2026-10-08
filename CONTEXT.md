@@ -37,7 +37,7 @@ Defined in `defaults/types.json`, this plugin's internal roster. Entity types li
 
 **story** — a narrative note with a `scope` of arc, intention, or introduction, linked to its parent via `up`.
 
-**seed** — the world foundation document (`project/seed.md`), produced by `worldbuilder-world-foundation` in the Seed phase.
+**seed** — the world foundation document (`project/seed.md`), produced by `worldbuilder-world-foundation` in the Foundation phase.
 
 **plan** — the project plan (`project/plan.md`): phase status table and cast plan.
 
@@ -53,16 +53,24 @@ For creative notes: a note stays open while it is being built and flips to `comp
 
 ## Phases
 
-Three phases as guidance, not a mechanical lock:
+The three phases are kinds of tracked item, not a mechanical lock. A tracked item is a note in the world's Anima domain folder that records one unit of work from its approved Specification to its final review.
 
-- **Seed phase** — the clarification-heavy opening. `worldbuilder-world-foundation` produces the seed; `worldbuilder-story` fills the direction document. _Avoid_: foundation phase, setup phase.
-- **Wide phase** — the expansive generative phase: concept, event, story, location, faction notes, cast planning, character notes. All creative decisions live here. _Avoid_: development phase, building phase.
-- **Export phase** — `worldbuilder-ainime-export` packages Wide-phase notes into ainime format; the only phase that writes ainime field names. _Avoid_: deliverables phase, finalization phase.
+- **Foundation phase** — a work item whose builder uses `worldbuilder-world-foundation` to produce the seed document; `worldbuilder-story` fills the direction document. The plan.md Phase Status table calls this the Seed phase. _Avoid_: setup phase.
+- **Wide phase** — a set of entity items, one per related group of entities. All creative decisions live here. _Avoid_: development phase, building phase.
+- **Export phase** — a work item whose builder runs `worldbuilder-ainime-export` to package Wide-phase notes into ainime format; the only phase that writes ainime field names. _Avoid_: deliverables phase, finalization phase.
 
-The Phase Status table in `project/plan.md` is the tracker; the export skill gates itself via its status-tag preflight. Session flow belongs to scraibe: `scraibe:orient` for briefings, `scraibe:triage` for pending work, `scraibe:audit` for health checks.
+No further item type exists. The Phase Status table in `project/plan.md` is the tracker; the export skill gates itself via its status-tag preflight. Session flow belongs to scraibe: `scraibe:orient` for briefings, `scraibe:triage` for pending work, `scraibe:audit` for health checks.
+
+## Terms
+
+- **seed document** — the world's founding file, `project/seed.md`, produced by `worldbuilder-world-foundation`. _Avoid_: seed note.
+- **seed note** — a spin-off tracking note in the world's Anima domain folder, born from a creative step's proposal (a home, an implied faction, a lore entry). It tracks an idea to explore; it is not the seed document. _Avoid_: seed document.
+- **entity item** — a tracked item that writes, checks and revises the entity notes of a related group of entities (for example a household and its home). The definer sets its size per item. Its steps are a creative step, a critic step (`worldbuilder-review`) and a creative revision step.
+- **Foundation item** — the work item of the Foundation phase.
+- **Export item** — the work item of the Export phase.
 
 ## Pointers
 
-- Spec for this architecture: `.claude/specs/2026-07-04-retool-worldbuilder-workflow-on-scraibe-base.md`
+- Spec for this architecture: the note "2026-07-04-retool-worldbuilder-skills-on-scraibe-base" in the Anima vault's worldbuilder-workflow domain
 - Type roster: `defaults/types.json`, with type bodies in `defaults/templates/*.md`; both hand-edited, no build step. `scripts/generate_templates.py` reads them to emit a project's Templater templates.
 - Target platform field reference: `docs/target-system.md`
