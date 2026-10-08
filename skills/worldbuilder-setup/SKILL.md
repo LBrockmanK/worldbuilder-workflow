@@ -54,7 +54,7 @@ Then ask: "What is the name of your world or project?"
 
 ### Step 3: Check the world's domain folder
 
-A world's tracking notes (work items, entity items, seed notes) live in the world's domain folder of the Anima vault, for example `Projects/Ainime/Fields of Mistria/`. The project root sits inside that folder's `repo/`. Resolve the domain folder as the parent of the `repo/` directory that contains the project root. If no ancestor of the project root is named `repo`, ask the human for the domain folder's path.
+A world's tracking notes (work items, entity items, seed notes) live in the world's domain folder of the Anima vault, for example `Projects/Ainime/Fields of Mistria/`. The project root sits inside that folder's `repo/`. Resolve the domain folder as the parent of the `repo/` directory that contains the project root. If no ancestor of the project root is named `repo`, ask the human for the domain folder's path, then check that the project root lies under that folder's `repo/`. If it does not, stop with this message: "The project root `<root>` is not under `<folder>/repo/`. Move the project there or name a different folder, then run setup again."
 
 If the domain folder does not exist, stop with this message: "The world's domain folder `<folder>` does not exist. Create it first (scraibe's dispatch births a domain from a grill), then run setup again." This skill does not create the folder.
 

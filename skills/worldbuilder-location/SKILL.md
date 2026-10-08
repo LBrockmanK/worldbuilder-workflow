@@ -19,7 +19,7 @@ The location note is the comprehensive Wide-phase single source of truth for a n
 
 ## Interview
 
-The definer draws on this section. The human's answers go into the item's Specification, where the creative step reads them. Ask one question at a time and follow threads. The human can answer, skip, or provide source material in place of answers.
+The definer draws on this section. The definer's rounds run on the answer page, and the human's answers go into the item's Specification, where the creative step reads them. Ask one question at a time and follow threads. The human can answer, skip, or provide source material in place of answers.
 
 1. What does this place uniquely contribute to the world, and what kinds of scenes can only happen here?
 2. What kind of place is it: scale, age, condition, environment, and one specific detail?

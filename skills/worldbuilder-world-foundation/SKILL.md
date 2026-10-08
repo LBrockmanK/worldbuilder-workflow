@@ -19,7 +19,7 @@ This skill is the builder's instruction for the Foundation work item. The define
 
 ## Interview
 
-The definer draws on the two parts of this section, the opening act and the six foundational questions. The human's answers go into the item's Specification.
+The definer draws on the two parts of this section, the opening act and the six foundational questions. The definer's rounds run on the answer page, and the human's answers go into the item's Specification.
 
 ### Opening Act: Ingestion
 
@@ -36,6 +36,10 @@ If yes:
 If no: proceed directly to the six foundational questions.
 
 ---
+
+### Intimate-dynamics scope
+
+Ask once: does this project include explicit intimate content — all romance-eligible characters, a specific subset, or none? The answer goes into the Specification. The decision is not revisited character by character.
 
 ### The Six Foundational Questions
 
@@ -157,9 +161,7 @@ Build the roster from the household design, with user input, before any characte
 
 The user seeds the cast — names they already have, roles they know they want, characters with personal significance. From each seed, branch through relationships: who is in their household, who do they conflict with, who do they depend on? Fill structural gaps (unfilled archetype slots, households without characters) with proposals for the user to accept, modify, or reject. Never assign a character to a slot without the user's knowledge.
 
-Ask the intimate-dynamics scope question once, here: does this project include explicit intimate content — all romance-eligible characters, a specific subset, or none? Record the answer in `project/plan.md` and flag affected cast entries with `Intimate Dynamics: Yes`. The decision is not revisited character by character.
-
-Record the confirmed cast in the `## Cast Plan` section of `project/plan.md`. This is a planning document, not the character notes themselves — each character note is created later and carries the authoritative information.
+Record the Specification's answer to the intimate-dynamics scope question (asked once, in the Interview) in `project/plan.md`, and flag affected cast entries with `Intimate Dynamics: Yes`. Record the confirmed cast in the `## Cast Plan` section of `project/plan.md`. This is a planning document, not the character notes themselves — each character note is created later and carries the authoritative information.
 
 Cast plan entry format:
 
@@ -287,10 +289,10 @@ Desired audio atmosphere: genre, tempo, instrumentation reference, how mood shif
 
 The seed document is a deliverable of the Foundation item. The scraibe adversarial-review skill defines this block's shape and runs the loop.
 
-- **Deliverable:** the seed document, `project/seed.md`.
+- **Deliverable:** the seed document, `project/seed.md`, and the direction document, `project/direction.md`.
 - **Shape:** document — the rounds are capped and the human's approval is the gate.
 - **Criteria:** the "Seed complete" entry under Phase completion criteria in this skill, the Sections and Additional seed outputs lists under Seed Document, and `../writing-style.md` (the World Introduction and the Opening Situation are exempt, as the style note at the top of this skill says).
-- **Scope:** named file — `project/seed.md`.
+- **Scope:** named files — `project/seed.md` and `project/direction.md`.
 - **Reference inputs:** the source material the human provided and the reference documents made from it; the item's Specification.
 - **Stakes default:** durable.
 - **Overrides:** none.

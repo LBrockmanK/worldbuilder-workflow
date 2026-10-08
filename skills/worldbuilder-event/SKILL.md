@@ -19,7 +19,7 @@ The event note is the Wide-phase single source of truth for a named event. Expor
 
 ## Interview
 
-The definer draws on this section. The human's answers go into the item's Specification, where the creative step reads them. Ask one question at a time and follow threads. The human can answer, skip, or provide source material in place of answers.
+The definer draws on this section. The definer's rounds run on the answer page, and the human's answers go into the item's Specification, where the creative step reads them. Ask one question at a time and follow threads. The human can answer, skip, or provide source material in place of answers.
 
 1. What does this event contribute that no other event does, and what kinds of scenes does it enable?
 2. When does it take place (season and rough calendar position), and how often?

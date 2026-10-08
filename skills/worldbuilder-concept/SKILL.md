@@ -19,7 +19,7 @@ Good concept notes give the engine exactly what it needs at the moment a topic a
 
 ## Interview
 
-The definer draws on this section. The human's answers go into the item's Specification, where the creative step reads them. Ask one question at a time and follow threads. The human can answer, skip, or provide source material in place of answers.
+The definer draws on this section. The definer's rounds run on the answer page, and the human's answers go into the item's Specification, where the creative step reads them. Ask one question at a time and follow threads. The human can answer, skip, or provide source material in place of answers.
 
 1. What is this piece of world knowledge, and why does it warrant its own note?
 2. What does its existence make impossible, costly, or inevitable in any scene that touches it?

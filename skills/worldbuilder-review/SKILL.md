@@ -47,9 +47,9 @@ When reference material is provided, an `auto-fix` repair must preserve semantic
 The report has one section named `## Critic report`. It is a numbered list of findings, and every finding carries exactly these fields, with these labels:
 
 - **Rule** — the rule violated, by name and location.
-- **Quoted text** — the entry text, copied word for word.
+- **Quoted text** — the entry text, copied word for word. When the finding is that a required entry or section is absent, there is no text to copy: write `ABSENT: ` followed by the name of the missing entry or section and the heading it belongs under.
 - **Class** — `auto-fix` or `escalate`.
-- **Repair text** — for an `auto-fix`: the exact replacement text for the quoted text, ready to paste. For an `escalate`: the reason the finding failed the two-part test (which part), and a proposed repair when one can be offered without a characterization choice.
+- **Repair text** — for an `auto-fix`: the exact replacement text for the quoted text, ready to paste. An absent-content finding normally escalates, because adding content is not mechanical. For an `escalate`: the reason the finding failed the two-part test (which part), and a proposed repair when one can be offered without a characterization choice.
 
 After the `## Critic report` section, a `## Scoped out` section lists, for each exempt item, the rule name and the exemption cited. A report with no findings says so under `## Critic report`.
 

@@ -39,8 +39,9 @@ Process:
 ## Source Ingestion
 
 When working from source material (game data, existing character
-sheets, fiction, wiki references), build reference documents before
-writing the card. Reference documents organize the raw material
+sheets, fiction, wiki references), reference documents come first.
+They are made by a prior `worldbuilder-source-ingestion` run, which is
+its own item; the creative step reads them and does not build them. Reference documents organize the raw material
 into a reviewable evidence base. They live in a `reference/`
 subdirectory alongside the character card.
 
@@ -63,7 +64,7 @@ Cross-reference multiple sources (game files, wiki, community
 resources) when available. The reference folder is the evidence
 base for the card; the review can check card entries against it.
 
-Do not skip this step to write the card faster. A card written
+Do not skip ingestion to write the card faster. A card written
 directly from raw source material without organized reference
 documents is harder to review, harder to verify, and harder for
 future sessions to update.
@@ -72,13 +73,13 @@ future sessions to update.
 
 ## Interview
 
-The definer draws on this section. The human's answers go into the item's Specification, where the creative step reads them. The human can override at any point: write entries directly instead of answering, skip questions, or provide source material (existing character sheets, fiction excerpts, reference images) in place of answers.
+The definer draws on this section. The definer's rounds run on the answer page, and the human's answers go into the item's Specification, where the creative step reads them. The human can override at any point: write entries directly instead of answering, skip questions, or provide source material (existing character sheets, fiction excerpts, reference images) in place of answers.
 
 Ask one question at a time. Wait for the answer before asking the next. Follow threads: when an answer implies something about a different section, surface it immediately and pursue it before changing topics.
 
 ### Opening questions
 
-**Starting world state:** Check whether the project has a starting world state document (a project-level reference listing the timeline boundary, which characters are present at the start, and what has already happened before the story begins). If one exists, read it before asking any questions — it governs what counts as pre-story content for Core sections and Relationships versus story content for Story Seeds. If one does not exist, establish the boundary with the human during the first character interview and record it as a project document. Subsequent interviews read it rather than re-deriving the boundary.
+**Starting world state:** Check whether the project has a starting world state document (a project-level reference listing the timeline boundary, which characters are present at the start, and what has already happened before the story begins). If one exists, read it before asking any questions — it governs what counts as pre-story content for Core sections and Relationships versus story content for Story Seeds. If one does not exist, establish the boundary with the human in this interview; the Specification holds it. If a durable starting-state document is wanted, the creative step proposes it as a spin-off (see `../creative-step.md`) and does not create it.
 
 Before the character questions, determine which addon blocks to include. Record the decision in the Specification.
 
@@ -220,7 +221,7 @@ The note stays on an open status tag while work is in progress. Mark it `complet
 
 - [ ] All required doctrine entries present or explicitly waived with a recorded reason
 - [ ] Each Core section (Background, Body, Soul) has at least one entry. Target ranges in `card-format.md` are guidance, not gates
-- [ ] Reference documents present in `reference/` subdirectory when working from source material
+- [ ] Reference documents from a prior ingestion run read when working from source material
 - [ ] Story Seeds section present with entries (every character; 5-12 target range)
 - [ ] Other selected addon blocks completed (Relationships, Intimate Dynamics, Voice / Dialogue as determined in the Specification)
 - [ ] No trait adjectives anywhere in the note. Each replaced by the behavior that earned it

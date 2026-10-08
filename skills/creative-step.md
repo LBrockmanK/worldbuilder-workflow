@@ -4,7 +4,9 @@
 
 A worldbuilder entity item is a tracked item with three middle steps: a creative step, a critic step and a creative revision step. The entity skill is the creative role's instructions. This file says how a creative step starts, how it ends, and how the revision step uses the critic's report. The entity skill says what the notes contain.
 
-The interview does not happen in the creative step. The definer ran it before the item's Specification was approved, and the Specification holds the answers. The interview questions for each entity live in the entity skill's `## Interview` section, which the definer reads.
+This file covers the entity notes of an entity item only. The Foundation item's documents (the seed document and `project/direction.md`) are written by that item's builder, outside the creative step.
+
+The interview does not happen in the creative step. The definer ran it in rounds on the answer page before the item's Specification was approved, and the Specification holds the answers. The interview questions for each entity live in the entity skill's `## Interview` section, which the definer reads.
 
 ---
 
@@ -23,7 +25,7 @@ Write the entity notes of the item. The notes are the item's outputs. Write them
 
 The revision step reads the critic's report. The report is the section named `## Critic report` in the critic's callout (see `worldbuilder-review`). Every finding in it carries four fields: **Rule**, **Quoted text**, **Class** and **Repair text**.
 
-- For each finding whose **Class** is `auto-fix`, replace the **Quoted text** in the entity note with the **Repair text**, exactly as written, without asking. If the **Quoted text** no longer matches the note, return the finding as a question.
+- For each finding whose **Class** is `auto-fix`, replace the **Quoted text** in the entity note with the **Repair text**, exactly as written, without asking. If the **Quoted text** no longer matches the note, return the finding as a question. A **Quoted text** that begins `ABSENT:` names a missing entry or section, not text to replace; it normally has **Class** `escalate`. If one is classed `auto-fix`, insert the **Repair text** under the named heading.
 - For each finding whose **Class** is `escalate`, change nothing. Return the finding as a question for the human: the **Rule**, the **Quoted text**, the reason it escalated, and the proposed repair when the critic offered one. The orchestrator puts these questions on the answer page. When the human answers, apply the answer.
 - Return the list of changes made, so the human sees every change at the item's final review.
 

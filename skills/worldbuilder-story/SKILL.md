@@ -5,13 +5,13 @@ description: Use when writing arc or intention notes for an AI-powered narrative
 
 # Story
 
-*All prose this skill produces follows `../writing-style.md`. Read it before writing. A creative step starts and ends as `../creative-step.md` says; the interview answers it works from are in the item's Specification, and the questions behind them are in `## Interview` below.*
+*All prose this skill produces follows `../writing-style.md`. Read it before writing. For arc, intention and introduction notes, a creative step starts and ends as `../creative-step.md` says; the interview answers it works from are in the item's Specification, and the questions behind them are in `## Interview` below.*
 
 ## Overview
 
 This skill serves two related purposes:
 
-**The direction document (Foundation phase):** `project/direction.md` is the world's standing creative brief and the story engine's primary guard rail. It is a project document, produced in the Foundation phase using this skill's section templates as guidance. See the Ongoing Story Direction section below for its complete structure.
+**The direction document (Foundation phase):** `project/direction.md` is the world's standing creative brief and the story engine's primary guard rail. It is a project document, written by the Foundation item's builder using this skill's section templates as guidance. It is outside the creative step and is not governed by `../creative-step.md`. See the Ongoing Story Direction section below for its complete structure.
 
 **Arc, intention, and introduction notes (Wide phase):** Once the direction document exists, this skill creates the story notes that extend it. Story notes link to their parent via the `up` field.
 
@@ -41,7 +41,7 @@ Read the direction document before creating arc notes. Arc notes develop what th
 
 ## Interview
 
-The definer draws on this section. The human's answers go into the item's Specification, where the creative step reads them. Ask one question at a time and follow threads. The human can answer, skip, or provide source material in place of answers.
+The definer draws on this section. The definer's rounds run on the answer page, and the human's answers go into the item's Specification, where the creative step reads them. Ask one question at a time and follow threads. The human can answer, skip, or provide source material in place of answers.
 
 For the direction document, the questions are the topics under Ongoing Story Direction below. For arc, intention, and introduction notes:
 
@@ -193,4 +193,4 @@ When this happens, propose a concept note as a spin-off (see `../creative-step.m
 
 ## Review
 
-None here — the entity notes are reviewed at the critic step of the worldbuilder entity item; no deliverable checks off at this skill.
+None here — arc, intention and introduction notes are reviewed at the critic step of the worldbuilder entity item, and the direction document is reviewed at the review of the Foundation item; no deliverable checks off at this skill.

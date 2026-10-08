@@ -490,10 +490,10 @@ When an export needs condensing or reformatting, adjust in this order — lowest
 
 The exported world file is a deliverable of the Export item. The scraibe adversarial-review skill defines this block's shape and runs the loop.
 
-- **Deliverable:** the exported world file, `world.json`.
+- **Deliverable:** the exported `.sbworld` file, the export's only true output.
 - **Shape:** document — the rounds are capped and the human's approval is the gate.
 - **Criteria:** the Self-Check Before Export Complete section and the Can-This-Ever-Fire Detection section of this skill.
-- **Scope:** named file — the exported `world.json`.
+- **Scope:** named file — the exported `.sbworld`, reviewed through the `world.json` extracted from inside it.
 - **Reference inputs:** the Wide-phase notes the export was built from; `../../docs/target-system.md`.
 - **Stakes default:** durable.
 - **Overrides:** none.

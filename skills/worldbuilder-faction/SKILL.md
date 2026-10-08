@@ -21,7 +21,7 @@ The faction note is the comprehensive Wide-phase single source of truth for any 
 
 ## Interview
 
-The definer draws on this section. The human's answers go into the item's Specification, where the creative step reads them. Ask one question at a time and follow threads. The human can answer, skip, or provide source material in place of answers.
+The definer draws on this section. The definer's rounds run on the answer page, and the human's answers go into the item's Specification, where the creative step reads them. Ask one question at a time and follow threads. The human can answer, skip, or provide source material in place of answers.
 
 1. What does this faction do to the story: what conflicts does it generate, and what role does it fill that no other faction could?
 2. How did it come to exist, and what was its original purpose?
