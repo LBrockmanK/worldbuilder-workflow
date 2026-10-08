@@ -1,6 +1,6 @@
 ---
 name: worldbuilder-story
-description: Use when writing arc or intention notes for an AI-powered narrative game, or producing direction.md in Phase 1. Also when output escalates too fast, intensity feels unearned, dark content is handled carelessly, or pacing lacks variation.
+description: Use when writing arc or intention notes for an AI-powered narrative game, or producing direction.md in the Foundation phase. Also when output escalates too fast, intensity feels unearned, dark content is handled carelessly, or pacing lacks variation.
 ---
 
 # Story
@@ -11,9 +11,9 @@ description: Use when writing arc or intention notes for an AI-powered narrative
 
 This skill serves two related purposes:
 
-**Phase 1b — the direction document:** `project/direction.md` is the world's standing creative brief and the story engine's primary guard rail. It is a project document, produced in Phase 1 using this skill's section templates as guidance. See the Ongoing Story Direction section below for its complete structure.
+**The direction document (Foundation phase):** `project/direction.md` is the world's standing creative brief and the story engine's primary guard rail. It is a project document, produced in the Foundation phase using this skill's section templates as guidance. See the Ongoing Story Direction section below for its complete structure.
 
-**Phase 2b — Arc, intention, and introduction notes:** Once the direction document exists, this skill creates the story notes that extend it. Story notes link to their parent via the `up` field.
+**Arc, intention, and introduction notes (Wide phase):** Once the direction document exists, this skill creates the story notes that extend it. Story notes link to their parent via the `up` field.
 
 Story note types:
 
