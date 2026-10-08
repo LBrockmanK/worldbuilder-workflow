@@ -13,7 +13,7 @@ Scraibe owns file management from here on — document creation, frontmatter enf
 
 **This skill writes no configuration into the project.** The worldbuilder type roster lives in this plugin, at `defaults/types.json`, and is read from there whenever it is needed. A project does not get a copy. What makes worldbuilder available is that scraibe and this plugin are *enabled for the working tree the session runs in* — see Step 2.
 
-Two directories matter and they are usually different. The **project root** is where the vault content goes: the directory the user names for their world. The **session root** is the working tree the session is running in, whose `.claude/settings.json` carries the live plugin enablement; for a project that lives inside a larger vault, that is the vault root, not the project folder. Steps 3 through 6 all operate on the project root; only Step 2 looks at the session root.
+Two directories matter and they are usually different. The **project root** is where the vault content goes: the directory the user names for their world. The **session root** is the working tree the session is running in, whose `.claude/settings.json` carries the live plugin enablement; for a project that lives inside a larger vault, that is the vault root, not the project folder. Step 3 looks at the world's domain folder, Steps 4 through 7 operate on the project root, and only Step 2 looks at the session root.
 
 ## Steps
 
@@ -52,7 +52,13 @@ Do not work around a failed check by writing config into the project — there i
 
 Then ask: "What is the name of your world or project?"
 
-### Step 3: Install the chrome
+### Step 3: Check the world's domain folder
+
+A world's tracking notes (work items, entity items, seed notes) live in the world's domain folder of the Anima vault, for example `Projects/Ainime/Fields of Mistria/`. The project root sits inside that folder's `repo/`. Resolve the domain folder as the parent of the `repo/` directory that contains the project root. If no ancestor of the project root is named `repo`, ask the human for the domain folder's path.
+
+If the domain folder does not exist, stop with this message: "The world's domain folder `<folder>` does not exist. Create it first (scraibe's dispatch births a domain from a grill), then run setup again." This skill does not create the folder.
+
+### Step 4: Install the chrome
 
 - Copy `<scraibe>/defaults/obsidian/` to `<project>/.obsidian/`.
 - Overlay this skill's `worldvault/.obsidian/` directory on top (app config, community-plugin registration, and the vendored Templater plugin).
@@ -62,7 +68,7 @@ Then ask: "What is the name of your world or project?"
 
 Chrome lives at the vault root — `Home.md` and the Bases carry no vault frontmatter, and that is correct. Scraibe's corpus rule excludes reserved spaces (`+/`, `repo/`, `.claude/`, `Imports/`), so nothing there is validated as a vault document.
 
-### Step 4: Create the project documents
+### Step 5: Create the project documents
 
 From the project root, with this plugin's root recorded as `<worldbuilder>`:
 
@@ -74,7 +80,7 @@ This creates `project/seed.md`, `project/plan.md`, `project/direction.md` with c
 
 Verify that all four files exist and that `project/plan.md` contains the `## Phase Status` table and `## Cast Plan` heading.
 
-### Step 5: Generate the creation templates
+### Step 6: Generate the creation templates
 
 From the project root, with this plugin's root recorded as `<worldbuilder>`:
 
@@ -94,10 +100,10 @@ Obsidian receives compliant frontmatter and its type body at creation —
 the type-picker asks one question in mixed directories.
 
 This applies to notes created from here on, and only inside Obsidian. It
-does not reach back to the three documents Step 4 already created, which
-is why Step 4 applies their bodies itself.
+does not reach back to the three documents Step 5 already created, which
+is why Step 5 applies their bodies itself.
 
-### Step 6: Validate and hand off
+### Step 7: Validate and hand off
 
 ```
 python <scraibe>/scripts/validate.py project --root . --format human
@@ -105,7 +111,7 @@ python <scraibe>/scripts/validate.py project --root . --format human
 
 There is no rules-generation step: scraibe retired `generate_rules.py` and the generated-rules mechanism with it. Project conventions live in the project's own agent-conventions file, which `scraibe:setup` maintains.
 
-Report the validation result to the user. Tell them the vault is ready to open in Obsidian ('Open folder as vault' on the project root; Bases and the vendored Templater need Obsidian 1.12.2+ with community plugins enabled for this vault). Then hand off to `worldbuilder-world-foundation` for the seed conversation.
+Report the validation result to the user. Tell them the vault is ready to open in Obsidian ('Open folder as vault' on the project root; Bases and the vendored Templater need Obsidian 1.12.2+ with community plugins enabled for this vault). Then say where the world's records live: its tracking notes (work items, entity items, seed notes) in the world's domain folder, and its entity notes in the world's `repo/`. Then hand off to `worldbuilder-world-foundation`: the definer of the world's Foundation work item draws on its interview section, and the item's builder writes the seed document.
 
 ## What this skill does not do
 
@@ -113,3 +119,7 @@ Report the validation result to the user. Tell them the vault is ready to open i
 - No migration of pre-scraibe worldbuilder vaults — that is a `scraibe:setup` migration run.
 - No plugin enablement — that is `fleet:setup`'s job. This skill only checks it.
 - No Obsidian Sync configuration, plugin installation, or cloud integration.
+
+## Review
+
+None here — setup installs chrome and templates and checks off nothing; no deliverable checks off at this skill.

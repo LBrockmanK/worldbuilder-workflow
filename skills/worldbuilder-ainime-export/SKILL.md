@@ -15,7 +15,7 @@ Full JSON schema reference: `../../docs/target-system.md`.
 
 ## Prerequisites
 
-Before running export, verify:
+This skill is the builder's instruction for the Export work item. Before running export, verify:
 - [ ] `project/seed.md` tagged `complete` (all sections present)
 - [ ] Every character note in `notes/` carries a closed status tag
 - [ ] Concept notes in `notes/` written with `layer` set
@@ -483,3 +483,17 @@ When an export needs condensing or reformatting, adjust in this order — lowest
 6. **arcManagerGuidance** — condense direction (medium-high risk — this is the primary creative guard)
 7. **eventCalendarSummary / weatherPools** — condense calendar prose (low risk, but late in priority because rarely needed)
 8. **Art style prompts** — never adjust for size (high risk — prompt changes alter visual output)
+
+---
+
+## Review
+
+The exported world file is a deliverable of the Export item. The scraibe adversarial-review skill defines this block's shape and runs the loop.
+
+- **Deliverable:** the exported world file, `world.json`.
+- **Shape:** document — the rounds are capped and the human's approval is the gate.
+- **Criteria:** the Self-Check Before Export Complete section and the Can-This-Ever-Fire Detection section of this skill.
+- **Scope:** named file — the exported `world.json`.
+- **Reference inputs:** the Wide-phase notes the export was built from; `../../docs/target-system.md`.
+- **Stakes default:** durable.
+- **Overrides:** none.

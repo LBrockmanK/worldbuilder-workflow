@@ -274,3 +274,17 @@ contain.)
 **Invalid (unbounded):** "Does not mention childhood pets." (The
 source omits infinitely many facts — note structural gaps in the
 source's own coverage only.)
+
+---
+
+## Review
+
+The reference documents are a deliverable of ingestion. The scraibe adversarial-review skill defines this block's shape and runs the loop.
+
+- **Deliverable:** the reference documents this skill writes.
+- **Shape:** document — the rounds are capped and the human's approval is the gate.
+- **Criteria:** The No-Inference Principle and the Reference Document Structure sections of this skill.
+- **Scope:** named files — the reference documents written in this run.
+- **Reference inputs:** the source material that was ingested.
+- **Stakes default:** durable.
+- **Overrides:** none.
