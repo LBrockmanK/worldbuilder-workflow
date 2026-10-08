@@ -5,7 +5,7 @@ description: Use when writing concept notes for an AI-powered narrative game —
 
 # Lorebook
 
-*All prose this skill produces follows `../writing-style.md`. Read it before writing.*
+*All prose this skill produces follows `../writing-style.md`. Read it before writing. A creative step starts and ends as `../creative-step.md` says; the interview answers it works from are in the item's Specification, and the questions behind them are in `## Interview` below.*
 
 ## Overview
 
@@ -14,6 +14,20 @@ World knowledge is organized as concept notes — one note per discrete topic. E
 Good concept notes give the engine exactly what it needs at the moment a topic arises. The goal is precision: the right information for the right moment. Write notes that are dense and specific rather than broad and atmospheric — 50 tokens of exact context beats 300 tokens of unfocused description.
 
 **Description field:** the world navigation summary — 1–2 sentences covering what this piece of world knowledge is and when it matters in scenes. Written last; a description that does not say when the lore activates is incomplete.
+
+---
+
+## Interview
+
+The definer draws on this section. The human's answers go into the item's Specification, where the creative step reads them. Ask one question at a time and follow threads. The human can answer, skip, or provide source material in place of answers.
+
+1. What is this piece of world knowledge, and why does it warrant its own note?
+2. What does its existence make impossible, costly, or inevitable in any scene that touches it?
+3. At which layer does it sit (surface, mid, deep), and what would be lost one layer higher or lower?
+4. What is true about it? If people believe something different from the truth, what do they believe?
+5. What behavioral and social consequences follow from it? For a rule-bearing concept, what are its costs and limits?
+6. When does it matter in a scene: what activation context brings it up?
+7. In what realistic phrasings do characters mention it (the aliases)?
 
 ---
 
@@ -165,9 +179,9 @@ Event notes — festivals, seasonal observances, recurring world events — have
 
 ## Concept Note Lifecycle
 
-World knowledge is a living collection, not a phase that opens and closes. Any stage of the project can produce facts worth capturing: a household design decision, a character backstory detail, an event's implied history, a conversation that clarifies the magic system. Create a concept note whenever a discrete piece of world knowledge solidifies — do not wait.
+World knowledge is a living collection, not a phase that opens and closes. Any stage of the project can produce facts worth capturing: a household design decision, a character backstory detail, an event's implied history, a conversation that clarifies the magic system. When a discrete piece of world knowledge solidifies, propose a concept note as a spin-off (see `../creative-step.md`) — do not wait.
 
-**During active development:** When any working session produces a fact or implication that belongs in the lorebook, create the concept note immediately via `new_doc.py` and leave it on an open status tag — a sentence or two of Lore is enough to anchor the thought. Flesh it out when you have more context.
+**During active development:** When any working session produces a fact or implication that belongs in the lorebook, propose the concept note as a spin-off, with the fact as the idea and the working session as its context — a sentence or two of Lore is enough to anchor the thought. Flesh it out in a concept item when you have more context.
 
 **At project completion:** Run a validation pass across all concept notes:
 - Verify every note has `layer`, `aliases`, and `description` filled in
@@ -216,3 +230,11 @@ World knowledge is a living collection, not a phase that opens and closes. Any s
 - [ ] Activation context stated
 
 **Over-documented when:** any section adds detail no scene will touch, or duplicates content already in a character, location, or faction note. Concept notes are meant to be short and dense — duplication bloats context for no gain.
+
+**Hand on.** When every item passes, hand the note on to the critic: the critic step runs `worldbuilder-review` with this document and its governing format document. The revision step applies the auto-fix findings; escalated findings go to the human.
+
+---
+
+## Review
+
+None here — the entity notes are reviewed at the critic step of the worldbuilder entity item; no deliverable checks off at this skill.

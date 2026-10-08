@@ -5,7 +5,7 @@ description: Use when creating or deepening a location note for an AI-powered na
 
 # Location Blueprint
 
-*All prose this skill produces follows `../writing-style.md`. Read it before writing.*
+*All prose this skill produces follows `../writing-style.md`. Read it before writing. A creative step starts and ends as `../creative-step.md` says; the interview answers it works from are in the item's Specification, and the questions behind them are in `## Interview` below.*
 
 ## Overview
 
@@ -14,6 +14,20 @@ A location for an LLM-powered narrative game is not a description — it is a be
 The location note is the comprehensive Wide-phase single source of truth for a named place. It covers everything true about the location that shapes how the engine writes scenes set there. Export skills derive their output from this note.
 
 **Description field:** the world navigation summary — what this place is, what makes it distinctive, and what role it plays in the setting's social and narrative life; not a physical description, which goes in Form & History. 1–2 sentences, written last, after the full note is complete.
+
+---
+
+## Interview
+
+The definer draws on this section. The human's answers go into the item's Specification, where the creative step reads them. Ask one question at a time and follow threads. The human can answer, skip, or provide source material in place of answers.
+
+1. What does this place uniquely contribute to the world, and what kinds of scenes can only happen here?
+2. What kind of place is it: scale, age, condition, environment, and one specific detail?
+3. Why does it exist, what does it carry from the past, and what does it imply about the world? Does it hold any secrets?
+4. Who comes here and why? What do they want that the place does or does not provide?
+5. What tension exists between kinds of visitors, between regulars, or between the place and its visitors?
+6. How does the place change with time, with the observer (insider or stranger), and with circumstances (normal, disrupted, crisis)? Which change alters scene logic, tone, or friction, not only who is present?
+7. Which region does it sit in, which characters are primary to it, and which concept notes cover it?
 
 ---
 
@@ -143,3 +157,11 @@ The note stays on an open status tag while work is in progress; mark it `complet
 - [ ] Written as who-does-what, not who-is-there
 - [ ] At least one meaningful variation specified
 - [ ] At least one axis specifies a change in scene logic, tone, or friction — not just a change in who is present or absent
+
+**Hand on.** When every item passes, hand the note on to the critic: the critic step runs `worldbuilder-review` with this document and its governing format document. The revision step applies the auto-fix findings; escalated findings go to the human.
+
+---
+
+## Review
+
+None here — the entity notes are reviewed at the critic step of the worldbuilder entity item; no deliverable checks off at this skill.

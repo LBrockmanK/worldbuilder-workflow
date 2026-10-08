@@ -5,7 +5,7 @@ description: Use when writing arc or intention notes for an AI-powered narrative
 
 # Story
 
-*All prose this skill produces follows `../writing-style.md`. Read it before writing.*
+*All prose this skill produces follows `../writing-style.md`. Read it before writing. A creative step starts and ends as `../creative-step.md` says; the interview answers it works from are in the item's Specification, and the questions behind them are in `## Interview` below.*
 
 ## Overview
 
@@ -36,6 +36,23 @@ Structure for arc, intention, and introduction notes:
 | Story Possibilities | What could happen; phrased as possibility not script |
 
 Read the direction document before creating arc notes. Arc notes develop what the brief establishes — they do not contradict it.
+
+---
+
+## Interview
+
+The definer draws on this section. The human's answers go into the item's Specification, where the creative step reads them. Ask one question at a time and follow threads. The human can answer, skip, or provide source material in place of answers.
+
+For the direction document, the questions are the topics under Ongoing Story Direction below. For arc, intention, and introduction notes:
+
+1. Which scope is it (arc, intention, or introduction), and which note is its parent?
+2. What kind of story is it emotionally, and what should it feel like when it plays out?
+3. Which scenes, arcs, or moments from other media does it evoke, and what specifically is drawn from each?
+4. Why is it worth building toward?
+5. What is the state of affairs before any player involvement, and which preconditions hold?
+6. What could happen? State each possibility as a possibility, not a script, and name at least one key moment or set piece.
+7. How does it connect to other arcs or characters?
+8. What is unresolved about it, thematically, structurally, or in a specific character's behavior?
 
 ---
 
@@ -116,6 +133,8 @@ The note stays on an open status tag while work is in progress; mark it `complet
 - [ ] At least one key moment or set piece named
 - [ ] Connection to other arcs or characters noted
 
+**Hand on.** When every item passes, hand the note on to the critic: the critic step runs `worldbuilder-review` with this document and its governing format document. The revision step applies the auto-fix findings; escalated findings go to the human.
+
 ---
 
 ## Ongoing Story Direction
@@ -168,4 +187,10 @@ After the first full year, if characters with strong chemistry have not moved to
 
 Story direction work regularly surfaces world knowledge that belongs in concept notes rather than the direction brief — historical context implied by the opening arc, background on the hidden layer that shouldn't be in the standing brief, lore that shapes pacing guidance but reads as exposition if left in this document.
 
-When this happens, create a concept note immediately. Use `worldbuilder-concept` for layer classification and writing guidance. Do not leave world knowledge embedded in the story notes — it will either bloat the brief or be invisible to the export layer's lorebook packaging.
+When this happens, propose a concept note as a spin-off (see `../creative-step.md`). Use `worldbuilder-concept` for layer classification and writing guidance. Do not leave world knowledge embedded in the story notes — it will either bloat the brief or be invisible to the export layer's lorebook packaging.
+
+---
+
+## Review
+
+None here — the entity notes are reviewed at the critic step of the worldbuilder entity item; no deliverable checks off at this skill.

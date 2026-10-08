@@ -5,7 +5,7 @@ description: Use when creating or deepening an event note for an AI-powered narr
 
 # Event Notes
 
-*All prose this skill produces follows `../writing-style.md`. Read it before writing.*
+*All prose this skill produces follows `../writing-style.md`. Read it before writing. A creative step starts and ends as `../creative-step.md` says; the interview answers it works from are in the item's Specification, and the questions behind them are in `## Interview` below.*
 
 ## Overview
 
@@ -14,6 +14,23 @@ An event note is not a schedule entry. It is a behavioral specification for a da
 The event note is the Wide-phase single source of truth for a named event. Export skills derive their output from this note.
 
 **Description field:** the world navigation summary — 1–2 sentences on what this event does to the community, not what it is. Written last, after the full note is complete. Example: "The Spring Harvest Festival: the one day the town's usual distances relax — introductions that normally take weeks happen naturally, and the player meets the community as a whole for the first time."
+
+---
+
+## Interview
+
+The definer draws on this section. The human's answers go into the item's Specification, where the creative step reads them. Ask one question at a time and follow threads. The human can answer, skip, or provide source material in place of answers.
+
+1. What does this event contribute that no other event does, and what kinds of scenes does it enable?
+2. When does it take place (season and rough calendar position), and how often?
+3. Who participates: everyone, volunteers, a community role, or invited guests?
+4. What physically occurs: activities, rituals, traditions?
+5. What does it commemorate, or why does it exist?
+6. What social distances relax and what tensions tighten? Who talks to whom that normally would not?
+7. Who is expected to attend, and what happens socially to someone who does not?
+8. What becomes natural on this day, and what becomes unusual or impossible?
+9. Does the event touch the hidden layer of the world, and at which knowledge layer (surface, mid, deep) does it sit?
+10. In what realistic phrasings do people mention the event in dialogue?
 
 ---
 
@@ -92,7 +109,7 @@ Event notes without a hidden dimension do not need layer classification.
 
 ## Lifecycle
 
-Event notes can be created at any phase. Create the note via `new_doc.py` as soon as an event is named — a sentence or two of What Happens is enough — and leave it on an open status tag. Flesh out What Happens and Scene Effects once the cast is established; seasonal scenes are richer when you know who is in them. Mark the note `complete` after the self-check passes.
+Event notes can be written at any phase. When work outside an event item names an event, propose it as a spin-off (see `../creative-step.md`); a sentence or two of What Happens is enough to anchor the idea. Flesh out What Happens and Scene Effects once the cast is established; seasonal scenes are richer when you know who is in them. Mark the note `complete` after the self-check passes.
 
 ---
 
@@ -119,3 +136,11 @@ Event notes can be created at any phase. Create the note via `new_doc.py` as soo
 - [ ] Scene test passes: a scene on this day feels different from any other day
 - [ ] At least one social dynamic specified — what relaxes or tightens
 - [ ] Obligations and costs stated if the event carries them
+
+**Hand on.** When every item passes, hand the note on to the critic: the critic step runs `worldbuilder-review` with this document and its governing format document. The revision step applies the auto-fix findings; escalated findings go to the human.
+
+---
+
+## Review
+
+None here — the entity notes are reviewed at the critic step of the worldbuilder entity item; no deliverable checks off at this skill.

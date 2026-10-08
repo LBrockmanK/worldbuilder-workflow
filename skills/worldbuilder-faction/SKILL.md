@@ -5,7 +5,7 @@ description: Use when creating or deepening a faction note for an AI-powered nar
 
 # Faction Blueprint
 
-*All prose this skill produces follows `../writing-style.md`. Read it before writing.*
+*All prose this skill produces follows `../writing-style.md`. Read it before writing. A creative step starts and ends as `../creative-step.md` says; the interview answers it works from are in the item's Specification, and the questions behind them are in `## Interview` below.*
 
 ## Overview
 
@@ -16,6 +16,23 @@ When a faction is underspecified, the engine defaults to making every member a g
 The faction note is the comprehensive Wide-phase single source of truth for any named group. Export skills derive their output from this note.
 
 **Description field:** the world navigation summary — what this group is, what it does to scenes, and what a player can expect from any member they encounter. 1–2 sentences, behavioral rather than descriptive, written last: a reader who sees only this field should know what to expect when the faction enters a scene.
+
+---
+
+## Interview
+
+The definer draws on this section. The human's answers go into the item's Specification, where the creative step reads them. Ask one question at a time and follow threads. The human can answer, skip, or provide source material in place of answers.
+
+1. What does this faction do to the story: what conflicts does it generate, and what role does it fill that no other faction could?
+2. How did it come to exist, and what was its original purpose?
+3. What does it control now? Name specific resources, territory, monopolies, information, relationships, or obligations owed to it.
+4. What is it trying to achieve right now? The goal must be specific and active.
+5. How does one become a member, how does membership end, and which ranks or tiers exist?
+6. Which cases are ambiguous: former members, dual loyalties, contested membership, outsiders who function as members?
+7. What do members do as a group when they meet a stranger, and why (three to five When, Behavior, Because entries)?
+8. What is the collective mask members present, and along which axes do individual members vary beneath it?
+9. Which other factions does it deal with directly, what is the status of each relationship, and what drives it?
+10. Which characters are its members?
 
 ---
 
@@ -144,7 +161,7 @@ The standard: a member who could belong to any faction fails the test. A member 
 
 **Write plainly. No flair.** This applies to every section, not just Collective Behavior. "The Brotherhood controls the valley's grain pricing" is correct. "The Brotherhood's iron grip on commerce has shaped the valley's soul for generations" is not.
 
-**Storylines belong in story notes, not faction notes.** If a story possibility is anchored by this faction's existence, create a story note.
+**Storylines belong in story notes, not faction notes.** If a story possibility is anchored by this faction's existence, propose a story note as a spin-off (see `../creative-step.md`).
 
 ---
 
@@ -179,3 +196,11 @@ The note stays on an open status tag while work is in progress; mark it `complet
 **Inter-Faction Web**
 - [ ] Direct relationships only
 - [ ] Each entry has status + one sentence on what drives it
+
+**Hand on.** When every item passes, hand the note on to the critic: the critic step runs `worldbuilder-review` with this document and its governing format document. The revision step applies the auto-fix findings; escalated findings go to the human.
+
+---
+
+## Review
+
+None here — the entity notes are reviewed at the critic step of the worldbuilder entity item; no deliverable checks off at this skill.
