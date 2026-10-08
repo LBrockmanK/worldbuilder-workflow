@@ -19,7 +19,7 @@ This skill is the builder's instruction for the Foundation work item. The define
 
 ## Interview
 
-The definer draws on the two parts of this section, the opening act and the six foundational questions. The definer's rounds run on the answer page, and the human's answers go into the item's Specification.
+The definer draws on the three parts of this section: the opening act, the intimate-dynamics scope question and the six foundational questions. The definer's rounds run on the answer page, and the human's answers go into the item's Specification.
 
 ### Opening Act: Ingestion
 
@@ -32,8 +32,9 @@ If yes:
 - Then extract any decisions already made (setting name, tone, existing characters, world details) from the reference documents
 - Note contradictions or gaps to resolve during the questions phase
 - Do not discard or override anything the human has already decided
+- Then ask the intimate-dynamics scope question and the six foundational questions below; both are always asked.
 
-If no: proceed directly to the six foundational questions.
+If no: proceed directly to the intimate-dynamics scope question, then the six foundational questions.
 
 ---
 
@@ -291,7 +292,7 @@ The seed document is a deliverable of the Foundation item. The scraibe adversari
 
 - **Deliverable:** the seed document, `project/seed.md`, and the direction document, `project/direction.md`.
 - **Shape:** document — the rounds are capped and the human's approval is the gate.
-- **Criteria:** the "Seed complete" entry under Phase completion criteria in this skill, the Sections and Additional seed outputs lists under Seed Document, and `../writing-style.md` (the World Introduction and the Opening Situation are exempt, as the style note at the top of this skill says).
+- **Criteria:** the "Seed complete" entry under Phase completion criteria in this skill, the Sections and Additional seed outputs lists under Seed Document, and `../writing-style.md` (the World Introduction and the Opening Situation are exempt, as the style note at the top of this skill says); for `project/direction.md`, the "Direction complete" entry under Phase completion criteria in this skill and the Ongoing Story Direction structure in `../worldbuilder-story/SKILL.md`.
 - **Scope:** named files — `project/seed.md` and `project/direction.md`.
 - **Reference inputs:** the source material the human provided and the reference documents made from it; the item's Specification.
 - **Stakes default:** durable.
