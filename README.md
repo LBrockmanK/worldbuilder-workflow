@@ -4,7 +4,7 @@
 
 Claude Code skills for building a game world on the [ainime-games.com](https://ainime-games.com) world builder platform. Install these skills once; run them in Claude Code to get an AI-assisted worldbuilding pipeline from blank page to finished export.
 
-**Requires the scraibe plugin.** Scraibe owns file management — document creation, frontmatter enforcement, status lifecycle, inbox, and audit. This plugin ships the worldbuilding craft skills and an OKF preset; without scraibe installed it does nothing.
+**Requires the scraibe plugin.** Scraibe owns file management — document creation, frontmatter enforcement, status lifecycle, inbox, and audit. This plugin ships the worldbuilding craft skills and a type roster; without scraibe installed it does nothing.
 
 ---
 
@@ -52,7 +52,7 @@ A work item whose builder runs `worldbuilder-ainime-export`. Wide-phase notes ar
 
 ### New project
 
-Run `worldbuilder-setup` once. It writes the OKF config, installs the vault chrome, creates the project documents, and hands off to `worldbuilder-world-foundation` for the foundation conversation.
+Run `worldbuilder-setup` once. It installs the vault chrome, creates the project documents, and hands off to `worldbuilder-world-foundation` for the foundation conversation.
 
 ### Returning session
 

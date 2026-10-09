@@ -46,7 +46,7 @@ The definer draws on this section. The definer's rounds run on the answer page, 
 
 ## Event Note Fields
 
-Frontmatter is defined by the project's OKF registry — `new_doc.py` stamps it and the generated rules describe it. The script produces a date-prefixed filename; rename the fresh note to the event's name itself (e.g. `notes/Emberfall Vigil.md`) before adding content — the filename convention the templates state, and safe while nothing links to the note yet. Two writing notes: `aliases` carries every realistic way the event is mentioned in dialogue ("the festival," "harvest time"); the export skill derives keyword triggers from it. Timing — season, day, recurrence — is not a field: open What Happens with when the event takes place and how often.
+The plugin's type roster defines the frontmatter and the generated templates stamp it at creation (scraibe's `new_doc.py` creates the note). The script produces a date-prefixed filename; rename the fresh note to the event's name itself (e.g. `notes/Emberfall Vigil.md`) before adding content — the filename convention the templates state, and safe while nothing links to the note yet. Two writing notes: `aliases` carries every realistic way the event is mentioned in dialogue ("the festival," "harvest time"); the export skill derives keyword triggers from it. Timing — season, day, recurrence — is not a field: open What Happens with when the event takes place and how often.
 
 ---
 

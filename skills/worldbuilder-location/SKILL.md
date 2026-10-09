@@ -43,7 +43,7 @@ Work through sections in order. Do not skip sections because the location seems 
 
 Location notes do not use sub-files — all content lives in one note. Sub-files are only used in skills where sections are too large for a single document (see `worldbuilder-character` for reference).
 
-Frontmatter is defined by the project's OKF registry; `new_doc.py` stamps it at creation and the generated rules describe it. The script produces a date-prefixed filename; rename the fresh note to the location's name itself (e.g. `notes/Ashen Lantern.md`) before adding content — the filename convention the templates state, and safe while nothing links to the note yet.
+The plugin's type roster defines the frontmatter and the generated templates stamp it at creation (scraibe's `new_doc.py` creates the note). The script produces a date-prefixed filename; rename the fresh note to the location's name itself (e.g. `notes/Ashen Lantern.md`) before adding content — the filename convention the templates state, and safe while nothing links to the note yet.
 
 ---
 

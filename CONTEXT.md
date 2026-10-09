@@ -18,6 +18,8 @@ A player project after `worldbuilder-setup`:
   notes/                ← all entity notes, flat
 ```
 
+A world has two scope folders. `notes/` holds world content and `project/` holds the project documents. A folder decides scope and never type: the type of a note comes from its `type` property, and the worldbuilder keeps its own type roster in this plugin rather than adopting the main vault's schema.
+
 No configuration file is written into the project: the project is a worldbuilder project because scraibe and this plugin are enabled for it, which `fleet:setup` records. Scraibe's corpus rule excludes reserved spaces (`+/`, `repo/`, `.claude/`, `Imports/`); everything else is a vault document. Chrome at the root — `Home.md` and the Bases — carries no frontmatter, and that is fine.
 
 ## Types

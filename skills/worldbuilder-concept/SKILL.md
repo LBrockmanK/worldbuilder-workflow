@@ -41,7 +41,7 @@ The definer draws on this section. The definer's rounds run on the answer page, 
 | Lore | What is true about this thing in the world |
 | Implications | What follows from this being true; activation context |
 
-Frontmatter is defined by the project's OKF registry; `new_doc.py` stamps it at creation and the generated rules describe it. The script produces a date-prefixed filename; rename the fresh note to the concept's name itself (e.g. `notes/The Old Fire.md`) before adding content — the filename convention the templates state, and safe while nothing links to the note yet. `aliases` is the most important field for a concept note — the export skill derives keyword triggers from it; see Alias Writing Guidance below.
+The plugin's type roster defines the frontmatter and the generated templates stamp it at creation (scraibe's `new_doc.py` creates the note). The script produces a date-prefixed filename; rename the fresh note to the concept's name itself (e.g. `notes/The Old Fire.md`) before adding content — the filename convention the templates state, and safe while nothing links to the note yet. `aliases` is the most important field for a concept note — the export skill derives keyword triggers from it; see Alias Writing Guidance below.
 
 ---
 
