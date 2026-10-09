@@ -39,7 +39,7 @@ Defined in `defaults/types.json`, this plugin's internal roster. Entity types li
 
 **foundation** — the world foundation document (`project/foundation.md`), produced by `worldbuilder-world-foundation` in the Foundation phase.
 
-**plan** — the project plan (`project/plan.md`): phase status table and cast plan.
+**plan** — the project plan (`project/plan.md`): the cast plan.
 
 **direction** — the standing creative brief (`project/direction.md`); the story engine's primary guard rail, exported verbatim as `arcManagerGuidance`.
 
@@ -55,11 +55,11 @@ For creative notes: a note stays open (no status tag) while it is being built an
 
 The three phases are kinds of tracked item, not a mechanical lock. A tracked item is a note in the world's Anima domain folder that records one unit of work from its approved Specification to its final review.
 
-- **Foundation phase** — a work item whose builder uses `worldbuilder-world-foundation` to produce the foundation document; `worldbuilder-story` fills the direction document. The plan.md Phase Status table calls this the Foundation phase. _Avoid_: setup phase.
+- **Foundation phase** — a work item whose builder uses `worldbuilder-world-foundation` to produce the foundation document; `worldbuilder-story` fills the direction document. _Avoid_: setup phase.
 - **Wide phase** — a set of entity items, one per related group of entities. All creative decisions live here. _Avoid_: development phase, building phase.
 - **Export phase** — a work item whose builder runs `worldbuilder-ainime-export` to package Wide-phase notes into ainime format; the only phase that writes ainime field names. _Avoid_: deliverables phase, finalization phase.
 
-No further item type exists. The Phase Status table in `project/plan.md` is the tracker; the export skill gates itself via its status-tag preflight. Session flow belongs to scraibe: `scraibe:orient` for briefings, `scraibe:triage` for pending work, `scraibe:audit` for health checks.
+No further item type exists. Phase progress is read from the world's items in its Anima domain folder; the export skill gates itself via its status-tag preflight. Session flow belongs to scraibe: `scraibe:orient` for briefings, `scraibe:triage` for pending work, `scraibe:audit` for health checks.
 
 ## Terms
 

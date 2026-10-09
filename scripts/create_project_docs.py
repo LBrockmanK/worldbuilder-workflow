@@ -21,7 +21,7 @@ TEMPLATES_DIR = os.path.join(DEFAULTS_DIR, 'templates')
 
 PROJECT_DOCS = [
     ('foundation', 'World Foundation', 'World foundation document for'),
-    ('plan', 'Worldbuilding Plan', 'Phase status and cast plan for'),
+    ('plan', 'Worldbuilding Plan', 'Cast plan for'),
     ('direction', 'Story Direction', 'Standing creative brief for'),
 ]
 
@@ -101,12 +101,6 @@ def main():
             print(str(e), file=sys.stderr)
             sys.exit(1)
         print(f'Created {path}')
-
-    plan_path = os.path.join(project_dir, 'plan.md')
-    with open(plan_path, 'r', encoding='utf-8') as f:
-        if '## Phase Status' not in f.read():
-            print('ERROR: plan.md missing Phase Status table', file=sys.stderr)
-            sys.exit(1)
 
     note_path = os.path.join(args.project_root, 'lorebook.md')
     if os.path.exists(note_path):

@@ -55,6 +55,13 @@ class ProjectRootTests(unittest.TestCase):
                 front, _ = split_front_matter(f.read())
             self.assertEqual(front['tags'], [], name)
 
+    def test_the_plan_keeps_its_cast_plan_and_has_no_phase_status(self):
+        with open(os.path.join(self.root, 'project', 'plan.md'),
+                  encoding='utf-8') as f:
+            text = f.read()
+        self.assertIn('## Cast Plan', text)
+        self.assertNotIn('## Phase Status', text)
+
     def test_a_second_run_refuses_rather_than_overwriting(self):
         second = run(self.root)
         self.assertEqual(second.returncode, 1)

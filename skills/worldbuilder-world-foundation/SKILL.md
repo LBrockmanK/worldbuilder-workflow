@@ -154,7 +154,7 @@ At least 2–3 characters should have meaningful content at low or negative infl
 
 ## Wide Phase Planning
 
-The Wide phase turns the foundation document into notes. The planning artifact is `project/plan.md`, created by setup: its Phase Status table tracks where the project is, and its `## Cast Plan` section holds the confirmed roster. Update the table at each phase transition; artifacts are ground truth, not the table — if the table says done but the note is missing or thin, believe the note.
+The Wide phase turns the foundation document into notes. The planning artifact is `project/plan.md`, created by setup: its `## Cast Plan` section holds the confirmed roster. Phase progress is not recorded there: it is read from the world's items in its Anima domain folder, and the Foundation phase is done when the Foundation work item closes.
 
 ### Cast planning
 
@@ -186,7 +186,7 @@ Coverage check before declaring the cast plan complete — verify against the fo
 
 ### Phase completion criteria
 
-Per-phase "done" definitions. If any item is unresolved, surface it to the user before marking the phase done in `project/plan.md`.
+Per-phase "done" definitions. If any item is unresolved, surface it to the user before closing the phase's work item.
 
 **Foundation complete** — `project/foundation.md` contains: all six foundational questions answered; Setting Summary; Genre & Tone; Inspirations and Tonal Inspirations with specifics; 8–12 Key Tropes & Themes; Community (social and emotional identity, not physical); World Introduction; Opening Situation; a locations list of 10–14 named locations, one sentence each; art style reference; musical theme; all 6–8 household clusters with function, internal tension, inter-household connections, trajectory, and narrative hook; no individual character names — household types and counts only; every household has at least one named connection to another household.
 
