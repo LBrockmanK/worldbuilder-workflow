@@ -76,9 +76,9 @@ From the project root, with this plugin's root recorded as `<worldbuilder>`:
 python <worldbuilder>/scripts/create_project_docs.py --project-root . --name "<Name>"
 ```
 
-This creates `project/foundation.md`, `project/plan.md`, `project/direction.md` with correct frontmatter (an empty `tags` list), body templates from `defaults/types.json`, and `lorebook.md` at the project root — the definition note for the one term the export platforms name differently.
+This creates `project/foundation.md`, `project/plan.md`, `project/direction.md` with correct frontmatter (an empty `tags` list), body templates from `defaults/types.json`.
 
-Verify that all four files exist and that `project/plan.md` contains the `## Cast Plan` heading.
+Verify that all three files exist and that `project/plan.md` contains the `## Cast Plan` heading.
 
 ### Step 6: Generate the creation templates
 

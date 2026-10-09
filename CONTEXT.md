@@ -14,7 +14,6 @@ A player project after `worldbuilder-setup`:
   .obsidian/            ← scraibe defaults + app.json overlay (attachmentFolderPath)
   _templates/           ← generated (generate_templates.py)
   Home.md  _bases/  _attachments/   ← chrome
-  lorebook.md           ← definition note: the platforms' "world info" is this project's lorebook
   project/              ← foundation.md, plan.md, direction.md
   notes/                ← all entity notes, flat
 ```

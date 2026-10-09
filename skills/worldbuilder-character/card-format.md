@@ -174,17 +174,17 @@ from source material (e.g. a five-event quest chain) becomes one
 Story Seed that establishes the premise and the character's stake
 in it, not a sequence of scripted events.
 
-**Relationship to world info:** Story Seeds provide the character's
+**Relationship to lorebook:** Story Seeds provide the character's
 stake in a scenario. Factual context that supports the scenario
-(lore, mechanics, history) belongs in world info entries (location,
+(lore, mechanics, history) belongs in lorebook entries (location,
 concept, or event documents), not in the Story Seed itself. A Story
-Beat can reference world info by name without reproducing it.
+Beat can reference lorebook by name without reproducing it.
 
-When a Story Seed requires world info that does not yet exist,
+When a Story Seed requires lorebook that does not yet exist,
 create a stub entry in the character's folder (e.g. a concept or
 location note alongside the card) to be merged into the project's
-main world info set later. This avoids blocking card completion on
-the full world info pipeline. Note the stub in the character's
+main lorebook set later. This avoids blocking card completion on
+the full lorebook pipeline. Note the stub in the character's
 Design Notes so the merge is not forgotten.
 
 **Distinction from other sections:**

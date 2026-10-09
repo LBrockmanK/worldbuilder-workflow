@@ -11,6 +11,8 @@ description: Use when writing concept notes for an AI-powered narrative game —
 
 World knowledge is organized as concept notes — one note per discrete topic. Export skills read these notes and package them as lorebook entries. This skill covers writing the concept notes well; the export skill handles the packaging.
 
+**Lorebook.** Vault documents say "lorebook" for the world's reference entries. The export platforms (ainime and isekaizero) call the same entries "World Info"; that is the platform's word, kept for exports and not used in vault documents.
+
 Good concept notes give the engine exactly what it needs at the moment a topic arises. The goal is precision: the right information for the right moment. Write notes that are dense and specific rather than broad and atmospheric — 50 tokens of exact context beats 300 tokens of unfocused description.
 
 **Description field:** the world navigation summary — 1–2 sentences covering what this piece of world knowledge is and when it matters in scenes. Written last; a description that does not say when the lore activates is incomplete.
