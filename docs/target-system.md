@@ -46,7 +46,7 @@ All field names below are the exact JSON keys. These fields are produced by `wor
 | JSON field | UI label | Type | Source content skill |
 |---|---|---|---|
 | `initialStoryArc` | Opening Story Arc | string | `worldbuilder-world-foundation` → `foundation.md` |
-| `arcManagerGuidance` | Ongoing Story Direction | string | `worldbuilder-story` → `notes/` |
+| `arcManagerGuidance` | Ongoing Story Direction | string | `worldbuilder-story` → `project/direction.md` |
 | `storyTriggers` | Story Triggers (Events) | StoryTrigger[ ] | `worldbuilder-story` (intention notes) + `worldbuilder-concept` (recurring event notes) → `notes/` |
 | `generateSideCharacterOnNewGame` | AI generate side character | boolean | Builder choice in the platform; no note source |
 
@@ -82,10 +82,10 @@ Set `recurring: true` for annual events (festivals, observances). One-time event
 
 | JSON field / path | UI label | Type | Source content skill |
 |---|---|---|---|
-| `calendarConfig.seasons` | Seasons | string[ ] | `worldbuilder-calendar` → `notes/` (event notes) |
-| `calendarConfig.daysPerSeason` | Days per Season | number | `worldbuilder-calendar` → `notes/` (event notes) |
-| `calendarConfig.daysOfWeek` | Days of Week | string[ ] | `worldbuilder-calendar` → `notes/` (event notes) |
-| `calendarConfig.daySegments` | Day Segments | string[ ] | `worldbuilder-calendar` → `notes/` (event notes) |
+| `calendarConfig.seasons` | Seasons | string[ ] | `worldbuilder-world-foundation` → `foundation.md` |
+| `calendarConfig.daysPerSeason` | Days per Season | number | `worldbuilder-world-foundation` → `foundation.md` |
+| `calendarConfig.daysOfWeek` | Days of Week | string[ ] | `worldbuilder-world-foundation` → `foundation.md` |
+| `calendarConfig.daySegments` | Day Segments | string[ ] | `worldbuilder-world-foundation` → `foundation.md` |
 | `calendarConfig.eraReminder` | Era | string | `worldbuilder-world-foundation` → `foundation.md` |
 | `calendarConfig.weatherPools` | Weather Pools | object | `worldbuilder-calendar` → `notes/` (event notes) |
 | `storyTriggers` | Events / Recurring Events | StoryTrigger[ ] | `worldbuilder-calendar` → `notes/` (event notes) |
