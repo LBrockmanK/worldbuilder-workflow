@@ -188,7 +188,7 @@ Narrative function, external references, design decisions, open questions. Bulle
 
 ## Frontmatter and File Naming
 
-Frontmatter is defined by the project's OKF registry; `new_doc.py` stamps it at creation. The script produces a date-prefixed filename; rename the fresh note to the character's name (e.g. `notes/Maren Holt.md`) before adding content.
+The plugin's type roster defines the frontmatter and the generated templates stamp it at creation (scraibe's `new_doc.py` creates the note). The script produces a date-prefixed filename; rename the fresh note to the character's name (e.g. `notes/Maren Holt.md`) before adding content. Set the `sex` property to `female`, `male` or a short free-text value; `CONTEXT.md` documents it. The export reads it to keep pronouns right.
 
 **Description field:** the cast navigation summary. Who this character is in the world, their key traits, their place in the social ecosystem. Described, not prescribed: no relationship recommendations, no design rationale. Written last, after the full blueprint is complete.
 
@@ -217,7 +217,7 @@ After completing a household group or batch of characters, run a relationship sy
 
 ## Completion Checklist
 
-The note stays on an open status tag while work is in progress. Mark it `complete` when every item below passes.
+The note is open until it carries a closure tag. Mark it `complete` when every item below passes.
 
 - [ ] All required doctrine entries present or explicitly waived with a recorded reason
 - [ ] Each Core section (Background, Body, Soul) has at least one entry. Target ranges in `card-format.md` are guidance, not gates

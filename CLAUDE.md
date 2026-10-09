@@ -23,7 +23,10 @@ conventions govern this repo's own `.claude/`.
   both by hand — there is no build step.
   `scripts/generate_templates.py` reads the roster and resolves the
   `template_file` references itself when it emits Templater templates.
-  Projects never receive a copy of the roster.
+  Projects never receive a copy of the roster. A world property enters
+  use only after it is designed, approved and documented (in
+  `CONTEXT.md`'s Properties section), and each fact in a world has one
+  home; other places refer to it.
 - **Skill prose follows the plugin's own writing doctrine:** plain,
   concrete, no filler — `skills/writing-style.md`; phrase-level review
   checklist in `docs/slop-phrases.md`.

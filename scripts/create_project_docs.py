@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""Create the three worldbuilder project documents and the lorebook
-definition note in one call.
+"""Create the three worldbuilder project documents in one call.
 
 Replaces the multi-step agent-executed prose of worldbuilder-setup Step 4
 with a single mechanical invocation.
@@ -20,25 +19,10 @@ TYPES_FILE = os.path.join(DEFAULTS_DIR, 'types.json')
 TEMPLATES_DIR = os.path.join(DEFAULTS_DIR, 'templates')
 
 PROJECT_DOCS = [
-    ('seed', 'World Foundation', 'World foundation document for'),
-    ('plan', 'Worldbuilding Plan', 'Phase status and cast plan for'),
+    ('foundation', 'World Foundation', 'World foundation document for'),
+    ('plan', 'Worldbuilding Plan', 'Cast plan for'),
     ('direction', 'Story Direction', 'Standing creative brief for'),
 ]
-
-LOREBOOK_NOTE = """---
-created: "[[{date}]]"
-modified:
-aliases: []
-tags:
-  - todo
-subjects: []
-type: "[[definition]]"
-description: "This project's term for the world's reference entries: the platform term is world info on ainime and isekaizero, and both name the same thing."
----
-**Lorebook** is this project's term for the world's reference entries — the entries an export ships alongside the story so the platform can recall the world. The platform term is "world info" on ainime and isekaizero; both name the same thing.
-
-**Avoid.** "world info" in vault documents; it is the platform's word, kept for exports.
-"""
 
 
 def read_template(doc_type, types_data):
@@ -59,7 +43,7 @@ def create_doc(project_dir, doc_type, title, description, template_content):
         'type': doc_type,
         'title': title,
         'description': description,
-        'tags': ['human-ready'],
+        'tags': [],
         'created': f'[[{now.date().isoformat()}]]',
         'resources': [],
     }
@@ -77,8 +61,7 @@ def create_doc(project_dir, doc_type, title, description, template_content):
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Create the three worldbuilder project documents and '
-                    'the lorebook definition note')
+        description='Create the three worldbuilder project documents')
     parser.add_argument('--project-root', required=True,
                         help='Root directory of the worldbuilder project')
     parser.add_argument('--name', required=True,
@@ -101,21 +84,6 @@ def main():
             print(str(e), file=sys.stderr)
             sys.exit(1)
         print(f'Created {path}')
-
-    plan_path = os.path.join(project_dir, 'plan.md')
-    with open(plan_path, 'r', encoding='utf-8') as f:
-        if '## Phase Status' not in f.read():
-            print('ERROR: plan.md missing Phase Status table', file=sys.stderr)
-            sys.exit(1)
-
-    note_path = os.path.join(args.project_root, 'lorebook.md')
-    if os.path.exists(note_path):
-        print(f'Already exists: {note_path}', file=sys.stderr)
-        sys.exit(1)
-    today = datetime.now(timezone.utc).date().isoformat()
-    with open(note_path, 'w', encoding='utf-8') as f:
-        f.write(LOREBOOK_NOTE.format(date=today))
-    print(f'Created {note_path}')
 
 
 if __name__ == '__main__':

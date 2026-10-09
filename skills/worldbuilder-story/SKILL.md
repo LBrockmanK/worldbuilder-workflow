@@ -23,7 +23,7 @@ Story note types:
 
 **Introduction** (scope: introduction) — First-contact scene for a specific character. Created during or after character note work, not during the story notes phase.
 
-Frontmatter is defined by the project's OKF registry; `new_doc.py` stamps it at creation and the generated rules describe it. The script produces a date-prefixed filename; rename the fresh note to the story's name itself (e.g. `notes/Introduction - Maren.md`) before adding content — the filename convention the templates state, and safe while nothing links to the note yet. Set `scope` to arc, intention, or introduction, and point `up` at the parent note.
+The plugin's type roster defines the frontmatter and the generated templates stamp it at creation (scraibe's `new_doc.py` creates the note). The script produces a date-prefixed filename; rename the fresh note to the story's name itself (e.g. `notes/Introduction - Maren.md`) before adding content — the filename convention the templates state, and safe while nothing links to the note yet. Set `scope` to arc, intention, or introduction, and point `up` at the parent note.
 
 **Description field:** 1–2 sentences naming what this note is — for an arc, the emotional territory it covers; for an intention, the story possibility in one sentence; for an introduction, who it introduces and the first impression. Written last; other agents scan this field when planning arcs or building character notes.
 
@@ -113,7 +113,7 @@ How the scene plays, what the character does, what invitation it extends to the 
 
 ## Self-Check Before Marking Complete (arc, intention, introduction notes)
 
-The note stays on an open status tag while work is in progress; mark it `complete` when every item below passes.
+The note is open until it carries a closure tag. Mark it `complete` when every item below passes.
 
 **Description**
 - [ ] Written last

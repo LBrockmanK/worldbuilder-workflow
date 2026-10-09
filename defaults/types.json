@@ -4,6 +4,9 @@
       "fields": {
         "factions": {
           "type": "list"
+        },
+        "sex": {
+          "type": "text"
         }
       },
       "template_file": "character.md"
@@ -75,9 +78,9 @@
       },
       "template_file": "story.md"
     },
-    "seed": {
+    "foundation": {
       "fields": {},
-      "template_file": "seed.md"
+      "template_file": "foundation.md"
     },
     "plan": {
       "fields": {},
@@ -96,18 +99,6 @@
     "status": {
       "mutually_exclusive": true,
       "values": [
-        "human-ready",
-        "agent-ready",
-        "complete",
-        "deprecated",
-        "abandoned",
-        "archived"
-      ],
-      "open": [
-        "human-ready",
-        "agent-ready"
-      ],
-      "closed": [
         "complete",
         "deprecated",
         "abandoned",

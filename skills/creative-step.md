@@ -4,7 +4,7 @@
 
 A worldbuilder entity item is a tracked item with three middle steps: a creative step, a critic step and a creative revision step. The entity skill is the creative role's instructions. This file says how a creative step starts, how it ends, and how the revision step uses the critic's report. The entity skill says what the notes contain.
 
-This file covers the entity notes of an entity item only. The Foundation item's documents (the seed document and `project/direction.md`) are written by that item's builder, outside the creative step.
+This file covers the entity notes of an entity item only. The Foundation item's documents (the foundation document and `project/direction.md`) are written by that item's builder, outside the creative step.
 
 The interview does not happen in the creative step. The definer ran it in rounds on the answer page before the item's Specification was approved, and the Specification holds the answers. The interview questions for each entity live in the entity skill's `## Interview` section, which the definer reads.
 
@@ -37,7 +37,7 @@ Every creative step ends by proposing spin-offs: a home, an implied faction, a l
 - **Context** — what in this item implies it, with the paths of the entity notes that mention it.
 - **Extends** — the existing seed note on the same idea, if one exists; otherwise "none".
 
-The orchestrator writes each proposal as a seed note in the world's Anima domain folder, or adds it to the existing seed note it extends. A seed note is a tracking note. It is not the world's seed document, `project/seed.md`.
+The orchestrator writes each proposal as a seed note in the world's Anima domain folder, or adds it to the existing seed note it extends.
 
 ## Hand on
 

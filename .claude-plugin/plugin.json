@@ -1,6 +1,6 @@
 {
   "name": "worldbuilder-workflow",
-  "description": "Worldbuilding craft skills and OKF preset for the ainime-games.com world builder platform. Runs on the scraibe base plugin (hard dependency); scraibe owns vault file management.",
+  "description": "Worldbuilding craft skills and type roster for the ainime-games.com world builder platform. Runs on the scraibe base plugin (hard dependency); scraibe owns vault file management.",
   "author": {
     "name": "LBrockmanK"
   }

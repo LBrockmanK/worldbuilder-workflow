@@ -1,19 +1,19 @@
 ---
 name: worldbuilder-world-foundation
-description: Use at the start of a new worldbuilding project to establish setting structure and produce the seed document. Also use when auditing an existing world for structural gaps in household design, cast architecture, or thematic grounding.
+description: Use at the start of a new worldbuilding project to establish setting structure and produce the foundation document. Also use when auditing an existing world for structural gaps in household design, cast architecture, or thematic grounding.
 ---
 
 # World Foundation
 
-*All prose this skill produces follows `../writing-style.md`, with two exceptions. The World Introduction and the Opening Situation are written evocatively rather than as specification, and the style reference excludes prose of that kind by its own terms. Every other section of the seed follows it. Read it before writing.*
+*All prose this skill produces follows `../writing-style.md`, with two exceptions. The World Introduction and the Opening Situation are written evocatively rather than as specification, and the style reference excludes prose of that kind by its own terms. Every other section of the foundation document follows it. Read it before writing.*
 
 ## Overview
 
-This skill covers two things: the structural decisions that shape the world, and the seed document that captures them. Work through the decisions first; the seed document is the output, not the starting point.
+This skill covers two things: the structural decisions that shape the world, and the foundation document that captures them. Work through the decisions first; the foundation document is the output, not the starting point.
 
-The seed document is a starting point, not a finished world — it will grow in directions it does not anticipate.
+The foundation document is a starting point, not a finished world — it will grow in directions it does not anticipate.
 
-This skill is the builder's instruction for the Foundation work item. The definer of that item runs the interview in `## Interview` below and records the answers in the item's Specification. The builder reads the Specification and writes the seed document from it, as the Seed Document section describes. The builder does not ask the human questions: a gap in the Specification is returned as a question.
+This skill is the builder's instruction for the Foundation work item. The definer of that item runs the interview in `## Interview` below and records the answers in the item's Specification. The builder reads the Specification and writes the foundation document from it, as the Foundation Document section describes. The builder does not ask the human questions: a gap in the Specification is returned as a question.
 
 ---
 
@@ -44,7 +44,7 @@ Ask once: does this project include explicit intimate content — all romance-el
 
 ### The Six Foundational Questions
 
-Work through these before the seed document is written. They are not a form to fill in — they are decisions to make. Stop and ask the human at each one. Do not assume or fill in gaps.
+Work through these before the foundation document is written. They are not a form to fill in — they are decisions to make. Stop and ask the human at each one. Do not assume or fill in gaps.
 
 #### 1. What is the setting's wound?
 
@@ -154,7 +154,7 @@ At least 2–3 characters should have meaningful content at low or negative infl
 
 ## Wide Phase Planning
 
-The Wide phase turns the seed into notes. The planning artifact is `project/plan.md`, created by setup: its Phase Status table tracks where the project is, and its `## Cast Plan` section holds the confirmed roster. Update the table at each phase transition; artifacts are ground truth, not the table — if the table says done but the note is missing or thin, believe the note.
+The Wide phase turns the foundation document into notes. The planning artifact is `project/plan.md`, created by setup: its `## Cast Plan` section holds the confirmed roster. Phase progress is not recorded there: it is read from the world's items in its Anima domain folder, and the Foundation phase is done when the Foundation work item closes.
 
 ### Cast planning
 
@@ -175,20 +175,20 @@ Intimate Dynamics: Yes  ← only if applicable; omit line if not
 Summary: [2–3 sentences of behavioral character, not physical description]
 ```
 
-Coverage check before declaring the cast plan complete — verify against the seed's themes and household structure:
+Coverage check before declaring the cast plan complete — verify against the foundation document's themes and household structure:
 - All 6 romance archetype slots filled across gender presentations
 - Non-romance archetypes placed: authority figure, mentor/elder, elderly anchor, child or teen, outcast/philosopher, practitioner, the one who left (or didn't), the secret-carrier
 - 2–3 characters with meaningful negative-track content
 - Every household has at least one character assigned
 - Default count: 8 main / 16 side (range: 6–10 main, 6–20 side)
 - Anti-redundancy check: no two romance candidates filling the same slot with the same execution
-- The setting's wound from the seed is visible in at least two or three unrelated characters' motivations
+- The setting's wound from the foundation document is visible in at least two or three unrelated characters' motivations
 
 ### Phase completion criteria
 
-Per-phase "done" definitions. If any item is unresolved, surface it to the user before marking the phase done in `project/plan.md`.
+Per-phase "done" definitions. If any item is unresolved, surface it to the user before closing the phase's work item.
 
-**Seed complete** — `project/seed.md` contains: all six foundational questions answered; Setting Summary; Genre & Tone; Inspirations and Tonal Inspirations with specifics; 8–12 Key Tropes & Themes; Community (social and emotional identity, not physical); World Introduction; Opening Situation; a locations list of 10–14 named locations, one sentence each; art style reference; musical theme; all 6–8 household clusters with function, internal tension, inter-household connections, trajectory, and narrative hook; no individual character names — household types and counts only; every household has at least one named connection to another household.
+**Foundation complete** — `project/foundation.md` contains: all six foundational questions answered; Setting Summary; Genre & Tone; Inspirations and Tonal Inspirations with specifics; 8–12 Key Tropes & Themes; Community (social and emotional identity, not physical); World Introduction; Opening Situation; a locations list of 10–14 named locations, one sentence each; art style reference; musical theme; all 6–8 household clusters with function, internal tension, inter-household connections, trajectory, and narrative hook; no individual character names — household types and counts only; every household has at least one named connection to another household.
 
 **Direction complete** — `project/direction.md` has all required sections (romance pacing, hidden layer handling) and the opening arc sketched at a broad level. A brief but complete document beats a detailed stub.
 
@@ -196,9 +196,9 @@ Per-phase "done" definitions. If any item is unresolved, surface it to the user 
 
 **Story notes complete** — opening arc note written (evocative, not scripted); key intention notes written for major story possibilities.
 
-**Location notes complete** — every named location from the seed has a note; each passes the `worldbuilder-location` self-check.
+**Location notes complete** — every named location from the foundation document has a note; each passes the `worldbuilder-location` self-check.
 
-**Faction notes complete** — every household cluster from the seed has a faction note; each passes the `worldbuilder-faction` self-check.
+**Faction notes complete** — every household cluster from the foundation document has a faction note; each passes the `worldbuilder-faction` self-check.
 
 **Cast plan complete** — the coverage check above passes; every entry has household, type, species/age, role, archetype, key relationships, summary; intimate-dynamics flags set where applicable.
 
@@ -212,10 +212,10 @@ Per-phase "done" definitions. If any item is unresolved, surface it to the user 
 
 ### Parallel execution
 
-Once the seed is `complete`, concept, event, story, location, and faction notes are all independent of each other — any can proceed in any order, in parallel. Location and faction notes give character notes context, so run them first where possible.
+Once the foundation document is `complete`, concept, event, story, location, and faction notes are all independent of each other — any can proceed in any order, in parallel. Location and faction notes give character notes context, so run them first where possible.
 
 What blocks on what:
-- Everything blocks on the seed.
+- Everything blocks on the foundation document.
 - The direction document comes before any Wide-phase notes.
 - Character notes block on the cast plan. Once the cast plan exists, individual characters are independent of each other — parallelize aggressively; writing a large cast sequentially in one session degrades quality.
 - Relationship review blocks on all character notes; contradiction validation blocks on relationship review; export blocks on contradiction validation.
@@ -224,11 +224,11 @@ When dispatching parallel character work, each dispatch needs: the relevant hous
 
 ---
 
-## Seed Document
+## Foundation Document
 
-Once the foundational questions and household structure are settled, fill in `project/seed.md`. The document already exists — `worldbuilder-setup` created it — so this skill writes its body, nothing else. When the user confirms the seed is complete, set its status tag to `complete`.
+Once the foundational questions and household structure are settled, fill in `project/foundation.md`. The document already exists — `worldbuilder-setup` created it — so this skill writes its body, nothing else. When the user confirms the foundation document is complete, set its status tag to `complete`.
 
-The seed is a platform-agnostic project proposal. Write each section as plain prose under natural headers — this is not an export format, it is the creative document that export skills derive from. The ainime export skill handles field mapping.
+The foundation document is a platform-agnostic project proposal. Write each section as plain prose under natural headers — this is not an export format, it is the creative document that export skills derive from. The ainime export skill handles field mapping.
 
 ### Sections
 
@@ -251,15 +251,15 @@ Other media capturing the right feel — films, books, music, anime. One per lin
 The community's social and emotional identity — not its physical description, not a repeat of the Setting Summary. How the community behaves and feels as a social entity.
 
 **World Introduction**
-Pre-game text the player reads before starting. Sets expectations for tone and situation. This section is written evocatively and is exempt from the style reference. No other section of the seed is.
+Pre-game text the player reads before starting. Sets expectations for tone and situation. This section is written evocatively and is exempt from the style reference. No other section of the foundation document is.
 
 **Opening Situation**
-The situation the player arrives into. Evocative, not scripted — establishes the stage rather than dictating what happens. Cover: the setting's visible state on arrival, the immediate invitation for engagement, what the player's arrival means to the community. This section is written evocatively and is exempt from the style reference. No other section of the seed is.
+The situation the player arrives into. Evocative, not scripted — establishes the stage rather than dictating what happens. Cover: the setting's visible state on arrival, the immediate invitation for engagement, what the player's arrival means to the community. This section is written evocatively and is exempt from the style reference. No other section of the foundation document is.
 
 **Story Direction note**
-Do not write story direction content into the seed. `project/direction.md` is a separate project document, already created by setup; fill it with `worldbuilder-story` after the seed is confirmed, before any Wide-phase notes.
+Do not write story direction content into the foundation document. `project/direction.md` is a separate project document, already created by setup; fill it with `worldbuilder-story` after the foundation document is confirmed, before any Wide-phase notes.
 
-### Additional seed outputs
+### Additional foundation outputs
 
 **Locations list**
 Named locations with one sentence each on function and character. 10–14 locations. Not full location notes — a spatial anchor for the Wide phase. Full location notes come later.
@@ -288,12 +288,12 @@ Desired audio atmosphere: genre, tempo, instrumentation reference, how mood shif
 
 ## Review
 
-The seed document is a deliverable of the Foundation item. The scraibe adversarial-review skill defines this block's shape and runs the loop.
+The foundation document is a deliverable of the Foundation item. The scraibe adversarial-review skill defines this block's shape and runs the loop.
 
-- **Deliverable:** the seed document, `project/seed.md`, and the direction document, `project/direction.md`.
+- **Deliverable:** the foundation document, `project/foundation.md`, and the direction document, `project/direction.md`.
 - **Shape:** document — the rounds are capped and the human's approval is the gate.
-- **Criteria:** the "Seed complete" entry under Phase completion criteria in this skill, the Sections and Additional seed outputs lists under Seed Document, and `../writing-style.md` (the World Introduction and the Opening Situation are exempt, as the style note at the top of this skill says); for `project/direction.md`, the "Direction complete" entry under Phase completion criteria in this skill and the Ongoing Story Direction structure in `../worldbuilder-story/SKILL.md`.
-- **Scope:** named files — `project/seed.md` and `project/direction.md`.
+- **Criteria:** the "Foundation complete" entry under Phase completion criteria in this skill, the Sections and Additional foundation outputs lists under Foundation Document, and `../writing-style.md` (the World Introduction and the Opening Situation are exempt, as the style note at the top of this skill says); for `project/direction.md`, the "Direction complete" entry under Phase completion criteria in this skill and the Ongoing Story Direction structure in `../worldbuilder-story/SKILL.md`.
+- **Scope:** named files — `project/foundation.md` and `project/direction.md`.
 - **Reference inputs:** the source material the human provided and the reference documents made from it; the item's Specification.
 - **Stakes default:** durable.
 - **Overrides:** none.

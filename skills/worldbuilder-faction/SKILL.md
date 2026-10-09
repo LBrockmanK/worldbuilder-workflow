@@ -48,7 +48,7 @@ Work through sections in order.
 
 Faction notes do not use sub-files — all content lives in one note.
 
-Frontmatter is defined by the project's OKF registry; `new_doc.py` stamps it at creation and the generated rules describe it. The script produces a date-prefixed filename; rename the fresh note to the faction's name itself (e.g. `notes/Lantern Guild.md`) before adding content — the filename convention the templates state, and safe while nothing links to the note yet.
+The plugin's type roster defines the frontmatter and the generated templates stamp it at creation (scraibe's `new_doc.py` creates the note). The script produces a date-prefixed filename; rename the fresh note to the faction's name itself (e.g. `notes/Lantern Guild.md`) before adding content — the filename convention the templates state, and safe while nothing links to the note yet.
 
 ---
 
@@ -167,10 +167,10 @@ The standard: a member who could belong to any faction fails the test. A member 
 
 ## Self-Check Before Marking Complete
 
-The note stays on an open status tag while work is in progress; mark it `complete` when every item below passes.
+The note is open until it carries a closure tag. Mark it `complete` when every item below passes.
 
 **Frontmatter**
-- [ ] Fields match the generated rules; `members` links to member character notes
+- [ ] Fields match the type's entry in the plugin's type roster; `members` links to member character notes
 
 **Description**
 - [ ] Written last

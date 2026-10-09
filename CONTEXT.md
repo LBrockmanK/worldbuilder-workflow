@@ -14,10 +14,11 @@ A player project after `worldbuilder-setup`:
   .obsidian/            ← scraibe defaults + app.json overlay (attachmentFolderPath)
   _templates/           ← generated (generate_templates.py)
   Home.md  _bases/  _attachments/   ← chrome
-  lorebook.md           ← definition note: the platforms' "world info" is this project's lorebook
-  project/              ← seed.md, plan.md, direction.md
+  project/              ← foundation.md, plan.md, direction.md
   notes/                ← all entity notes, flat
 ```
+
+A world has two scope folders. `notes/` holds world content and `project/` holds the project documents. A folder decides scope and never type: the type of a note comes from its `type` property, and the worldbuilder keeps its own type roster in this plugin rather than adopting the main vault's schema.
 
 No configuration file is written into the project: the project is a worldbuilder project because scraibe and this plugin are enabled for it, which `fleet:setup` records. Scraibe's corpus rule excludes reserved spaces (`+/`, `repo/`, `.claude/`, `Imports/`); everything else is a vault document. Chrome at the root — `Home.md` and the Bases — carries no frontmatter, and that is fine.
 
@@ -37,34 +38,59 @@ Defined in `defaults/types.json`, this plugin's internal roster. Entity types li
 
 **story** — a narrative note with a `scope` of arc, intention, or introduction, linked to its parent via `up`.
 
-**seed** — the world foundation document (`project/seed.md`), produced by `worldbuilder-world-foundation` in the Foundation phase.
+**foundation** — the world foundation document (`project/foundation.md`), produced by `worldbuilder-world-foundation` in the Foundation phase.
 
-**plan** — the project plan (`project/plan.md`): phase status table and cast plan.
+**plan** — the project plan (`project/plan.md`): the cast plan.
 
 **direction** — the standing creative brief (`project/direction.md`); the story engine's primary guard rail, exported verbatim as `arcManagerGuidance`.
 
 **reference** — ingested external material with provenance, created by `scraibe:ingest`.
 
+## Properties
+
+A world property enters use only after it is designed, approved and documented here. Each fact in a world has one home, and every other place refers to it. The roster in `defaults/types.json` holds each property's name and value kind; this section holds its meaning. The universal keys come first, then the type's own fields.
+
+- `type` — the note's type, from the roster; written by the generated template.
+- `title` — the note's title; written by the generated template.
+- `description` — a one-line summary of the note, written last by the creative step.
+- `tags` — the status tag list; born empty, and a closure tag closes the note.
+- `created` — the creation date as a date link; written by the generated template.
+- `resources` — links or paths to the sources the note draws on.
+- `aliases` (optional, list) — the realistic phrasings that refer to the note. The concept and event skills write it, and the export derives keyword triggers from it.
+- `factions` (character, list) — links to the faction notes the character belongs to.
+- `sex` (character, text) — the character's sex: `female`, `male`, or a short free-text value. The creative step sets it when it writes the character note. The export reads it only to keep pronouns right and never exports it.
+- `region` (location, text) — the larger place the location sits in.
+- `function` (location, faction, text) — what the place or the group does in the world.
+- `primary-characters` (location, list) — links to the characters most tied to the place.
+- `members` (faction, list) — links to the member character notes.
+- `characters` (event, list) — links to the characters the event involves.
+- `location` (event, text) — the place the event happens.
+- `layer` (event, concept, text) — the knowledge layer: surface, mid or deep. Required on a concept.
+- `trigger-context` (concept, text) — when the concept becomes relevant in a scene.
+- `keywords` (concept, list) — explicit keywords the export uses for the lorebook entry.
+- `scope` (story, text, required) — arc, intention or introduction.
+- `up` (story, text) — the parent story note.
+
 ## Status lifecycle
 
-Scraibe's stock tags, no additions. Every typed document carries exactly one status tag: `human-ready` or `agent-ready` while open, `complete` / `deprecated` / `abandoned` / `archived` when closed (`priority` and `deferred` are behavioral, not statuses).
+A typed document is open while it carries no status tag, and born open with an empty `tags` list. It carries at most one status tag, and that tag closes it: `complete`, `deprecated`, `abandoned` or `archived` (`priority` and `deferred` are behavioral, not statuses).
 
-For creative notes: a note stays open while it is being built and flips to `complete` when its skill's self-check passes. Export gates on this — `project/seed.md` must be tagged `complete`, and every exported character note must carry a closed status.
+For creative notes: a note stays open (no status tag) while it is being built and takes `complete` when its skill's self-check passes. Export gates on this — `project/foundation.md` must be tagged `complete`, and every exported character note must be tagged `complete`.
 
 ## Phases
 
 The three phases are kinds of tracked item, not a mechanical lock. A tracked item is a note in the world's Anima domain folder that records one unit of work from its approved Specification to its final review.
 
-- **Foundation phase** — a work item whose builder uses `worldbuilder-world-foundation` to produce the seed document; `worldbuilder-story` fills the direction document. The plan.md Phase Status table calls this the Seed phase. _Avoid_: setup phase.
+- **Foundation phase** — a work item whose builder uses `worldbuilder-world-foundation` to produce the foundation document; `worldbuilder-story` fills the direction document. _Avoid_: setup phase.
 - **Wide phase** — a set of entity items, one per related group of entities. All creative decisions live here. _Avoid_: development phase, building phase.
 - **Export phase** — a work item whose builder runs `worldbuilder-ainime-export` to package Wide-phase notes into ainime format; the only phase that writes ainime field names. _Avoid_: deliverables phase, finalization phase.
 
-No further item type exists. The Phase Status table in `project/plan.md` is the tracker; the export skill gates itself via its status-tag preflight. Session flow belongs to scraibe: `scraibe:orient` for briefings, `scraibe:triage` for pending work, `scraibe:audit` for health checks.
+No further item type exists. Phase progress is read from the world's items in its Anima domain folder; the export skill gates itself via its status-tag preflight. Session flow belongs to scraibe: `scraibe:orient` for briefings, `scraibe:triage` for pending work, `scraibe:audit` for health checks.
 
 ## Terms
 
-- **seed document** — the world's founding file, `project/seed.md`, produced by `worldbuilder-world-foundation`. _Avoid_: seed note.
-- **seed note** — a spin-off tracking note in the world's Anima domain folder, born from a creative step's proposal (a home, an implied faction, a lore entry). It tracks an idea to explore; it is not the seed document. _Avoid_: seed document.
+- **foundation document** — the world's founding file, `project/foundation.md`, produced by `worldbuilder-world-foundation`.
+- **seed note** — a spin-off tracking note in the world's Anima domain folder, born from a creative step's proposal (a home, an implied faction, a lore entry). It tracks an idea to explore.
 - **entity item** — a tracked item that writes, checks and revises the entity notes of a related group of entities (for example a household and its home). The definer sets its size per item. Its steps are a creative step, a critic step (`worldbuilder-review`) and a creative revision step.
 - **Foundation item** — the work item of the Foundation phase.
 - **Export item** — the work item of the Export phase.

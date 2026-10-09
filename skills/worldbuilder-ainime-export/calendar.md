@@ -43,7 +43,7 @@ Each string is a one-line weather description injected when that season and segm
 }
 ```
 
-Derive weather descriptions from `project/seed.md` and the world's setting. If the world has no strong seasonal character, use climate-appropriate defaults and vary them for narrative weight.
+Derive weather descriptions from `project/foundation.md` and the world's setting. If the world has no strong seasonal character, use climate-appropriate defaults and vary them for narrative weight.
 
 ---
 

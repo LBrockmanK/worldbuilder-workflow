@@ -55,13 +55,11 @@ def empty_value(ftype):
 
 def type_template(config, tname):
     spec = config['types'][tname]
-    status = config['tags']['status']['open'][0]
     lines = ['---',
              f'type: {tname}',
              'title: <% tp.file.title %>',
              'description: ""',
-             'tags:',
-             f'  - {status}',
+             'tags: []',
              f'created: "[[{MOMENT_DATE}]]"',
              'resources: []']
     for fname, fspec in (spec.get('fields') or {}).items():

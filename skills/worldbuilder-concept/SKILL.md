@@ -11,6 +11,8 @@ description: Use when writing concept notes for an AI-powered narrative game —
 
 World knowledge is organized as concept notes — one note per discrete topic. Export skills read these notes and package them as lorebook entries. This skill covers writing the concept notes well; the export skill handles the packaging.
 
+**Lorebook.** Vault documents say "lorebook" for the world's reference entries. The export platforms (ainime and isekaizero) call the same entries "World Info"; that is the platform's word, kept for exports and not used in vault documents.
+
 Good concept notes give the engine exactly what it needs at the moment a topic arises. The goal is precision: the right information for the right moment. Write notes that are dense and specific rather than broad and atmospheric — 50 tokens of exact context beats 300 tokens of unfocused description.
 
 **Description field:** the world navigation summary — 1–2 sentences covering what this piece of world knowledge is and when it matters in scenes. Written last; a description that does not say when the lore activates is incomplete.
@@ -39,7 +41,7 @@ The definer draws on this section. The definer's rounds run on the answer page, 
 | Lore | What is true about this thing in the world |
 | Implications | What follows from this being true; activation context |
 
-Frontmatter is defined by the project's OKF registry; `new_doc.py` stamps it at creation and the generated rules describe it. The script produces a date-prefixed filename; rename the fresh note to the concept's name itself (e.g. `notes/The Old Fire.md`) before adding content — the filename convention the templates state, and safe while nothing links to the note yet. `aliases` is the most important field for a concept note — the export skill derives keyword triggers from it; see Alias Writing Guidance below.
+The plugin's type roster defines the frontmatter and the generated templates stamp it at creation (scraibe's `new_doc.py` creates the note). The script produces a date-prefixed filename; rename the fresh note to the concept's name itself (e.g. `notes/The Old Fire.md`) before adding content — the filename convention the templates state, and safe while nothing links to the note yet. `aliases` is the most important field for a concept note — the export skill derives keyword triggers from it; see Alias Writing Guidance below.
 
 ---
 
@@ -63,7 +65,7 @@ The Design Notes section is the builder's working record. It is not lorebook con
 
 The Lore section contains what is true about this thing in the world. This is the main exportable content.
 
-Imported lorebook entries marked `constant` describe standing setting state — that is seed/world material for `project/seed.md`, not a concept note.
+Imported lorebook entries marked `constant` describe standing setting state — that is foundation material for `project/foundation.md`, not a concept note.
 
 Write Lore content at the appropriate layer tone:
 
@@ -210,7 +212,7 @@ World knowledge is a living collection, not a phase that opens and closes. Any s
 **Complete when:** the note can constrain or shape any scene that touches this concept — a scene author reading the note knows what is impossible, what costs something, and what is inevitable because this thing exists.
 
 **Frontmatter**
-- [ ] `layer` set; `aliases` complete; other fields per the generated rules
+- [ ] `layer` set; `aliases` complete; other fields per the concept entry in the plugin's type roster
 
 **Description**
 - [ ] Written last
