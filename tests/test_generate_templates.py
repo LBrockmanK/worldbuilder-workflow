@@ -130,7 +130,7 @@ class GeneratorTests(unittest.TestCase):
         t = self.read('_templates/type-character.md')
         self.assertIn('type: character', t)
         self.assertIn('title: <% tp.file.title %>', t)
-        self.assertIn('- human-ready', t)          # first open status
+        self.assertIn(chr(10) + 'tags: []' + chr(10), t)           # born open: no closure tag
         # The birth date is `created`, a date-LINK; `modified` is left to
         # the frontmatter-modified-date plugin, so no template stamps it.
         self.assertIn('created: "[[<% moment.utc().format("YYYY-MM-DD") %>]]"', t)
@@ -138,6 +138,7 @@ class GeneratorTests(unittest.TestCase):
         self.assertNotIn('\ndate:', t)
         self.assertIn('factions: []', t)           # list field -> []
         self.assertNotIn('aliases', t)             # optional universal skipped
+        self.assertNotIn('human-ready', t)
 
     def test_template_file_body_is_embedded(self):
         """The compilation contract absorbed from build-okf.py: a type's

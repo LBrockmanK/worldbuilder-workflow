@@ -59,7 +59,7 @@ def create_doc(project_dir, doc_type, title, description, template_content):
         'type': doc_type,
         'title': title,
         'description': description,
-        'tags': ['human-ready'],
+        'tags': [],
         'created': f'[[{now.date().isoformat()}]]',
         'resources': [],
     }

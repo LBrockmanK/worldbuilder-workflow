@@ -48,6 +48,13 @@ class ProjectRootTests(unittest.TestCase):
             set(os.listdir(os.path.join(self.root, 'project'))),
             {'seed.md', 'plan.md', 'direction.md'})
 
+    def test_the_project_documents_are_born_with_empty_tags(self):
+        for name in ('seed', 'plan', 'direction'):
+            with open(os.path.join(self.root, 'project', f'{name}.md'),
+                      encoding='utf-8') as f:
+                front, _ = split_front_matter(f.read())
+            self.assertEqual(front['tags'], [], name)
+
     def test_a_second_run_refuses_rather_than_overwriting(self):
         second = run(self.root)
         self.assertEqual(second.returncode, 1)
