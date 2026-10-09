@@ -82,10 +82,10 @@ Set `recurring: true` for annual events (festivals, observances). One-time event
 
 | JSON field / path | UI label | Type | Source content skill |
 |---|---|---|---|
-| `calendarConfig.seasons` | Seasons | string[ ] | `worldbuilder-world-foundation` → `foundation.md` |
-| `calendarConfig.daysPerSeason` | Days per Season | number | `worldbuilder-world-foundation` → `foundation.md` |
-| `calendarConfig.daysOfWeek` | Days of Week | string[ ] | `worldbuilder-world-foundation` → `foundation.md` |
-| `calendarConfig.daySegments` | Day Segments | string[ ] | `worldbuilder-world-foundation` → `foundation.md` |
+| `calendarConfig.seasons` | Seasons | string[ ] | `worldbuilder-world-foundation` → `project/foundation.md` |
+| `calendarConfig.daysPerSeason` | Days per Season | number | `worldbuilder-world-foundation` → `project/foundation.md` |
+| `calendarConfig.daysOfWeek` | Days of Week | string[ ] | `worldbuilder-world-foundation` → `project/foundation.md` |
+| `calendarConfig.daySegments` | Day Segments | string[ ] | `worldbuilder-world-foundation` → `project/foundation.md` |
 | `calendarConfig.eraReminder` | Era | string | `worldbuilder-world-foundation` → `foundation.md` |
 | `calendarConfig.weatherPools` | Weather Pools | object | `worldbuilder-calendar` → `notes/` (event notes) |
 | `storyTriggers` | Events / Recurring Events | StoryTrigger[ ] | `worldbuilder-calendar` → `notes/` (event notes) |
