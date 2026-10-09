@@ -4,6 +4,9 @@
       "fields": {
         "factions": {
           "type": "list"
+        },
+        "sex": {
+          "type": "text"
         }
       },
       "template_file": "character.md"

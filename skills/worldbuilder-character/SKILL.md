@@ -188,7 +188,7 @@ Narrative function, external references, design decisions, open questions. Bulle
 
 ## Frontmatter and File Naming
 
-Frontmatter is defined by the project's OKF registry; `new_doc.py` stamps it at creation. The script produces a date-prefixed filename; rename the fresh note to the character's name (e.g. `notes/Maren Holt.md`) before adding content.
+Frontmatter is defined by the project's OKF registry; `new_doc.py` stamps it at creation. The script produces a date-prefixed filename; rename the fresh note to the character's name (e.g. `notes/Maren Holt.md`) before adding content. Set the `sex` property to `female`, `male` or a short free-text value; `CONTEXT.md` documents it. The export reads it to keep pronouns right.
 
 **Description field:** the cast navigation summary. Who this character is in the world, their key traits, their place in the social ecosystem. Described, not prescribed: no relationship recommendations, no design rationale. Written last, after the full blueprint is complete.
 

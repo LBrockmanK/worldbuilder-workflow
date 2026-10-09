@@ -47,7 +47,8 @@ class RosterTests(unittest.TestCase):
     # nothing generate_templates.py consumes changed in the move, so all
     # ten types are pinned — not a sample.
     EXPECTED = {
-        'character': ({'factions': {'type': 'list'}}, 'character.md'),
+        'character': ({'factions': {'type': 'list'},
+                       'sex': {'type': 'text'}}, 'character.md'),
         'location': ({'region': {'type': 'text'},
                       'function': {'type': 'text'},
                       'primary-characters': {'type': 'list'}}, 'location.md'),
@@ -138,6 +139,7 @@ class GeneratorTests(unittest.TestCase):
         self.assertIn('created: "[[<% moment.utc().format("YYYY-MM-DD") %>]]"', t)
         self.assertNotIn('timestamp:', t)
         self.assertNotIn('\ndate:', t)
+        self.assertIn('sex: ""', t)               # text field -> ""
         self.assertIn('factions: []', t)           # list field -> []
         self.assertNotIn('aliases', t)             # optional universal skipped
         self.assertNotIn('human-ready', t)

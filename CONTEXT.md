@@ -45,6 +45,24 @@ Defined in `defaults/types.json`, this plugin's internal roster. Entity types li
 
 **reference** — ingested external material with provenance, created by `scraibe:ingest`.
 
+## Properties
+
+A world property enters use only after it is designed, approved and documented here. Each fact in a world has one home, and every other place refers to it. The roster in `defaults/types.json` holds each property's name and value kind; this section holds its meaning. Every typed note also carries `type`, `title`, `description`, `tags`, `created` and `resources`.
+
+- `factions` (character, list) — links to the faction notes the character belongs to.
+- `sex` (character, text) — the character's sex: `female`, `male`, or a short free-text value. The creative step sets it when it writes the character note. The export reads it only to keep pronouns right and never exports it.
+- `region` (location, text) — the larger place the location sits in.
+- `function` (location, faction, text) — what the place or the group does in the world.
+- `primary-characters` (location, list) — links to the characters most tied to the place.
+- `members` (faction, list) — links to the member character notes.
+- `characters` (event, list) — links to the characters the event involves.
+- `location` (event, text) — the place the event happens.
+- `layer` (event, concept, text) — the knowledge layer: surface, mid or deep. Required on a concept.
+- `trigger-context` (concept, text) — when the concept becomes relevant in a scene.
+- `keywords` (concept, list) — explicit keywords the export uses for the lorebook entry.
+- `scope` (story, text, required) — arc, intention or introduction.
+- `up` (story, text) — the parent story note.
+
 ## Status lifecycle
 
 A typed document is open while it carries no status tag, and born open with an empty `tags` list. It carries at most one status tag, and that tag closes it: `complete`, `deprecated`, `abandoned` or `archived` (`priority` and `deferred` are behavioral, not statuses).
