@@ -62,7 +62,7 @@ class RosterTests(unittest.TestCase):
                     'concept.md'),
         'story': ({'scope': {'type': 'text', 'required': True},
                    'up': {'type': 'text'}}, 'story.md'),
-        'seed': ({}, 'seed.md'),
+        'foundation': ({}, 'foundation.md'),
         'plan': ({}, 'plan.md'),
         'direction': ({}, None),
         'reference': ({}, None),

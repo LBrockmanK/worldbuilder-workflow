@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Diff-based update for ainime .sbworld exports.
 
-Reads the project's source documents (seed.md, direction.md), generates
+Reads the project's source documents (foundation.md, direction.md), generates
 candidate field values, and diffs them against the world.json inside the
 existing .sbworld archive.  The .sbworld is the only true export output;
 no standalone world.json is required.
@@ -15,7 +15,7 @@ Usage:
     python export_diff.py <project-root> --apply-all         # apply everything
 
 <project-root> is the repo directory containing the worldvault project
-(e.g. .../Fields of Mistria/repo).  The script locates project/seed.md
+(e.g. .../Fields of Mistria/repo).  The script locates project/foundation.md
 and project/direction.md inside the first subdirectory that has a
 project/ folder, and the .sbworld file inside exports/ainime/.
 """
@@ -32,7 +32,7 @@ from datetime import datetime, timezone
 
 # -- field map (source document -> world.json) -------------------------
 
-SEED_TEXT_FIELDS = [
+FOUNDATION_TEXT_FIELDS = [
     ("Setting Summary", "settingSummary"),
     ("Genre and Tone", "genre"),
     ("Community", "communityDescription"),
@@ -41,7 +41,7 @@ SEED_TEXT_FIELDS = [
     ("Era", "calendarConfig.eraReminder"),
 ]
 
-SEED_LIST_FIELDS = [
+FOUNDATION_LIST_FIELDS = [
     ("Inspirations", "inspirations"),
     ("Tonal Inspirations", "tonalInspirations"),
     ("Key Tropes and Themes", "keyTropesAndThemes"),
@@ -192,20 +192,20 @@ def main():
     if not project_dir:
         sys.exit("No subdirectory with a project/ folder found.")
 
-    seed_path = os.path.join(project_dir, "project", "seed.md")
+    foundation_path = os.path.join(project_dir, "project", "foundation.md")
     direction_path = os.path.join(project_dir, "project", "direction.md")
     exports_dir = os.path.join(root, "exports", "ainime")
 
-    if not os.path.exists(seed_path):
-        sys.exit(f"seed.md not found at {seed_path}")
+    if not os.path.exists(foundation_path):
+        sys.exit(f"foundation.md not found at {foundation_path}")
 
     sbworld_path = find_sbworld(exports_dir)
     if not sbworld_path:
         sys.exit(f"No .sbworld file found in {exports_dir}")
 
     # read sources
-    with open(seed_path, encoding="utf-8") as f:
-        seed = f.read()
+    with open(foundation_path, encoding="utf-8") as f:
+        foundation = f.read()
 
     direction = None
     if os.path.exists(direction_path):
@@ -214,13 +214,13 @@ def main():
 
     # build candidates from source documents
     candidates = {}
-    for heading, field in SEED_TEXT_FIELDS:
-        val = extract_section(seed, heading)
+    for heading, field in FOUNDATION_TEXT_FIELDS:
+        val = extract_section(foundation, heading)
         if val is not None:
             candidates[field] = val
 
-    for heading, field in SEED_LIST_FIELDS:
-        val = extract_list_items(seed, heading)
+    for heading, field in FOUNDATION_LIST_FIELDS:
+        val = extract_list_items(foundation, heading)
         if val is not None:
             candidates[field] = val
 

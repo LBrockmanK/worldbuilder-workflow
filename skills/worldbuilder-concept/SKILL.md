@@ -63,7 +63,7 @@ The Design Notes section is the builder's working record. It is not lorebook con
 
 The Lore section contains what is true about this thing in the world. This is the main exportable content.
 
-Imported lorebook entries marked `constant` describe standing setting state — that is seed/world material for `project/seed.md`, not a concept note.
+Imported lorebook entries marked `constant` describe standing setting state — that is foundation material for `project/foundation.md`, not a concept note.
 
 Write Lore content at the appropriate layer tone:
 

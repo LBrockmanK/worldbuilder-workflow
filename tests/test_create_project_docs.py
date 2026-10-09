@@ -46,10 +46,10 @@ class ProjectRootTests(unittest.TestCase):
     def test_the_three_project_documents_are_written(self):
         self.assertEqual(
             set(os.listdir(os.path.join(self.root, 'project'))),
-            {'seed.md', 'plan.md', 'direction.md'})
+            {'foundation.md', 'plan.md', 'direction.md'})
 
     def test_the_project_documents_are_born_with_empty_tags(self):
-        for name in ('seed', 'plan', 'direction'):
+        for name in ('foundation', 'plan', 'direction'):
             with open(os.path.join(self.root, 'project', f'{name}.md'),
                       encoding='utf-8') as f:
                 front, _ = split_front_matter(f.read())

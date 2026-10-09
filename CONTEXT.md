@@ -15,7 +15,7 @@ A player project after `worldbuilder-setup`:
   _templates/           ← generated (generate_templates.py)
   Home.md  _bases/  _attachments/   ← chrome
   lorebook.md           ← definition note: the platforms' "world info" is this project's lorebook
-  project/              ← seed.md, plan.md, direction.md
+  project/              ← foundation.md, plan.md, direction.md
   notes/                ← all entity notes, flat
 ```
 
@@ -37,7 +37,7 @@ Defined in `defaults/types.json`, this plugin's internal roster. Entity types li
 
 **story** — a narrative note with a `scope` of arc, intention, or introduction, linked to its parent via `up`.
 
-**seed** — the world foundation document (`project/seed.md`), produced by `worldbuilder-world-foundation` in the Foundation phase.
+**foundation** — the world foundation document (`project/foundation.md`), produced by `worldbuilder-world-foundation` in the Foundation phase.
 
 **plan** — the project plan (`project/plan.md`): phase status table and cast plan.
 
@@ -49,13 +49,13 @@ Defined in `defaults/types.json`, this plugin's internal roster. Entity types li
 
 A typed document is open while it carries no status tag, and born open with an empty `tags` list. It carries at most one status tag, and that tag closes it: `complete`, `deprecated`, `abandoned` or `archived` (`priority` and `deferred` are behavioral, not statuses).
 
-For creative notes: a note stays open (no status tag) while it is being built and takes `complete` when its skill's self-check passes. Export gates on this — `project/seed.md` must be tagged `complete`, and every exported character note must carry a closed status.
+For creative notes: a note stays open (no status tag) while it is being built and takes `complete` when its skill's self-check passes. Export gates on this — `project/foundation.md` must be tagged `complete`, and every exported character note must carry a closed status.
 
 ## Phases
 
 The three phases are kinds of tracked item, not a mechanical lock. A tracked item is a note in the world's Anima domain folder that records one unit of work from its approved Specification to its final review.
 
-- **Foundation phase** — a work item whose builder uses `worldbuilder-world-foundation` to produce the seed document; `worldbuilder-story` fills the direction document. The plan.md Phase Status table calls this the Seed phase. _Avoid_: setup phase.
+- **Foundation phase** — a work item whose builder uses `worldbuilder-world-foundation` to produce the foundation document; `worldbuilder-story` fills the direction document. The plan.md Phase Status table calls this the Foundation phase. _Avoid_: setup phase.
 - **Wide phase** — a set of entity items, one per related group of entities. All creative decisions live here. _Avoid_: development phase, building phase.
 - **Export phase** — a work item whose builder runs `worldbuilder-ainime-export` to package Wide-phase notes into ainime format; the only phase that writes ainime field names. _Avoid_: deliverables phase, finalization phase.
 
@@ -63,8 +63,8 @@ No further item type exists. The Phase Status table in `project/plan.md` is the 
 
 ## Terms
 
-- **seed document** — the world's founding file, `project/seed.md`, produced by `worldbuilder-world-foundation`. _Avoid_: seed note.
-- **seed note** — a spin-off tracking note in the world's Anima domain folder, born from a creative step's proposal (a home, an implied faction, a lore entry). It tracks an idea to explore; it is not the seed document. _Avoid_: seed document.
+- **foundation document** — the world's founding file, `project/foundation.md`, produced by `worldbuilder-world-foundation`.
+- **seed note** — a spin-off tracking note in the world's Anima domain folder, born from a creative step's proposal (a home, an implied faction, a lore entry). It tracks an idea to explore;
 - **entity item** — a tracked item that writes, checks and revises the entity notes of a related group of entities (for example a household and its home). The definer sets its size per item. Its steps are a creative step, a critic step (`worldbuilder-review`) and a creative revision step.
 - **Foundation item** — the work item of the Foundation phase.
 - **Export item** — the work item of the Export phase.

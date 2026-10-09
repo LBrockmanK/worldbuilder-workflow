@@ -76,7 +76,7 @@ From the project root, with this plugin's root recorded as `<worldbuilder>`:
 python <worldbuilder>/scripts/create_project_docs.py --project-root . --name "<Name>"
 ```
 
-This creates `project/seed.md`, `project/plan.md`, `project/direction.md` with correct frontmatter (an empty `tags` list), body templates from `defaults/types.json`, and `lorebook.md` at the project root — the definition note for the one term the export platforms name differently. The script validates that `plan.md` contains its Phase Status table before exiting.
+This creates `project/foundation.md`, `project/plan.md`, `project/direction.md` with correct frontmatter (an empty `tags` list), body templates from `defaults/types.json`, and `lorebook.md` at the project root — the definition note for the one term the export platforms name differently. The script validates that `plan.md` contains its Phase Status table before exiting.
 
 Verify that all four files exist and that `project/plan.md` contains the `## Phase Status` table and `## Cast Plan` heading.
 
@@ -86,7 +86,7 @@ From the project root, with this plugin's root recorded as `<worldbuilder>`:
 
     python <worldbuilder>/scripts/generate_templates.py --out . \
       --dir "notes/=character,location,faction,event,concept,story" \
-      --dir "project/=seed,plan,direction" \
+      --dir "project/=foundation,plan,direction" \
       --obsidian
 
 The generator reads its type roster from this plugin's own
@@ -111,7 +111,7 @@ python <scraibe>/scripts/validate.py project --root . --format human
 
 There is no rules-generation step: scraibe retired `generate_rules.py` and the generated-rules mechanism with it. Project conventions live in the project's own agent-conventions file, which `scraibe:setup` maintains.
 
-Report the validation result to the user. Tell them the vault is ready to open in Obsidian ('Open folder as vault' on the project root; Bases and the vendored Templater need Obsidian 1.12.2+ with community plugins enabled for this vault). Then say where the world's records live: its tracking notes (work items, entity items, seed notes) in the world's domain folder, and its entity notes in the world's `repo/`. Then hand off to `worldbuilder-world-foundation`: the definer of the world's Foundation work item draws on its interview section, and the item's builder writes the seed document.
+Report the validation result to the user. Tell them the vault is ready to open in Obsidian ('Open folder as vault' on the project root; Bases and the vendored Templater need Obsidian 1.12.2+ with community plugins enabled for this vault). Then say where the world's records live: its tracking notes (work items, entity items, seed notes) in the world's domain folder, and its entity notes in the world's `repo/`. Then hand off to `worldbuilder-world-foundation`: the definer of the world's Foundation work item draws on its interview section, and the item's builder writes the foundation document.
 
 ## What this skill does not do
 

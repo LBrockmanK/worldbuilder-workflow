@@ -1,6 +1,6 @@
 ---
 name: worldbuilder-ainime-export
-description: Use when exporting a completed Wide-phase worldbuilding project to ainime-games.com format. Requires complete character notes, a complete project/seed.md, and Wide-phase concept and story notes.
+description: Use when exporting a completed Wide-phase worldbuilding project to ainime-games.com format. Requires complete character notes, a complete project/foundation.md, and Wide-phase concept and story notes.
 ---
 
 # Ainime Export
@@ -16,7 +16,7 @@ Full JSON schema reference: `../../docs/target-system.md`.
 ## Prerequisites
 
 This skill is the builder's instruction for the Export work item. Before running export, verify:
-- [ ] `project/seed.md` tagged `complete` (all sections present)
+- [ ] `project/foundation.md` tagged `complete` (all sections present)
 - [ ] Every character note in `notes/` carries a closed status tag
 - [ ] Concept notes in `notes/` written with `layer` set
 - [ ] `project/direction.md` and the story notes (arcs, key intentions) in `notes/` tagged `complete`
@@ -32,16 +32,16 @@ Fields are marked **required** or **optional**. Required fields must be present 
 
 | Source | ainime JSON field(s) | Req? |
 |---|---|---|
-| `project/seed.md` — Setting Summary | `settingSummary` | **req** |
-| `project/seed.md` — Genre and Tone | `genre` | opt |
-| `project/seed.md` — Inspirations | `inspirations[]` | opt |
-| `project/seed.md` — Tonal Inspirations | `tonalInspirations[]` | opt |
-| `project/seed.md` — Key Tropes and Themes | `keyTropesAndThemes[]` | opt |
-| `project/seed.md` — Community | `communityDescription` | opt |
-| `project/seed.md` — World Introduction | `introText` | opt |
-| `project/seed.md` — Opening Situation | `initialStoryArc` | opt |
+| `project/foundation.md` — Setting Summary | `settingSummary` | **req** |
+| `project/foundation.md` — Genre and Tone | `genre` | opt |
+| `project/foundation.md` — Inspirations | `inspirations[]` | opt |
+| `project/foundation.md` — Tonal Inspirations | `tonalInspirations[]` | opt |
+| `project/foundation.md` — Key Tropes and Themes | `keyTropesAndThemes[]` | opt |
+| `project/foundation.md` — Community | `communityDescription` | opt |
+| `project/foundation.md` — World Introduction | `introText` | opt |
+| `project/foundation.md` — Opening Situation | `initialStoryArc` | opt |
 | builder-specified | `authorCredit` | opt |
-| `project/seed.md` — era (from story direction or seed) | `calendarConfig.eraReminder` | opt |
+| `project/foundation.md` — era (from story direction or foundation) | `calendarConfig.eraReminder` | opt |
 | builder-specified | `calendarConfig.startingYear`, `calendarConfig.baseYear` | opt |
 | builder-specified | `calendarConfig.dailyInfluenceCapGain`, `calendarConfig.dailyInfluenceCapLoss` | opt |
 | builder-specified (derived from the world's stakes) | `calendarConfig.influenceMagnitudeTiers` | opt |
@@ -54,10 +54,10 @@ Fields are marked **required** or **optional**. Required fields must be present 
 | event notes in `notes/` | `calendarConfig.weatherPools`, `eventCalendarSummary` | opt |
 | concept notes in `notes/` | `loreEntries[]` | opt |
 | character notes in `notes/` | `characters[]` | **req** |
-| `project/seed.md` — Art style | `artStyle.background.*`, `artStyle.sprite.*` | opt |
-| `project/seed.md` — Art style | `artStyle.timeOfDayLighting.*` | opt |
+| `project/foundation.md` — Art style | `artStyle.background.*`, `artStyle.sprite.*` | opt |
+| `project/foundation.md` — Art style | `artStyle.timeOfDayLighting.*` | opt |
 | character notes (Body sections) | `artStyle.sprite.clothingRules[]` | opt |
-| `project/seed.md` — expression tier | `availableExpressions[]` | opt |
+| `project/foundation.md` — expression tier | `availableExpressions[]` | opt |
 | builder-specified | `locations[]` | opt |
 | builder-specified | `moods` | opt |
 | builder-specified | `theme` | opt |
@@ -71,7 +71,7 @@ The .sbworld file is the only true export output — it is what the ainime platf
 
 An exported .sbworld accumulates manual tweaks — expanded opening arcs, rewritten lore entries, adjusted character cards. A re-export must never overwrite those changes silently.
 
-**Always use the diff workflow.** `scripts/export_diff.py` extracts world.json from the existing .sbworld, generates candidate field values from the source documents (seed.md, direction.md), and diffs them. Only the fields you name are updated, and the .sbworld is repacked in place.
+**Always use the diff workflow.** `scripts/export_diff.py` extracts world.json from the existing .sbworld, generates candidate field values from the source documents (foundation.md, direction.md), and diffs them. Only the fields you name are updated, and the .sbworld is repacked in place.
 
 ```bash
 # show what differs between source docs and the current .sbworld
@@ -92,9 +92,9 @@ Fields not covered by the script (characters, lore entries, calendar events) are
 
 ## Setting and Adventure Fields
 
-Read `project/seed.md` and extract the following. The section names in the seed map directly.
+Read `project/foundation.md` and extract the following. The section names in the foundation document map directly.
 
-**`settingSummary`** (required) — The AI's primary reference for every scene. Describe the world in detail: where and when the story takes place, technology level and what exists (and what doesn't), cultural norms, social structure, daily life, and the general feel of the world. The more detail, the more consistent and immersive the AI's scenes. Setting Summary section from seed, verbatim.
+**`settingSummary`** (required) — The AI's primary reference for every scene. Describe the world in detail: where and when the story takes place, technology level and what exists (and what doesn't), cultural norms, social structure, daily life, and the general feel of the world. The more detail, the more consistent and immersive the AI's scenes. Setting Summary section from the foundation document, verbatim.
 
 **`genre`** (optional) — Genre and Tone section verbatim.
 
@@ -104,15 +104,15 @@ Read `project/seed.md` and extract the following. The section names in the seed 
 
 **`keyTropesAndThemes`** (optional) — Key Tropes and Themes section as a string array. One entry per line item.
 
-**`communityDescription`** (optional) — Short blurb shown in the community world list. This is a description for potential players browsing the ainime community, not an in-game description of the setting's social dynamics. Community section from seed, verbatim.
+**`communityDescription`** (optional) — Short blurb shown in the community world list. This is a description for potential players browsing the ainime community, not an in-game description of the setting's social dynamics. Community section from the foundation document, verbatim.
 
-**`introText`** (optional) — Shown to players when starting a new game. Set the scene: what do they need to know before they step into the world? World Introduction section from seed, verbatim.
+**`introText`** (optional) — Shown to players when starting a new game. Set the scene: what do they need to know before they step into the world? World Introduction section from the foundation document, verbatim.
 
 **`initialStoryArc`** (optional) — Seeds the main plot at game start — the "global adventure arc," a multi-character web of drama that runs for roughly 14 in-game days. The specific story you want to unfold: who is involved, what's the inciting incident, what's the tension. Can be very specific (naming characters, situations) or thematic. Leave empty for a fully randomized opening arc. Opening Situation section from seed on initial export; commonly expanded manually afterward to include the full scripted opening sequence. The diff workflow preserves those expansions.
 
 **`authorCredit`** (optional) — Your name or Discord handle, shown when sharing your world in the community.
 
-**`calendarConfig.eraReminder`** (optional) — Injected into AI context every day to keep the technology level consistent. Extract from the seed's era description. Leave blank for no restriction.
+**`calendarConfig.eraReminder`** (optional) — Injected into AI context every day to keep the technology level consistent. Extract from the foundation document's era description. Leave blank for no restriction.
 
 **`calendarConfig.seasons`, `daysPerSeason`, `daysOfWeek`, `daySegments`** — Structural calendar configuration. Defaults: 4 seasons, 28 days/season, standard day names. Day segments default to Morning/Afternoon/Evening/Night — 4 segments is the recommended sweet spot (the engine is tuned for it), but 3 works fine. Change any of these to fit the world.
 
@@ -144,7 +144,7 @@ Older exports carry a single `calendarConfig.dailyInfluenceCap` field. Where an 
 
 **`calendarConfig.dailyPlannerDirective`** (optional) — Standing rules about daily structure. The platform UI now labels it "Daily Directive": the scene AI sees it at every scene opening as the standing shape of the day, before any day-specific events. The JSON key is unchanged. Examples: "On weekdays, morning and afternoon MUST be classroom lessons. Evenings are free." / "Every day must include at least one scene in the guild hall." / "Weekend days are fully open for character-driven activities."
 
-**`calendarConfig.weatherPools`** (optional) — Nested object: season → day segment → string array. Each string is a one-line weather description. 10–16 entries per season/segment. The segments must match the project's `daySegments` configuration. Derive from `project/seed.md` and the world's setting; see `calendar.md` for writing guidance.
+**`calendarConfig.weatherPools`** (optional) — Nested object: season → day segment → string array. Each string is a one-line weather description. 10–16 entries per season/segment. The segments must match the project's `daySegments` configuration. Derive from `project/foundation.md` and the world's setting; see `calendar.md` for writing guidance.
 
 ```json
 {
@@ -333,7 +333,7 @@ This skill does not hold the tier definitions. Tier membership, expression count
 
 ## Art Style Prompts
 
-Read the Art style section of `project/seed.md`. Translate the plain-language reference into prompt-engineering format. These prompts are prepended/appended to every AI-generated image.
+Read the Art style section of `project/foundation.md`. Translate the plain-language reference into prompt-engineering format. These prompts are prepended/appended to every AI-generated image.
 
 ### Time-of-Day Lighting (optional)
 
@@ -351,7 +351,7 @@ Per-segment lighting descriptions injected into every background prompt between 
 
 **`artStyle.sprite.style_prefix`** / **`style_suffix`** / **`negative_prompt`** (optional) — Same structure for character sprites. Sprite style should be consistent with background style but may have different technical requirements (transparent background, consistent character proportions). Negative prompt is SDXL only — ignored by Gemini/Imagen.
 
-**`artStyle.sprite.clothingRules`** (optional, string array) — Clothing directives for sprite generation, one rule per array entry (the UI shows one per line). Use them for world-wide costume rules: recognizable silhouettes and color motifs per character, a uniform element a faction always wears, a ban on copying costumes from existing franchises. Derive them from the character notes' Body sections and the seed's art style reference.
+**`artStyle.sprite.clothingRules`** (optional, string array) — Clothing directives for sprite generation, one rule per array entry (the UI shows one per line). Use them for world-wide costume rules: recognizable silhouettes and color motifs per character, a uniform element a faction always wears, a ban on copying costumes from existing franchises. Derive them from the character notes' Body sections and the foundation document's art style reference.
 
 **`artStyle.sprite.maintainConsistency`** (optional) — When enabled, appends "Same character, same background." during sprite generation to improve visual consistency across expressions.
 

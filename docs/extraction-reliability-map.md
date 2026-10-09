@@ -33,19 +33,19 @@ Maintained alongside the export skill. See spec:
 
 | Field | Category | Source |
 |-------|----------|--------|
-| `settingSummary` | Structural | `project/seed.md` — Setting Summary section (verbatim) |
-| `genre` | Structural | `project/seed.md` — Genre and Tone section (verbatim) |
-| `inspirations` | Structural | `project/seed.md` — Inspirations section (one entry per line item) |
-| `tonalInspirations` | Structural | `project/seed.md` — Tonal Inspirations section (one entry per line item) |
-| `keyTropesAndThemes` | Structural | `project/seed.md` — Key Tropes and Themes section (one entry per line item) |
-| `communityDescription` | Structural | `project/seed.md` — Community section (verbatim) |
-| `introText` | Structural | `project/seed.md` — World Introduction section (verbatim) |
+| `settingSummary` | Structural | `project/foundation.md` — Setting Summary section (verbatim) |
+| `genre` | Structural | `project/foundation.md` — Genre and Tone section (verbatim) |
+| `inspirations` | Structural | `project/foundation.md` — Inspirations section (one entry per line item) |
+| `tonalInspirations` | Structural | `project/foundation.md` — Tonal Inspirations section (one entry per line item) |
+| `keyTropesAndThemes` | Structural | `project/foundation.md` — Key Tropes and Themes section (one entry per line item) |
+| `communityDescription` | Structural | `project/foundation.md` — Community section (verbatim) |
+| `introText` | Structural | `project/foundation.md` — World Introduction section (verbatim) |
 
 ## Adventure fields
 
 | Field | Category | Source |
 |-------|----------|--------|
-| `initialStoryArc` | Structural | `project/seed.md` — Opening Situation section (verbatim) |
+| `initialStoryArc` | Structural | `project/foundation.md` — Opening Situation section (verbatim) |
 | `arcManagerGuidance` | Structural | `project/direction.md` (verbatim) |
 | `storyTriggers[].id` | Constructed | Export-time generated UUID |
 | `storyTriggers[].name` | Structural | Event or intention note title |
@@ -57,12 +57,12 @@ Maintained alongside the export skill. See spec:
 
 | Field | Category | Source |
 |-------|----------|--------|
-| `calendarConfig.seasons` | Structural | `project/seed.md` — calendar structure (default: Spring, Summer, Autumn, Winter) |
-| `calendarConfig.daysPerSeason` | Structural | `project/seed.md` — calendar structure (default: 28) |
-| `calendarConfig.daysOfWeek` | Structural | `project/seed.md` — calendar structure (default: standard day names) |
-| `calendarConfig.daySegments` | Structural | `project/seed.md` — calendar structure (default: Morning, Afternoon, Evening, Night) |
-| `calendarConfig.eraReminder` | Structural | `project/seed.md` — era description (one phrase) |
-| `calendarConfig.weatherPools[season][segment][]` | Derived | Agent creates weather descriptions from world seasonal tone and `project/seed.md` |
+| `calendarConfig.seasons` | Structural | `project/foundation.md` — calendar structure (default: Spring, Summer, Autumn, Winter) |
+| `calendarConfig.daysPerSeason` | Structural | `project/foundation.md` — calendar structure (default: 28) |
+| `calendarConfig.daysOfWeek` | Structural | `project/foundation.md` — calendar structure (default: standard day names) |
+| `calendarConfig.daySegments` | Structural | `project/foundation.md` — calendar structure (default: Morning, Afternoon, Evening, Night) |
+| `calendarConfig.eraReminder` | Structural | `project/foundation.md` — era description (one phrase) |
+| `calendarConfig.weatherPools[season][segment][]` | Derived | Agent creates weather descriptions from world seasonal tone and `project/foundation.md` |
 | `eventCalendarSummary` | Derived | Agent writes prose summary of the full event calendar |
 
 ## Lore fields
@@ -101,13 +101,13 @@ workflow. Narrative location descriptions are exported as
 
 | Field | Category | Source |
 |-------|----------|--------|
-| `artStyle.background.style_prefix` | Derived | Agent translates `project/seed.md` Art style reference into prompt-engineering format |
-| `artStyle.background.style_suffix` | Derived | Agent translates `project/seed.md` Art style reference into prompt-engineering format |
-| `artStyle.background.time_contexts` | Derived | Agent creates per-segment lighting descriptions from `project/seed.md` Art style reference |
-| `artStyle.background.negative_prompt` | Derived | Agent creates negative prompt from `project/seed.md` Art style reference |
-| `artStyle.sprite.style_prefix` | Derived | Agent translates `project/seed.md` Art style reference into prompt-engineering format |
-| `artStyle.sprite.style_suffix` | Derived | Agent translates `project/seed.md` Art style reference into prompt-engineering format |
-| `artStyle.sprite.negative_prompt` | Derived | Agent creates negative prompt from `project/seed.md` Art style reference |
+| `artStyle.background.style_prefix` | Derived | Agent translates `project/foundation.md` Art style reference into prompt-engineering format |
+| `artStyle.background.style_suffix` | Derived | Agent translates `project/foundation.md` Art style reference into prompt-engineering format |
+| `artStyle.background.time_contexts` | Derived | Agent creates per-segment lighting descriptions from `project/foundation.md` Art style reference |
+| `artStyle.background.negative_prompt` | Derived | Agent creates negative prompt from `project/foundation.md` Art style reference |
+| `artStyle.sprite.style_prefix` | Derived | Agent translates `project/foundation.md` Art style reference into prompt-engineering format |
+| `artStyle.sprite.style_suffix` | Derived | Agent translates `project/foundation.md` Art style reference into prompt-engineering format |
+| `artStyle.sprite.negative_prompt` | Derived | Agent creates negative prompt from `project/foundation.md` Art style reference |
 
 ## Multi-target readiness (non-gating)
 
@@ -122,7 +122,7 @@ and lore data already covers.
 | Field | Category | Candidate source |
 |-------|----------|-----------------|
 | `personality` | Derived | Character note Foundation and Behavioral Descriptions sections (condensed separately from `description`/baseProfile) |
-| `scenario` | Derived | `project/seed.md` Setting Summary + Opening Situation (combined) |
+| `scenario` | Derived | `project/foundation.md` Setting Summary + Opening Situation (combined) |
 | `first_mes` | Constructed | No current note source; candidate: character behavior + scenario context |
 | `mes_example` | Derived | Character note Influence Thresholds (reformatted as example dialogue) |
 | `system_prompt` | Derived | `project/direction.md` (requires target-specific transformation, not verbatim) |
@@ -164,7 +164,7 @@ Fields below are ST-specific additions beyond what ainime
 | `excludeRecursion` | Constructed | Export-time default (`false`) |
 | `preventRecursion` | Constructed | Export-time default (`false`) |
 | `name` (lorebook-level) | Structural | Project name |
-| `description` (lorebook-level) | Derived | `project/seed.md` Setting Summary (condensed) |
+| `description` (lorebook-level) | Derived | `project/foundation.md` Setting Summary (condensed) |
 | `scan_depth` (lorebook-level) | Constructed | Export-time default (100) |
 | `token_budget` (lorebook-level) | Constructed | Export-time default |
 | `recursive_scanning` (lorebook-level) | Constructed | Export-time default (`false`) |

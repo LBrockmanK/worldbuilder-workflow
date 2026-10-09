@@ -15,13 +15,13 @@ All field names below are the exact JSON keys. These fields are produced by `wor
 | JSON field | UI label | Type | Source content skill |
 |---|---|---|---|
 | `worldName` | World Name | string | World configuration |
-| `settingSummary` | Setting Summary | string | `worldbuilder-world-foundation` → `seed.md` |
-| `genre` | Genre & Tone | string | `worldbuilder-world-foundation` → `seed.md` |
-| `inspirations` | Inspirations | string[ ] | `worldbuilder-world-foundation` → `seed.md` |
-| `tonalInspirations` | Tonal Inspirations | string[ ] | `worldbuilder-world-foundation` → `seed.md` |
-| `keyTropesAndThemes` | Key Tropes & Themes | string[ ] | `worldbuilder-world-foundation` → `seed.md` |
-| `communityDescription` | Community Description | string | `worldbuilder-world-foundation` → `seed.md` |
-| `introText` | World Introduction | string | `worldbuilder-world-foundation` → `seed.md` |
+| `settingSummary` | Setting Summary | string | `worldbuilder-world-foundation` → `foundation.md` |
+| `genre` | Genre & Tone | string | `worldbuilder-world-foundation` → `foundation.md` |
+| `inspirations` | Inspirations | string[ ] | `worldbuilder-world-foundation` → `foundation.md` |
+| `tonalInspirations` | Tonal Inspirations | string[ ] | `worldbuilder-world-foundation` → `foundation.md` |
+| `keyTropesAndThemes` | Key Tropes & Themes | string[ ] | `worldbuilder-world-foundation` → `foundation.md` |
+| `communityDescription` | Community Description | string | `worldbuilder-world-foundation` → `foundation.md` |
+| `introText` | World Introduction | string | `worldbuilder-world-foundation` → `foundation.md` |
 
 ### Field notes
 
@@ -45,14 +45,14 @@ All field names below are the exact JSON keys. These fields are produced by `wor
 
 | JSON field | UI label | Type | Source content skill |
 |---|---|---|---|
-| `initialStoryArc` | Opening Story Arc | string | `worldbuilder-world-foundation` → `seed.md` |
+| `initialStoryArc` | Opening Story Arc | string | `worldbuilder-world-foundation` → `foundation.md` |
 | `arcManagerGuidance` | Ongoing Story Direction | string | `worldbuilder-story` → `notes/` |
 | `storyTriggers` | Story Triggers (Events) | StoryTrigger[ ] | `worldbuilder-story` (intention notes) + `worldbuilder-concept` (recurring event notes) → `notes/` |
 | `generateSideCharacterOnNewGame` | AI generate side character | boolean | Builder choice in the platform; no note source |
 
 ### Field notes
 
-**`initialStoryArc`** — A brief, evocative description of the situation when the player arrives. Not a scripted sequence — it sets the stage. Drafted in the Seed phase and refined after the cast exists. See `worldbuilder-story` for content guidance.
+**`initialStoryArc`** — A brief, evocative description of the situation when the player arrives. Not a scripted sequence — it sets the stage. Drafted in the Foundation phase and refined after the cast exists. See `worldbuilder-story` for content guidance.
 
 **`arcManagerGuidance`** — The engine's standing creative brief throughout the game. The primary guard against escalation, flattening, and inappropriate pacing. Covers: author framing, romance pacing, dark themes, hidden layer handling, seasonal tone, pacing. This is one of the most important fields; a weak brief here degrades every scene the engine generates. See `worldbuilder-story` for the full template.
 
@@ -86,7 +86,7 @@ Set `recurring: true` for annual events (festivals, observances). One-time event
 | `calendarConfig.daysPerSeason` | Days per Season | number | `worldbuilder-calendar` → `events/` |
 | `calendarConfig.daysOfWeek` | Days of Week | string[ ] | `worldbuilder-calendar` → `events/` |
 | `calendarConfig.daySegments` | Day Segments | string[ ] | `worldbuilder-calendar` → `events/` |
-| `calendarConfig.eraReminder` | Era | string | `worldbuilder-world-foundation` → `seed.md` |
+| `calendarConfig.eraReminder` | Era | string | `worldbuilder-world-foundation` → `foundation.md` |
 | `calendarConfig.weatherPools` | Weather Pools | object | `worldbuilder-calendar` → `events/` |
 | `storyTriggers` | Events / Recurring Events | StoryTrigger[ ] | `worldbuilder-calendar` → `events/` |
 | `eventCalendarSummary` | Event Calendar Summary | string | `worldbuilder-calendar` → `events/` |
@@ -100,7 +100,7 @@ Set `recurring: true` for annual events (festivals, observances). One-time event
 
 ### Field notes
 
-**`calendarConfig.eraReminder`** — One phrase describing the technology and cultural reference point. The engine uses this to calibrate anachronism. Decided in the Seed phase. Example: `"Contemporary rural — smartphones exist but signal is bad."` or `"Pre-industrial fantasy, no electricity."`
+**`calendarConfig.eraReminder`** — One phrase describing the technology and cultural reference point. The engine uses this to calibrate anachronism. Decided in the Foundation phase. Example: `"Contemporary rural — smartphones exist but signal is bad."` or `"Pre-industrial fantasy, no electricity."`
 
 **`calendarConfig.weatherPools`** — Nested object: season → day segment → string array. Each string is a one-line weather description. The AI picks from the pool when generating scenes. Aim for 10–16 entries per season/segment combination.
 
@@ -274,9 +274,9 @@ The Art Style tab configures image generation prompts for backgrounds and charac
 | `artStyle.sprite.negative_prompt` | Negative prompt for sprites |
 | `artStyle.sprite.clothingRules` | String array of clothing directives for sprite generation, one rule per entry |
 
-The Seed phase produces a **plain-language art style reference** describing the desired visual style, color palette, and reference works. This is translated into prompt-engineering format during export.
+The Foundation phase produces a **plain-language art style reference** describing the desired visual style, color palette, and reference works. This is translated into prompt-engineering format during export.
 
-Do not attempt to write `style_prefix` / `style_suffix` content during the Seed or Wide phases — these are prompt-engineering outputs produced by `worldbuilder-ainime-export`.
+Do not attempt to write `style_prefix` / `style_suffix` content during the Foundation or Wide phases — these are prompt-engineering outputs produced by `worldbuilder-ainime-export`.
 
 ---
 
@@ -286,7 +286,7 @@ The `moods` array configures the world's music. Each entry is either a link to a
 
 | JSON field path | Type | Source content skill |
 |---|---|---|
-| `moods` | Mood[ ] | `worldbuilder-world-foundation` → `seed.md` (musical reference) + `worldbuilder-character` (character themes) |
+| `moods` | Mood[ ] | `worldbuilder-world-foundation` → `foundation.md` (musical reference) + `worldbuilder-character` (character themes) |
 
 ### Mood entry schema
 
@@ -378,7 +378,7 @@ Two paths for populating a mood's audio:
 1. **Existing audio** — Set `url` to a hosted link or an `asset://` reference to a file bundled in the `.sbworld` archive. Leave `prompt` as `""`.
 2. **AI generation** — Write a `prompt` describing the desired music (genre, tempo, instrumentation, mood, energy). Leave `url` empty. The platform generates audio from the prompt and the mood's `description`.
 
-The Seed phase produces a **plain-language musical theme reference** (genre, tempo, instrumentation, mood register) that informs mood descriptions across all categories.
+The Foundation phase produces a **plain-language musical theme reference** (genre, tempo, instrumentation, mood register) that informs mood descriptions across all categories.
 
 ### Music style (`musicStyle`)
 
@@ -429,30 +429,33 @@ All JSON fields are produced by `worldbuilder-ainime-export` reading from Wide-p
 ### Wide-phase sources → ainime export input
 
 ```
-seed.md                → settingSummary, genre, inspirations, tonalInspirations,
+project/foundation.md  → settingSummary, genre, inspirations, tonalInspirations,
                          keyTropesAndThemes, communityDescription, introText,
                          initialStoryArc, calendarConfig.eraReminder,
                          calendarConfig.seasons/daysPerSeason/daysOfWeek/daySegments
                          [art style reference → artStyle.* prompts]
 
-concepts/              → loreEntries[]
+notes/ (concept)       → loreEntries[]
 
-events/                → calendarConfig.weatherPools, storyTriggers[] (events),
+notes/ (event)         → calendarConfig.weatherPools, storyTriggers[] (events),
                          eventCalendarSummary
 
-story/direction.md     → arcManagerGuidance
-story/intention-*.md   → storyTriggers[] (story events, where trigger day exists)
+project/direction.md   → arcManagerGuidance
+notes/ (story, intention scope)
+                       → storyTriggers[] (story events, where trigger day exists)
 
-characters/*.md        → characters[].name, lastName, type, role, availableFromDay,
+notes/ (character)     → characters[].name, lastName, type, role, availableFromDay,
                          baseProfile, appearance, spriteSets[] (incl. per-set
                          appearance, baseImage, basePrompt); sex is read for
                          pronouns, never exported
                          [Body sections → artStyle.sprite.clothingRules]
 
-seed.md (music ref)    → moods[] (system, standard, ambient mood entries),
+project/foundation.md (music ref)
+                       → moods[] (system, standard, ambient mood entries),
                          musicStyle.prefix, musicStyle.suffix
-characters/*.md        → moods[] (character_theme entries, linked via characterRef)
-seed.md (expressions)  → availableExpressions[]
+notes/ (character)     → moods[] (character_theme entries, linked via characterRef)
+project/foundation.md (expressions)
+                       → availableExpressions[]
 ```
 
 ### Export skill deliverables

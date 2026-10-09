@@ -20,7 +20,7 @@ TYPES_FILE = os.path.join(DEFAULTS_DIR, 'types.json')
 TEMPLATES_DIR = os.path.join(DEFAULTS_DIR, 'templates')
 
 PROJECT_DOCS = [
-    ('seed', 'World Foundation', 'World foundation document for'),
+    ('foundation', 'World Foundation', 'World foundation document for'),
     ('plan', 'Worldbuilding Plan', 'Phase status and cast plan for'),
     ('direction', 'Story Direction', 'Standing creative brief for'),
 ]
