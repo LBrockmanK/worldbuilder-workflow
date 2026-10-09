@@ -15,9 +15,11 @@ views:
   - type: table
     name: Open
     filters:
-      or:
-        - tags.contains("human-ready")
-        - tags.contains("agent-ready")
+      and:
+        - '!tags.contains("complete")'
+        - '!tags.contains("deprecated")'
+        - '!tags.contains("abandoned")'
+        - '!tags.contains("archived")'
     order:
       - file.name
       - description

@@ -132,7 +132,7 @@ The standard: at least one axis must specify a change in scene logic, tone, or f
 
 ## Self-Check Before Marking Complete
 
-The note stays on an open status tag while work is in progress; mark it `complete` when every item below passes.
+The note is open until it carries a closure tag. Mark it `complete` when every item below passes.
 
 **Frontmatter**
 - [ ] Fields match the generated rules; `region` and `primary-characters` link to their notes

@@ -98,8 +98,10 @@ class RosterTests(unittest.TestCase):
 
     def test_status_tag_vocabulary_preserved(self):
         status = self.roster['tags']['status']
-        self.assertEqual(status['open'][0], 'human-ready')
-        self.assertIn('complete', status['closed'])
+        self.assertEqual(status['values'],
+                         ['complete', 'deprecated', 'abandoned', 'archived'])
+        self.assertNotIn('open', status)
+        self.assertNotIn('closed', status)
 
 
 class GeneratorTests(unittest.TestCase):

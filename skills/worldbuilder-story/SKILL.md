@@ -113,7 +113,7 @@ How the scene plays, what the character does, what invitation it extends to the 
 
 ## Self-Check Before Marking Complete (arc, intention, introduction notes)
 
-The note stays on an open status tag while work is in progress; mark it `complete` when every item below passes.
+The note is open until it carries a closure tag. Mark it `complete` when every item below passes.
 
 **Description**
 - [ ] Written last

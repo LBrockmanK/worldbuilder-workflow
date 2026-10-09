@@ -47,9 +47,9 @@ Defined in `defaults/types.json`, this plugin's internal roster. Entity types li
 
 ## Status lifecycle
 
-Scraibe's stock tags, no additions. Every typed document carries exactly one status tag: `human-ready` or `agent-ready` while open, `complete` / `deprecated` / `abandoned` / `archived` when closed (`priority` and `deferred` are behavioral, not statuses).
+A typed document is open while it carries no status tag, and born open with an empty `tags` list. It carries at most one status tag, and that tag closes it: `complete`, `deprecated`, `abandoned` or `archived` (`priority` and `deferred` are behavioral, not statuses).
 
-For creative notes: a note stays open while it is being built and flips to `complete` when its skill's self-check passes. Export gates on this — `project/seed.md` must be tagged `complete`, and every exported character note must carry a closed status.
+For creative notes: a note stays open (no status tag) while it is being built and takes `complete` when its skill's self-check passes. Export gates on this — `project/seed.md` must be tagged `complete`, and every exported character note must carry a closed status.
 
 ## Phases
 

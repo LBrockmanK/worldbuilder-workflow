@@ -217,7 +217,7 @@ After completing a household group or batch of characters, run a relationship sy
 
 ## Completion Checklist
 
-The note stays on an open status tag while work is in progress. Mark it `complete` when every item below passes.
+The note is open until it carries a closure tag. Mark it `complete` when every item below passes.
 
 - [ ] All required doctrine entries present or explicitly waived with a recorded reason
 - [ ] Each Core section (Background, Body, Soul) has at least one entry. Target ranges in `card-format.md` are guidance, not gates

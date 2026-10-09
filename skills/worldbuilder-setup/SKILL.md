@@ -76,7 +76,7 @@ From the project root, with this plugin's root recorded as `<worldbuilder>`:
 python <worldbuilder>/scripts/create_project_docs.py --project-root . --name "<Name>"
 ```
 
-This creates `project/seed.md`, `project/plan.md`, `project/direction.md` with correct frontmatter (`human-ready` status), body templates from `defaults/types.json`, and `lorebook.md` at the project root — the definition note for the one term the export platforms name differently. The script validates that `plan.md` contains its Phase Status table before exiting.
+This creates `project/seed.md`, `project/plan.md`, `project/direction.md` with correct frontmatter (an empty `tags` list), body templates from `defaults/types.json`, and `lorebook.md` at the project root — the definition note for the one term the export platforms name differently. The script validates that `plan.md` contains its Phase Status table before exiting.
 
 Verify that all four files exist and that `project/plan.md` contains the `## Phase Status` table and `## Cast Plan` heading.
 
