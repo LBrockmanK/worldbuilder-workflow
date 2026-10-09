@@ -163,18 +163,18 @@ prefer this over creating many tiny documents. The test: if each
 document would be under ~50 lines of extracted content, combine them.
 
 **Per-entity vs type-level documents:** character ingestion creates
-per-entity directories (`characters/adeline/reference/`) because each
+per-entity directories (`notes/adeline/reference/`) because each
 character draws from many sources. Non-character entities often come
 from a single source covering many instances (a locations file
 defining 60 locations, a festivals file defining 4 events). These
-produce type-level reference documents in `<entity-type>/reference/`.
+produce type-level reference documents in `notes/<entity-type>/reference/`.
 
 **Entity placement:** when the source doesn't map to an obvious
-entity directory:
-- Describes a place or space → `locations/`
-- Describes a temporal event or story progression → `events/`
-- Describes a group identity or social structure → `factions/`
-- Everything else (systems, ecology, economy, culture) → `concepts/`
+entity note type:
+- Describes a place or space → a location note in `notes/`
+- Describes a temporal event or story progression → an event note in `notes/`
+- Describes a group identity or social structure → a faction note in `notes/`
+- Everything else (systems, ecology, economy, culture) → a concept note in `notes/`
 - Tiebreak: where would someone search for it?
 
 **Multi-entity sources:** when a source contains material about

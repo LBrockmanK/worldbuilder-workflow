@@ -82,14 +82,14 @@ Set `recurring: true` for annual events (festivals, observances). One-time event
 
 | JSON field / path | UI label | Type | Source content skill |
 |---|---|---|---|
-| `calendarConfig.seasons` | Seasons | string[ ] | `worldbuilder-calendar` → `events/` |
-| `calendarConfig.daysPerSeason` | Days per Season | number | `worldbuilder-calendar` → `events/` |
-| `calendarConfig.daysOfWeek` | Days of Week | string[ ] | `worldbuilder-calendar` → `events/` |
-| `calendarConfig.daySegments` | Day Segments | string[ ] | `worldbuilder-calendar` → `events/` |
+| `calendarConfig.seasons` | Seasons | string[ ] | `worldbuilder-calendar` → `notes/` (event notes) |
+| `calendarConfig.daysPerSeason` | Days per Season | number | `worldbuilder-calendar` → `notes/` (event notes) |
+| `calendarConfig.daysOfWeek` | Days of Week | string[ ] | `worldbuilder-calendar` → `notes/` (event notes) |
+| `calendarConfig.daySegments` | Day Segments | string[ ] | `worldbuilder-calendar` → `notes/` (event notes) |
 | `calendarConfig.eraReminder` | Era | string | `worldbuilder-world-foundation` → `foundation.md` |
-| `calendarConfig.weatherPools` | Weather Pools | object | `worldbuilder-calendar` → `events/` |
-| `storyTriggers` | Events / Recurring Events | StoryTrigger[ ] | `worldbuilder-calendar` → `events/` |
-| `eventCalendarSummary` | Event Calendar Summary | string | `worldbuilder-calendar` → `events/` |
+| `calendarConfig.weatherPools` | Weather Pools | object | `worldbuilder-calendar` → `notes/` (event notes) |
+| `storyTriggers` | Events / Recurring Events | StoryTrigger[ ] | `worldbuilder-calendar` → `notes/` (event notes) |
+| `eventCalendarSummary` | Event Calendar Summary | string | `worldbuilder-calendar` → `notes/` (event notes) |
 | `calendarConfig.startingYear`, `calendarConfig.baseYear` | Starting Year | integer | Builder choice; both keys present, equal |
 | `calendarConfig.dailyInfluenceCapGain` / `dailyInfluenceCapLoss` | Daily Influence Cap (Gain / Loss) | integer | Builder choice (default 5) |
 | `calendarConfig.influenceMagnitudeTiers` | Influence Magnitude Ladder | string (one rung per line) | Builder choice, written in the world's terms |

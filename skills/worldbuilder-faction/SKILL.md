@@ -170,7 +170,7 @@ The standard: a member who could belong to any faction fails the test. A member 
 The note is open until it carries a closure tag. Mark it `complete` when every item below passes.
 
 **Frontmatter**
-- [ ] Fields match the generated rules; `members` links to member character notes
+- [ ] Fields match the type's entry in the plugin's type roster; `members` links to member character notes
 
 **Description**
 - [ ] Written last

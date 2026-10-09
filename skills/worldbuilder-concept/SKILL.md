@@ -212,7 +212,7 @@ World knowledge is a living collection, not a phase that opens and closes. Any s
 **Complete when:** the note can constrain or shape any scene that touches this concept — a scene author reading the note knows what is impossible, what costs something, and what is inevitable because this thing exists.
 
 **Frontmatter**
-- [ ] `layer` set; `aliases` complete; other fields per the generated rules
+- [ ] `layer` set; `aliases` complete; other fields per the concept entry in the plugin's type roster
 
 **Description**
 - [ ] Written last

@@ -117,7 +117,7 @@ Event notes can be written at any phase. When work outside an event item names a
 
 **Frontmatter**
 - [ ] `aliases` covers every realistic phrasing
-- [ ] Fields match the generated rules
+- [ ] Fields match the type's entry in the plugin's type roster
 
 **Description**
 - [ ] Written last

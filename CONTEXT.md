@@ -48,8 +48,15 @@ Defined in `defaults/types.json`, this plugin's internal roster. Entity types li
 
 ## Properties
 
-A world property enters use only after it is designed, approved and documented here. Each fact in a world has one home, and every other place refers to it. The roster in `defaults/types.json` holds each property's name and value kind; this section holds its meaning. Every typed note also carries `type`, `title`, `description`, `tags`, `created` and `resources`.
+A world property enters use only after it is designed, approved and documented here. Each fact in a world has one home, and every other place refers to it. The roster in `defaults/types.json` holds each property's name and value kind; this section holds its meaning. The universal keys come first, then the type's own fields.
 
+- `type` — the note's type, from the roster; written by the generated template.
+- `title` — the note's title; written by the generated template.
+- `description` — a one-line summary of the note, written last by the creative step.
+- `tags` — the status tag list; born empty, and a closure tag closes the note.
+- `created` — the creation date as a date link; written by the generated template.
+- `resources` — links or paths to the sources the note draws on.
+- `aliases` (optional, list) — the realistic phrasings that refer to the note. The concept and event skills write it, and the export derives keyword triggers from it.
 - `factions` (character, list) — links to the faction notes the character belongs to.
 - `sex` (character, text) — the character's sex: `female`, `male`, or a short free-text value. The creative step sets it when it writes the character note. The export reads it only to keep pronouns right and never exports it.
 - `region` (location, text) — the larger place the location sits in.
@@ -68,7 +75,7 @@ A world property enters use only after it is designed, approved and documented h
 
 A typed document is open while it carries no status tag, and born open with an empty `tags` list. It carries at most one status tag, and that tag closes it: `complete`, `deprecated`, `abandoned` or `archived` (`priority` and `deferred` are behavioral, not statuses).
 
-For creative notes: a note stays open (no status tag) while it is being built and takes `complete` when its skill's self-check passes. Export gates on this — `project/foundation.md` must be tagged `complete`, and every exported character note must carry a closed status.
+For creative notes: a note stays open (no status tag) while it is being built and takes `complete` when its skill's self-check passes. Export gates on this — `project/foundation.md` must be tagged `complete`, and every exported character note must be tagged `complete`.
 
 ## Phases
 
@@ -83,7 +90,7 @@ No further item type exists. Phase progress is read from the world's items in it
 ## Terms
 
 - **foundation document** — the world's founding file, `project/foundation.md`, produced by `worldbuilder-world-foundation`.
-- **seed note** — a spin-off tracking note in the world's Anima domain folder, born from a creative step's proposal (a home, an implied faction, a lore entry). It tracks an idea to explore;
+- **seed note** — a spin-off tracking note in the world's Anima domain folder, born from a creative step's proposal (a home, an implied faction, a lore entry). It tracks an idea to explore.
 - **entity item** — a tracked item that writes, checks and revises the entity notes of a related group of entities (for example a household and its home). The definer sets its size per item. Its steps are a creative step, a critic step (`worldbuilder-review`) and a creative revision step.
 - **Foundation item** — the work item of the Foundation phase.
 - **Export item** — the work item of the Export phase.

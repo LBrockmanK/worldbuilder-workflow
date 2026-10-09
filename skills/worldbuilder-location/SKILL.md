@@ -135,7 +135,7 @@ The standard: at least one axis must specify a change in scene logic, tone, or f
 The note is open until it carries a closure tag. Mark it `complete` when every item below passes.
 
 **Frontmatter**
-- [ ] Fields match the generated rules; `region` and `primary-characters` link to their notes
+- [ ] Fields match the type's entry in the plugin's type roster; `region` and `primary-characters` link to their notes
 
 **Description**
 - [ ] Written last — after the full note is complete

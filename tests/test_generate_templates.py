@@ -6,12 +6,15 @@ assert against the shipped roster itself, which is the single source of
 truth for worldbuilder's types and status tags.
 """
 import json
+import re
 import os
 import shutil
 import subprocess
 import sys
 import tempfile
 import unittest
+
+import yaml
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCRIPT = os.path.join(ROOT, 'scripts', 'generate_templates.py')
@@ -231,6 +234,33 @@ class GeneratorTests(unittest.TestCase):
         r = self.run_gen('--dir', 'notes/=')
         self.assertEqual(r.returncode, 2)
         self.assertIn('no types', r.stderr)
+
+
+class OpenViewTests(unittest.TestCase):
+    """Each of the eight setup bases has an Open view that excludes exactly
+    the four closure tags and nothing else."""
+
+    CLOSURE = {'complete', 'deprecated', 'abandoned', 'archived'}
+    BASES = os.path.join(ROOT, 'skills', 'worldbuilder-setup', 'worldvault',
+                         '_bases')
+
+    def test_every_base_open_view_excludes_exactly_the_closure_tags(self):
+        names = sorted(n for n in os.listdir(self.BASES)
+                       if n.endswith('.base'))
+        self.assertEqual(len(names), 8, names)
+        for name in names:
+            with open(os.path.join(self.BASES, name), encoding='utf-8') as f:
+                base = yaml.safe_load(f)
+            views = [v for v in base['views'] if v.get('name') == 'Open']
+            self.assertEqual(len(views), 1, name)
+            clauses = views[0]['filters']['and']
+            excluded = set()
+            for c in clauses:
+                m = re.fullmatch(r'!tags\.contains\("([a-z]+)"\)', c)
+                self.assertIsNotNone(m, f'{name}: unexpected filter {c}')
+                excluded.add(m.group(1))
+            self.assertEqual(excluded, self.CLOSURE, name)
+            self.assertEqual(len(clauses), 4, name)
 
 
 if __name__ == '__main__':

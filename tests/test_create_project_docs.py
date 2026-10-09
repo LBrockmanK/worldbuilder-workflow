@@ -66,5 +66,38 @@ class ProjectRootTests(unittest.TestCase):
         self.assertEqual(second.returncode, 1)
 
 
+class ExportDiffLookupTests(unittest.TestCase):
+    """export_diff.py needs a .sbworld to get any further, so these tests
+    check the foundation lookup, the narrowest point a small fixture
+    reaches: with project/foundation.md the run gets past it and stops at
+    the missing .sbworld; with only project/seed.md it stops at the
+    lookup and names foundation.md."""
+
+    EXPORT_DIFF = os.path.join(ROOT, 'scripts', 'export_diff.py')
+
+    def run_diff(self, filename):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        project = os.path.join(tmp.name, 'world', 'project')
+        os.makedirs(project)
+        os.makedirs(os.path.join(tmp.name, 'exports', 'ainime'))
+        with open(os.path.join(project, filename), 'w',
+                  encoding='utf-8') as f:
+            f.write('# Foundation' + chr(10))
+        return subprocess.run([sys.executable, self.EXPORT_DIFF, tmp.name],
+                              capture_output=True, text=True)
+
+    def test_foundation_md_passes_the_lookup(self):
+        r = self.run_diff('foundation.md')
+        self.assertNotEqual(r.returncode, 0)
+        self.assertNotIn('foundation.md not found', r.stderr)
+        self.assertIn('.sbworld', r.stderr)
+
+    def test_only_seed_md_fails_naming_foundation_md(self):
+        r = self.run_diff('seed.md')
+        self.assertNotEqual(r.returncode, 0)
+        self.assertIn('foundation.md not found', r.stderr)
+
+
 if __name__ == '__main__':
     unittest.main()

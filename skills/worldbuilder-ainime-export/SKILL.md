@@ -17,7 +17,7 @@ Full JSON schema reference: `../../docs/target-system.md`.
 
 This skill is the builder's instruction for the Export work item. Before running export, verify:
 - [ ] `project/foundation.md` tagged `complete` (all sections present)
-- [ ] Every character note in `notes/` carries a closed status tag
+- [ ] Every character note in `notes/` is tagged `complete`
 - [ ] Concept notes in `notes/` written with `layer` set
 - [ ] `project/direction.md` and the story notes (arcs, key intentions) in `notes/` tagged `complete`
 - [ ] Every character has an Introduction entry in Story Seeds
@@ -108,7 +108,7 @@ Read `project/foundation.md` and extract the following. The section names in the
 
 **`introText`** (optional) — Shown to players when starting a new game. Set the scene: what do they need to know before they step into the world? World Introduction section from the foundation document, verbatim.
 
-**`initialStoryArc`** (optional) — Seeds the main plot at game start — the "global adventure arc," a multi-character web of drama that runs for roughly 14 in-game days. The specific story you want to unfold: who is involved, what's the inciting incident, what's the tension. Can be very specific (naming characters, situations) or thematic. Leave empty for a fully randomized opening arc. Opening Situation section from seed on initial export; commonly expanded manually afterward to include the full scripted opening sequence. The diff workflow preserves those expansions.
+**`initialStoryArc`** (optional) — Seeds the main plot at game start — the "global adventure arc," a multi-character web of drama that runs for roughly 14 in-game days. The specific story you want to unfold: who is involved, what's the inciting incident, what's the tension. Can be very specific (naming characters, situations) or thematic. Leave empty for a fully randomized opening arc. Opening Situation section from the foundation document on initial export; commonly expanded manually afterward to include the full scripted opening sequence. The diff workflow preserves those expansions.
 
 **`authorCredit`** (optional) — Your name or Discord handle, shown when sharing your world in the community.
 
