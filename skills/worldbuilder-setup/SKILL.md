@@ -96,7 +96,7 @@ the project.
 
 This writes `_templates/` (one template per type plus a type-picker per
 directory) and points the vendored Templater's folder attachments at
-them. From here on, a note created in `notes/` or `project/` inside
+them. From here on, a note created in `notes/`, `project/` or `reference/` inside
 Obsidian receives compliant frontmatter and its type body at creation —
 the type-picker asks one question in mixed directories.
 

@@ -10,9 +10,11 @@ The no-inference principle in `worldbuilder-source-ingestion` binds stage one: t
 
 **Stage one, the sweep.** One run of `worldbuilder-source-ingestion` over the whole corpus, for every character at once. Never one pass per character. The sweep writes source-organized reference documents with per-piece provenance, source absences and recorded discrepancies. It also writes the source map and the asset inventory below.
 
-**Stage two, distillation.** One pass that reads only the sweep's documents and writes the reference sheet. The sheet collects each character's facts, the connections between characters, and the contradictions between sources, and settles each contradiction once.
+**The sweep is complete.** For a character corpus, the extraction depth levels of `worldbuilder-source-ingestion` (selective, structural, broad strokes) do not apply. The sweep covers every file in the corpus at full depth, so the reference sheet can offer every fact. Only the human can narrow a corpus, and a narrowed corpus is recorded in the source map.
 
-**Card writing.** Each card is written from the reference sheet. Each card carries a coverage ledger. After a group of cards is written, the cross-card pass runs.
+**Stage two, distillation.** Its own step, run by one worker at the builder role, separate from the sweep workers. It reads only the sweep's documents and writes the reference sheet. It is permitted to settle contradictions, as the reference sheet section sets out. The no-inference principle of the ingestion skill covers the sweep only; distillation is not ingestion, and nothing in the sweep settles anything.
+
+**Card writing.** Each card is written from the reference sheet by the creative step, which reads the sheet and does not build it. Each card carries a coverage ledger. After a group of cards is written, the cross-card pass and the checker run.
 
 ## Where files live
 
@@ -20,7 +22,7 @@ A world holds all extracted material in `reference/` at the world root, never un
 
 - Sweep documents: any name the ingestion skill's naming rule gives, directly in `reference/`.
 - The source map: `reference/Source map.md`.
-- The reference sheet: `reference/Reference sheet.md`.
+- The reference sheet: `reference/Reference sheet.md`. This fixed filename is the one exception to the ingestion skill's date-prefixed default, because the checker finds the sheet by name.
 - A character's coverage ledger: the `### Coverage ledger` subsection under `## Design Notes` in the character's note. The export excludes Design Notes, so the ledger never ships.
 
 ## The source map
@@ -48,7 +50,7 @@ One document for the whole cast, with these sections in this order. The checker 
 
 **`## Asset inventory`.** One `### <Name>` subsection per cast member who has assets, holding a table with the columns `Set | File | Hash`. One row per file. Two different sets of one character with the same hashes are a failure: they are one set.
 
-The sheet contains nothing else: no traits, no card entries, no reading beyond collation.
+The sheet contains nothing else. Distillation reads the sources only to settle the contradictions it lists. It adds no traits, no card entries and no reading beyond collation and those settlements.
 
 ## One home for a fact
 
@@ -56,11 +58,12 @@ The reference sheet is the home of every sourced fact. The card states the fact 
 
 ## The coverage ledger
 
-Every character note carries a `### Coverage ledger` subsection under `## Design Notes`. It is a table with the columns `Section | Entry | Source | Derived copies`, with one row per claim:
+Every character note carries a `### Coverage ledger` subsection under `## Design Notes`. It is a table with the columns `Section | Entry | Claim | Source | Derived copies`, with one row per claim. An entry may hold several claims; each claim gets its own row:
 
 - `Section` is one of `Background`, `Body`, `Soul`, `Relationships`, `Intimate Dynamics`, `Voice / Dialogue`, `Story Seeds`. Intimate Dynamics rows exist only when the note has that section.
-- `Entry` is the entry's number, counting the section's top-level bullets from 1. The Body preamble is prose, so it is split into clauses: one clause is one sentence of the preamble, written `preamble 1`, `preamble 2` and so on. Write one sentence for each feature group (hair, eyes, skin, build, distinguishing features, clothing, hidden features) so each group gets its own row.
-- `Source` lists the reference documents the claim came from, separated by `;`. Each is a path relative to `reference/`, optionally followed by `#` and a heading. A claim with no source is not written into the card. Its row stays in the ledger with `Source` set to `flagged`, so the gap is visible. A flagged row is a gap the writer returns to the human; it never passes silently.
+- `Entry` is the entry's number, counted as `card-format.md` defines an entry for the section: a top-level bullet in Background, Body, Soul, Relationships and Intimate Dynamics; a labelled block in Story Seeds and Voice / Dialogue, which begins at a bullet, a bold title line or a `####` heading. Several claims in one entry are keyed `1.a`, `1.b`. The Body preamble is prose, so it is split into clauses: one clause is one sentence of the preamble, written `preamble 1`, `preamble 2` and so on. Write one sentence for each feature group (hair, eyes, skin, build, distinguishing features, clothing, hidden features) so each group gets its own row.
+- `Claim` is the claim in a few words.
+- `Source` lists the reference documents the claim came from, separated by `;`. Each is a path relative to `reference/` that stays inside `reference/`, optionally followed by `#` and a heading. A claim with no source is not written into the card. Its row stays in the ledger with `Entry` set to `unwritten` (`unwritten 1`, `unwritten 2` for several) and `Source` set to `flagged`, so the gap is visible. A flagged row for a claim that is written into the card is an error. The writer returns each flagged row to the human; it never passes silently.
 - `Derived copies` lists the export fields that reproduce the fact (`appearance` from the Body preamble, `role` from occupations, `spriteSets[].description` from ownership and appearance), so a correction visits every copy. It is not machine-checked.
 
 The ledger covers every section a card can have, taken from `worldbuilder-character/card-format.md`.
@@ -94,17 +97,17 @@ Fix every discrepancy in the cards, or return it to the human. The boundary is t
 
 The export copies several facts out of the cards: `role`, `appearance`, and each `spriteSets[].description`. The check runs over an exported `world.json` and compares each of these with the sheet and the cards:
 
-- `role` must contain every occupation the sheet lists for the character.
-- `appearance` must equal the card's Body preamble, ignoring whitespace. A character with no card is not compared.
-- A `spriteSets[].description` must not name an owner for an owned character other than the owners the Connections table lists. The check reads a name as an owner when the description writes `<Name>'s`, `owned by <Name>`, `belongs to <Name>` or `pet of <Name>`.
+- `role` must contain every occupation the sheet lists for the character, as a whole word or phrase (`art` is not found in `cartographer`).
+- `appearance` must equal the card's Body preamble, ignoring whitespace. Identity is the exported `name` and `lastName` joined with a space, matched to the card and sheet name; an exported character that matches no card is reported.
+- A `spriteSets[].description` must not name an owner other than the owners the Connections table lists, whether the name belongs to a cast member or not, and whether or not the table lists any owner. The check reads a name as an owner when the description writes `owned by <Name>`, `belongs to <Name>`, `pet of <Name>` or `companion of <Name>`, or `<Name>'s` followed by the character's own name or a pet word (pet, dog, cat, horse and similar).
 
 Every difference is reported. The checker script (`scripts/check_coverage.py`, `export` mode) runs it. Wiring it into the export procedure belongs to the export rework item; until then, someone runs it after an export.
 
 ## The checker
 
-`scripts/check_coverage.py` checks what a script can check:
+`scripts/check_coverage.py` checks what a script can check. The writer runs its `world` mode at the end of each group of cards, after the cross-card pass, and fixes every FAIL line or returns it to the human before the group counts as done.
 
-- `world` mode, over a world root: every character note has a ledger; every entry of every card section present (Intimate Dynamics included) and every Body preamble clause has a ledger row; every ledger row names an entry the note has; every named source exists under `reference/`, and flagged rows are listed apart; every Contradictions row has two sources; no character has two sets with identical hashes; every Relationships entry that names a cast member with a note is mirrored on that note, and those that name a cast member with no note are listed as pending.
+- `world` mode, over a world root: every character note has a ledger; every entry of every card section present (Intimate Dynamics included) and every Body preamble clause has a ledger row; every ledger row names an entry the note has; every named source exists under `reference/`, and flagged rows are listed apart; every Contradictions row has two sources; every character note's ledger source stays inside `reference/`; no character has two sets with identical hashes; every Relationships entry that names a cast member with a note is mirrored on that note, and those that name a cast member with no note are listed as pending.
 - `export` mode, over a world root and a `world.json`: the derived-output check.
 
 The checker does not read meaning. The evidence readback and the judgement that a source supports a claim stay with the writer and the critic.

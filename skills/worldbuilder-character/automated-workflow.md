@@ -95,11 +95,11 @@ One pass across all edited cards:
 1. **Pronoun consistency:** For every character mentioned in a relationship entry, verify pronouns match that character's own card. Names do not determine gender — the character's card does.
 2. **Distribution legality:** No archetype more than 2x per character. Community Thread max 1x.
 3. **Format consistency:** All entries follow the same format within the project (prefix or trailing archetype notation, not a mix).
-4. **Cross-character coherence:** Run the cross-card pass defined in `../source-extraction-standard.md`.
+4. **Cross-character coherence:** Run the cross-card pass and the checker as `../source-extraction-standard.md` sets out.
 
 ### Phase 4 — Post-Group Sync
 
-After completing a batch, run the cross-card pass defined in `../source-extraction-standard.md`. A character written later in the batch may have shifted in ways that make an earlier character's entry inaccurate.
+After completing a batch, run the cross-card pass and the checker as `../source-extraction-standard.md` sets out. A character written later in the batch may have shifted in ways that make an earlier character's entry inaccurate.
 
 ---
 

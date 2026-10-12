@@ -16,8 +16,8 @@ _Design decisions, narrative function, external references._
 
 _One row per claim, filled when the card is written from source material. Format and rules: `skills/source-extraction-standard.md`._
 
-| Section | Entry | Source | Derived copies |
-|---|---|---|---|
+| Section | Entry | Claim | Source | Derived copies |
+|---|---|---|---|---|
 
 ## Background
 

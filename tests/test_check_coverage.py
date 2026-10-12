@@ -25,8 +25,8 @@ tags: []
 
 ### Coverage ledger
 
-| Section | Entry | Source | Derived copies |
-|---|---|---|---|
+| Section | Entry | Claim | Source | Derived copies |
+|---|---|---|---|---|
 {ledger}
 
 ## Background
@@ -56,19 +56,19 @@ tags: []
 {seeds}
 """
 
-ALICE_LEDGER = """| Background | 1 | alice-source.md | |
-| Body | preamble 1 | alice-source.md#looks | appearance |
-| Body | preamble 2 | alice-source.md#looks | appearance |
-| Body | 1 | alice-source.md | |
-| Soul | 1 | alice-source.md | |
-| Soul | 2 | alice-source.md; bob-source.md | |
-| Relationships | 1 | bob-source.md | |
-| Voice / Dialogue | 1 | alice-source.md | |
-| Story Seeds | 1 | alice-source.md | |"""
+ALICE_LEDGER = """| Background | 1 | claim | alice-source.md | |
+| Body | preamble 1 | claim | alice-source.md#looks | appearance |
+| Body | preamble 2 | claim | alice-source.md#looks | appearance |
+| Body | 1 | claim | alice-source.md | |
+| Soul | 1 | claim | alice-source.md | |
+| Soul | 2 | claim | alice-source.md; bob-source.md | |
+| Relationships | 1 | claim | bob-source.md | |
+| Voice / Dialogue | 1 | claim | alice-source.md | |
+| Story Seeds | 1 | claim | alice-source.md | |"""
 
-BOB_LEDGER = """| Background | 1 | bob-source.md | |
-| Soul | 1 | bob-source.md | |
-| Relationships | 1 | alice-source.md | |"""
+BOB_LEDGER = """| Background | 1 | claim | bob-source.md | |
+| Soul | 1 | claim | bob-source.md | |
+| Relationships | 1 | claim | alice-source.md | |"""
 
 SHEET = """---
 type: reference
@@ -142,11 +142,12 @@ tags: []
 
 def alice_note(ledger=ALICE_LEDGER, soul="- Soul one.\n- Soul two.",
                relationships="- **Bob:** She trusts him.",
-               preamble="Red hair. Green eyes."):
+               preamble="Red hair. Green eyes.",
+               seeds="**Introduction**\n\nCondition: arrival. She waves."):
     return NOTE.format(
         name='Alice', ledger=ledger, background="- Fact one.",
         preamble=preamble, body="- Body one.", soul=soul,
-        relationships=relationships, voice="- Snippet.", seeds="- Seed.")
+        relationships=relationships, voice="- Snippet.", seeds=seeds)
 
 
 def bob_note(ledger=BOB_LEDGER, relationships="- **Alice — Friend:** He waves."):
@@ -209,7 +210,8 @@ class WorldModeTests(CheckerCase):
         self.assertFalse(any('Bob' in l for l in self.fails(result)))
 
     def test_an_entry_with_no_row_fails(self):
-        ledger = ALICE_LEDGER.replace('| Soul | 2 | alice-source.md; bob-source.md | |\n', '')
+        ledger = ALICE_LEDGER.replace(
+            '| Soul | 2 | claim | alice-source.md; bob-source.md | |\n', '')
         self.put('notes/Alice.md', alice_note(ledger=ledger))
         result = self.world()
         self.assertEqual(result.returncode, 1)
@@ -224,37 +226,84 @@ class WorldModeTests(CheckerCase):
                             for l in self.fails(result)), result.stdout)
 
     def test_a_body_preamble_clause_with_no_row_fails(self):
-        ledger = ALICE_LEDGER.replace('| Body | preamble 2 | alice-source.md#looks | appearance |\n', '')
+        ledger = ALICE_LEDGER.replace(
+            '| Body | preamble 2 | claim | alice-source.md#looks | appearance |\n',
+            '')
         self.put('notes/Alice.md', alice_note(ledger=ledger))
         result = self.world()
         self.assertTrue(any('preamble 2' in l for l in self.fails(result)),
                         result.stdout)
 
+    def test_a_story_seed_block_with_no_row_fails(self):
+        seeds = ("**Introduction**\n\nCondition: arrival. She waves.\n\n"
+                 "**The market**\n\nCondition: market day. She haggles.")
+        self.put('notes/Alice.md', alice_note(seeds=seeds))
+        result = self.world()
+        self.assertTrue(any('Story Seeds 2' in l for l in self.fails(result)),
+                        result.stdout)
+        self.assertFalse(any('Story Seeds 1' in l for l in self.fails(result)))
+
+    def test_several_rows_may_cover_one_entry(self):
+        ledger = ALICE_LEDGER.replace(
+            '| Soul | 1 | claim | alice-source.md | |',
+            '| Soul | 1.a | first claim | alice-source.md | |\n'
+            '| Soul | 1.b | second claim | bob-source.md | |')
+        self.put('notes/Alice.md', alice_note(ledger=ledger))
+        result = self.world()
+        self.assertEqual(result.returncode, 0, result.stdout)
+
+    def test_a_duplicate_claim_key_fails(self):
+        ledger = ALICE_LEDGER + "\n| Soul | 1 | claim again | alice-source.md | |"
+        self.put('notes/Alice.md', alice_note(ledger=ledger))
+        result = self.world()
+        self.assertTrue(any('Soul 1' in l and 'twice' in l
+                            for l in self.fails(result)), result.stdout)
+
     def test_a_row_naming_an_entry_the_note_lacks_fails(self):
-        ledger = ALICE_LEDGER + "\n| Soul | 3 | alice-source.md | |"
+        ledger = ALICE_LEDGER + "\n| Soul | 3 | claim | alice-source.md | |"
         self.put('notes/Alice.md', alice_note(ledger=ledger))
         result = self.world()
         self.assertTrue(any('Soul 3' in l and 'no such entry' in l
                             for l in self.fails(result)), result.stdout)
 
     def test_a_row_whose_source_does_not_exist_fails(self):
-        ledger = ALICE_LEDGER.replace('| Soul | 1 | alice-source.md |',
-                                      '| Soul | 1 | missing.md |')
+        ledger = ALICE_LEDGER.replace(
+            '| Soul | 1 | claim | alice-source.md |',
+            '| Soul | 1 | claim | missing.md |')
         self.put('notes/Alice.md', alice_note(ledger=ledger))
         result = self.world()
         self.assertTrue(any('missing.md' in l for l in self.fails(result)),
                         result.stdout)
 
-    def test_a_flagged_row_is_listed_and_does_not_fail(self):
-        ledger = ALICE_LEDGER.replace('| Soul | 1 | alice-source.md |',
-                                      '| Soul | 1 | flagged |')
+    def test_a_source_outside_reference_fails(self):
+        ledger = ALICE_LEDGER.replace(
+            '| Soul | 1 | claim | alice-source.md |',
+            '| Soul | 1 | claim | ../notes/Bob.md |')
+        self.put('notes/Alice.md', alice_note(ledger=ledger))
+        result = self.world()
+        self.assertTrue(any('Bob.md' in l and 'reference/' in l
+                            for l in self.fails(result)), result.stdout)
+
+    def test_an_unwritten_flagged_claim_is_listed_and_does_not_fail(self):
+        ledger = ALICE_LEDGER + (
+            "\n| Soul | unwritten | She fears water | flagged | |")
         self.put('notes/Alice.md', alice_note(ledger=ledger))
         result = self.world()
         self.assertEqual(result.returncode, 0, result.stdout)
         flagged = [l for l in result.stdout.splitlines()
                    if l.startswith('FLAGGED')]
         self.assertEqual(len(flagged), 1)
-        self.assertIn('Soul 1', flagged[0])
+        self.assertIn('She fears water', flagged[0])
+
+    def test_a_flagged_claim_that_is_written_into_the_card_fails(self):
+        ledger = ALICE_LEDGER.replace(
+            '| Soul | 1 | claim | alice-source.md |',
+            '| Soul | 1 | claim | flagged |')
+        self.put('notes/Alice.md', alice_note(ledger=ledger))
+        result = self.world()
+        self.assertEqual(result.returncode, 1)
+        self.assertTrue(any('Soul 1' in l and 'flagged' in l
+                            for l in self.fails(result)), result.stdout)
 
     def test_a_contradiction_with_one_source_fails(self):
         self.put('reference/Reference sheet.md', SHEET.replace(
@@ -275,8 +324,8 @@ class WorldModeTests(CheckerCase):
 
     def test_an_unmirrored_relationship_fails(self):
         self.put('notes/Bob.md', bob_note(
-            ledger="| Background | 1 | bob-source.md | |\n"
-                   "| Soul | 1 | bob-source.md | |",
+            ledger="| Background | 1 | claim | bob-source.md | |\n"
+                   "| Soul | 1 | claim | bob-source.md | |",
             relationships=""))
         result = self.world()
         self.assertTrue(any('Alice' in l and 'Bob' in l and 'mirror' in l
@@ -285,9 +334,9 @@ class WorldModeTests(CheckerCase):
     def test_a_relationship_with_a_cast_member_who_has_no_note_is_pending(self):
         self.put('notes/Alice.md', alice_note(
             relationships="- **Bob:** She trusts him.\n- **Rex:** She pats him."
-        ).replace('| Relationships | 1 | bob-source.md | |',
-                  '| Relationships | 1 | bob-source.md | |\n'
-                  '| Relationships | 2 | bob-source.md | |'))
+        ).replace('| Relationships | 1 | claim | bob-source.md | |',
+                  '| Relationships | 1 | claim | bob-source.md | |\n'
+                  '| Relationships | 2 | claim | bob-source.md | |'))
         result = self.world()
         self.assertEqual(result.returncode, 0, result.stdout)
         pending = [l for l in result.stdout.splitlines()
@@ -297,12 +346,20 @@ class WorldModeTests(CheckerCase):
 
 
 class ExportModeTests(CheckerCase):
+    def setUp(self):
+        super().setUp()
+        self.put('notes/Rex.md', NOTE.format(
+            name='Rex', ledger='', background='', preamble='', body='',
+            soul='', relationships='', voice='', seeds=''))
+
     def good(self):
         return [
             {'name': 'Alice', 'role': 'Gardener and General Store clerk',
              'appearance': 'Red hair.  Green eyes.',
              'spriteSets': [{'name': 'default', 'description': 'Alice at rest'}]},
-            {'name': 'Rex', 'role': 'A dog',
+            {'name': 'Bob', 'role': 'Village smith', 'appearance': '',
+             'spriteSets': []},
+            {'name': 'Rex', 'role': 'A dog', 'appearance': '',
              'spriteSets': [{'name': 'default',
                              'description': "Bob's dog, sitting"}]},
         ]
@@ -319,11 +376,32 @@ class ExportModeTests(CheckerCase):
         self.assertTrue(any('Alice' in l and 'General Store' in l
                             for l in self.fails(result)), result.stdout)
 
+    def test_an_occupation_inside_another_word_does_not_count(self):
+        chars = self.good()
+        chars[1]['role'] = 'A wordsmith'
+        result = self.export(chars)
+        self.assertTrue(any('Bob' in l and 'smith' in l
+                            for l in self.fails(result)), result.stdout)
+
     def test_a_set_description_naming_a_wrong_owner_fails(self):
         chars = self.good()
-        chars[1]['spriteSets'][0]['description'] = "Alice's dog, sitting"
+        chars[2]['spriteSets'][0]['description'] = "Alice's dog, sitting"
         result = self.export(chars)
         self.assertTrue(any('Rex' in l and 'Alice' in l
+                            for l in self.fails(result)), result.stdout)
+
+    def test_an_owner_outside_the_cast_fails(self):
+        chars = self.good()
+        chars[2]['spriteSets'][0]['description'] = "Owned by Holt, sitting"
+        result = self.export(chars)
+        self.assertTrue(any('Rex' in l and 'Holt' in l
+                            for l in self.fails(result)), result.stdout)
+
+    def test_an_owner_named_where_the_table_lists_none_fails(self):
+        chars = self.good()
+        chars[0]['spriteSets'][0]['description'] = 'Pet of Bob, at rest'
+        result = self.export(chars)
+        self.assertTrue(any('Alice' in l and 'Bob' in l
                             for l in self.fails(result)), result.stdout)
 
     def test_an_appearance_that_differs_from_the_preamble_fails(self):
@@ -331,6 +409,35 @@ class ExportModeTests(CheckerCase):
         chars[0]['appearance'] = 'Brown hair. Green eyes.'
         result = self.export(chars)
         self.assertTrue(any('Alice' in l and 'appearance' in l
+                            for l in self.fails(result)), result.stdout)
+
+    def test_an_empty_appearance_against_a_preamble_fails(self):
+        chars = self.good()
+        chars[0]['appearance'] = ''
+        result = self.export(chars)
+        self.assertTrue(any('Alice' in l and 'appearance' in l
+                            for l in self.fails(result)), result.stdout)
+
+    def test_an_exported_character_with_no_note_fails(self):
+        chars = self.good() + [{'name': 'Zed', 'role': 'x'}]
+        result = self.export(chars)
+        self.assertTrue(any('Zed' in l and 'no character note' in l
+                            for l in self.fails(result)), result.stdout)
+
+    def test_a_last_name_is_part_of_the_identity(self):
+        self.put('notes/Carol Smith.md', alice_note().replace(
+            'title: Alice', 'title: Carol Smith'))
+        carol = ('### Carol Smith\n\n#### Facts\n\n'
+                 '- Carol is a baker (source: alice-source.md)\n\n'
+                 '#### Occupations\n\n| Occupation | Source |\n|---|---|\n'
+                 '| baker | alice-source.md |\n\n### Bob\n')
+        self.put('reference/Reference sheet.md',
+                 SHEET.replace('### Bob\n', carol, 1))
+        chars = self.good() + [{'name': 'Carol', 'lastName': 'Smith',
+                                'role': 'Cook',
+                                'appearance': 'Red hair. Green eyes.'}]
+        result = self.export(chars)
+        self.assertTrue(any('Carol Smith' in l and 'baker' in l
                             for l in self.fails(result)), result.stdout)
 
 

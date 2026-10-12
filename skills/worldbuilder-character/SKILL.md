@@ -40,32 +40,16 @@ Process:
 
 When working from source material (game data, existing character
 sheets, fiction, wiki references), reference documents come first.
-They are made by a prior `worldbuilder-source-ingestion` run, which is
-its own item; the creative step reads them and does not build them. Reference documents organize the raw material
-into a reviewable evidence base. They live in the world's `reference/`
-folder at the world root. How a corpus is swept, how the reference sheet
-is distilled from it, and how each card is checked against it are set
-out in `../source-extraction-standard.md`. Read that standard before
-writing a card from source material.
+They are made by a prior sweep (`worldbuilder-source-ingestion`) and
+distillation, which are their own items; the creative step reads them
+and does not build them. They live in the world's `reference/` folder.
+`../source-extraction-standard.md` sets out what they hold and how a
+card is checked against them. Read it before writing a card from source
+material.
 
-The reference set depends on what the source material provides, but
-typically includes:
-
-- **Data profile** — extracted facts: name, role, relationships,
-  gifts, schedules, physical data, anything structured.
-- **Behavioral evidence** — dialogue and actions that reveal
-  personality, organized by context. What the character says and
-  does; what others say about them.
-- **Calendar/schedule** — daily and seasonal routines, if the
-  source tracks them.
-- **Narrative arc** — story progression, relationship milestones,
-  key events, thematic analysis.
-- **Storylines/greetings** — progression-gated events and
-  context-gated dialogue, organized by trigger.
-
-Cross-reference multiple sources (game files, wiki, community
-resources) when available. The reference folder is the evidence
-base for the card; the review can check card entries against it.
+The reference documents hold extracted, provenance-bearing material
+and nothing else: no reading of what the material means. The creative
+step does the reading, and the reference sheet is its evidence base.
 
 Do not skip ingestion to write the card faster. A card written
 directly from raw source material without organized reference
@@ -225,8 +209,7 @@ The note is open until it carries a closure tag. Mark it `complete` when every i
 - [ ] All required doctrine entries present or explicitly waived with a recorded reason
 - [ ] Each Core section (Background, Body, Soul) has at least one entry. Target ranges in `card-format.md` are guidance, not gates
 - [ ] Reference documents from a prior ingestion run read when working from source material
-- [ ] When working from source material: the `### Coverage ledger` under Design Notes has one row per claim, no claim lacks a source, and flagged rows are returned to the human (`../source-extraction-standard.md`)
-- [ ] When working from source material: evidence readback done, Background, Soul and Voice / Dialogue entries re-read against the evidence their ledger rows cite (`../source-extraction-standard.md`)
+- [ ] When working from source material: the coverage ledger, the evidence readback and the checker run are done as `../source-extraction-standard.md` sets out in The coverage ledger, The evidence readback and The checker
 - [ ] Story Seeds section present with entries (every character; 5-12 target range)
 - [ ] Other selected addon blocks completed (Relationships, Intimate Dynamics, Voice / Dialogue as determined in the Specification)
 - [ ] No trait adjectives anywhere in the note. Each replaced by the behavior that earned it

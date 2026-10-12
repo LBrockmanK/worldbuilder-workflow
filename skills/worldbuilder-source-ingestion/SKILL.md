@@ -17,7 +17,7 @@ skills) handles interpretation when it consumes the references.
 
 **Governing spec:** "2026-08-15-source-ingestion-skill-reference-document-structure-and-extraction-principles" in the Anima vault's worldbuilder-workflow domain.
 
-**Extraction standard:** `../source-extraction-standard.md` defines how a character corpus is extracted: one sweep over the whole corpus for all characters at once, then a reference sheet. Read it before extracting for characters.
+**Extraction standard:** `../source-extraction-standard.md` governs extraction for characters. Read it before extracting for characters.
 
 ---
 
@@ -67,11 +67,8 @@ is interpretation):
 5. Output one or more reference documents
 6. The Q&A workflow consumes the references as source material
 
-For a corpus that feeds more than one character, run the extraction as
-one sweep for all characters at once, never one pass per character. The
-sweep records the source map and the asset inventory with content
-hashes, as `../source-extraction-standard.md` sets out. The sweep
-records facts, absences and discrepancies; it never settles them.
+For a character corpus, follow `../source-extraction-standard.md`: its
+Stages and The source map sections govern steps 2 to 4 above.
 
 ### Exploring the source
 
@@ -95,7 +92,8 @@ dependencies so workers do not collide.
 
 ### Extraction depth
 
-Three levels, always user-directed:
+Three levels, always user-directed. A character corpus is swept
+completely instead (see `../source-extraction-standard.md`, Stages):
 
 - **Full** — extract all fields with values. Default for sources
   central to the entity being built (a character's dialogue files,
@@ -133,7 +131,8 @@ python "<scraibe-plugin>/scripts/new_doc.py" --type reference \
 Record source paths in the frontmatter `resources` field.
 
 The date-prefixed filename from `new_doc.py` is the default. Rename
-only if the generated filename is misleading.
+only if the generated filename is misleading. The reference sheet has a
+fixed name (see `../source-extraction-standard.md`, Where files live).
 
 ---
 

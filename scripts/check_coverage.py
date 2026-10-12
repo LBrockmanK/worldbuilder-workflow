@@ -16,9 +16,10 @@ exported world.json (`role`, `appearance`, `spriteSets[].description`) with
 the reference sheet and the cards.
 
 Report lines start with FAIL, FLAGGED or PENDING. FAIL lines make the exit
-code 1. FLAGGED lists ledger rows marked flagged, and PENDING lists
-relationships that name a cast member with no note yet; neither fails.
-Standard library only, plus pyyaml for the note frontmatter.
+code 1. FLAGGED lists ledger rows for claims left unwritten for want of a
+source, and PENDING lists relationships that name a cast member with no note
+yet; neither fails. Standard library only, plus pyyaml for the note
+frontmatter.
 """
 
 import argparse
@@ -33,6 +34,11 @@ SHEET_NAME = 'Reference sheet.md'
 LEDGER_HEADING = 'Coverage ledger'
 CARD_SECTIONS = ['Background', 'Body', 'Soul', 'Relationships',
                  'Intimate Dynamics', 'Voice / Dialogue', 'Story Seeds']
+# Sections whose entries are labelled blocks (card-format.md): an entry
+# starts at a bullet, a bold title line or a #### heading.
+BLOCK_SECTIONS = {'Voice / Dialogue', 'Story Seeds'}
+PET_NOUNS = ('pet|dog|cat|horse|chicken|bird|animal|companion|familiar|'
+             'mount|puppy|kitten')
 
 
 # -- markdown reading ---------------------------------------------------
@@ -54,25 +60,23 @@ def split_front_matter(text):
     return {}, text
 
 
-def sections(text, level):
-    """Split text on headings of the given level into {title: lines}.
-
-    Lines before the first heading of that level are dropped. A heading of a
-    shallower level also ends the current section.
-    """
-    out, title, lines = {}, None, []
-    marker = '#' * level + ' '
-    for line in text.split('\n'):
-        m = re.match(r'(#+) ', line)
+def sections(lines, level):
+    """Map the titles of headings of exactly `level` to their lines, up to
+    the next heading of the same or a shallower level."""
+    if isinstance(lines, str):
+        lines = lines.split('\n')
+    out, title, buf = {}, None, []
+    for line in lines:
+        m = re.match(r'(#+) (.*)', line)
         if m and len(m.group(1)) <= level:
             if title is not None:
-                out[title] = lines
-            title = line[len(marker):].strip() if line.startswith(marker) else None
-            lines = []
+                out[title] = buf
+            title = m.group(2).strip() if len(m.group(1)) == level else None
+            buf = []
         elif title is not None:
-            lines.append(line)
+            buf.append(line)
     if title is not None:
-        out[title] = lines
+        out[title] = buf
     return out
 
 
@@ -94,13 +98,27 @@ def normalize(text):
 
 # -- notes ----------------------------------------------------------------
 
+def split_entries(title, lines):
+    """Return the entries of a card section as lists of lines."""
+    if title in BLOCK_SECTIONS:
+        start = re.compile(r'([-*]\s+\S|\*\*|#### )')
+    else:
+        start = re.compile(r'[-*]\s+\S')
+    entries = []
+    for line in lines:
+        if start.match(line):
+            entries.append([line])
+        elif entries:
+            entries[-1].append(line)
+    return entries
+
+
 class Note:
     def __init__(self, path):
         self.name = os.path.splitext(os.path.basename(path))[0]
         front, body = split_front_matter(read(path))
         self.front = front
-        top = sections(body, 2)
-        self.sections = {k: v for k, v in top.items()}
+        self.sections = sections(body, 2)
         self.ledger = self._ledger()
         self.entries = {}
         self.preamble = ''
@@ -108,13 +126,12 @@ class Note:
             if title not in self.sections:
                 continue
             lines = self.sections[title]
-            bullets = [re.sub(r'^[-*]\s+', '', l) for l in lines
-                       if re.match(r'[-*]\s+\S', l)]
-            self.entries[title] = bullets
+            self.entries[title] = split_entries(title, lines)
             if title == 'Body':
                 self.preamble = self._preamble(lines)
 
-    def _preamble(self, lines):
+    @staticmethod
+    def _preamble(lines):
         kept = []
         for l in lines:
             if re.match(r'[-*](\s|$)', l):
@@ -129,55 +146,34 @@ class Note:
         design = self.sections.get('Design Notes')
         if design is None:
             return None
-        subs = sections('\n'.join(design), 3)
-        # sections() keys on '### ' headings inside the Design Notes lines
-        sub = _sub_sections(design)
-        lines = sub.get(LEDGER_HEADING)
+        lines = sections(design, 3).get(LEDGER_HEADING)
         if lines is None:
             return None
-        _, rows = table_rows(lines)
-        return rows
+        return table_rows(lines)[1]
 
     def is_character(self):
-        kind = str(self.front.get('type', '')).strip('[] ')
-        return kind == 'character'
+        return str(self.front.get('type', '')).strip('[] ') == 'character'
 
     def preamble_clauses(self):
-        if not self.preamble:
-            return []
         return [s for s in re.split(r'(?<=[.;!?])\s+', self.preamble) if s]
 
     def expected_entries(self):
         keys = []
-        for title, bullets in self.entries.items():
-            keys += [(title, str(i + 1)) for i in range(len(bullets))]
+        for title, entries in self.entries.items():
+            keys += [(title, str(i + 1)) for i in range(len(entries))]
         keys += [('Body', f'preamble {i + 1}')
                  for i in range(len(self.preamble_clauses()))]
         return keys
 
     def relationship_names(self):
         names = []
-        for bullet in self.entries.get('Relationships', []):
-            m = re.match(r'\*\*(.+?)\*\*', bullet)
+        for entry in self.entries.get('Relationships', []):
+            first = re.sub(r'^[-*]\s+', '', entry[0])
+            m = re.match(r'\*\*(.+?)\*\*', first)
             if m:
                 label = m.group(1).rstrip(':').strip()
                 names.append(re.split(r'\s+[—–-]\s+|:', label)[0].strip())
         return names
-
-
-def _sub_sections(lines):
-    """Map '### ' heading titles to their lines inside a section's lines."""
-    out, title, buf = {}, None, []
-    for line in lines:
-        if line.startswith('### '):
-            if title is not None:
-                out[title] = buf
-            title, buf = line[4:].strip(), []
-        elif title is not None:
-            buf.append(line)
-    if title is not None:
-        out[title] = buf
-    return out
 
 
 # -- the reference sheet --------------------------------------------------
@@ -186,40 +182,23 @@ class Sheet:
     def __init__(self, path):
         _, body = split_front_matter(read(path))
         top = sections(body, 2)
-        chars = _sub_sections(top.get('Characters', []))
+        chars = sections(top.get('Characters', []), 3)
         self.cast = list(chars)
         self.occupations = {}
         for name, lines in chars.items():
-            subs = _sub_sections_h4(lines)
-            _, rows = table_rows(subs.get('Occupations', []))
+            rows = table_rows(sections(lines, 4).get('Occupations', []))[1]
             self.occupations[name.casefold()] = [
                 r.get('Occupation', '') for r in rows if r.get('Occupation')]
-        _, self.connections = table_rows(top.get('Connections', []))
+        self.connections = table_rows(top.get('Connections', []))[1]
         self.contradiction_header, self.contradictions = table_rows(
             top.get('Contradictions', []))
-        self.assets = {}
-        for name, lines in _sub_sections(top.get('Asset inventory', [])).items():
-            _, rows = table_rows(lines)
-            self.assets[name] = rows
+        self.assets = {name: table_rows(lines)[1] for name, lines in
+                       sections(top.get('Asset inventory', []), 3).items()}
 
     def owners_of(self, name):
         return {r['From'] for r in self.connections
                 if r.get('Kind', '').casefold() == 'ownership'
                 and r.get('To', '').casefold() == name.casefold()}
-
-
-def _sub_sections_h4(lines):
-    out, title, buf = {}, None, []
-    for line in lines:
-        if line.startswith('#### '):
-            if title is not None:
-                out[title] = buf
-            title, buf = line[5:].strip(), []
-        elif title is not None:
-            buf.append(line)
-    if title is not None:
-        out[title] = buf
-    return out
 
 
 # -- the checks -------------------------------------------------------------
@@ -255,44 +234,74 @@ def load_world(root):
 
 
 def source_exists(root, item):
-    item = item.strip().strip('[]')
-    item = item.split('|')[0].split('#')[0].strip()
+    """True when `item` is a file that resolves to a place inside the
+    world's reference/ folder."""
+    item = item.strip().strip('[]').split('|')[0].split('#')[0].strip()
     if item.startswith('reference/'):
         item = item[len('reference/'):]
-    return bool(item) and os.path.isfile(
-        os.path.join(root, 'reference', *item.split('/')))
+    if not item:
+        return False
+    base = os.path.realpath(os.path.join(root, 'reference'))
+    target = os.path.realpath(os.path.join(base, *item.split('/')))
+    inside = os.path.commonpath([base, target]) == base
+    return inside and os.path.isfile(target)
+
+
+def entry_key(entry):
+    """Split a ledger Entry cell into (entry, claim suffix)."""
+    m = re.fullmatch(r'(preamble \d+|\d+|unwritten)(?:[. ](\S+))?',
+                     entry.strip())
+    return (m.group(1), m.group(2)) if m else (entry.strip(), None)
 
 
 def check_ledger(root, note, report):
     if note.ledger is None:
         report.fail(f'{note.name}: no "### {LEDGER_HEADING}" under Design Notes')
         return
-    rows = {}
-    for row in note.ledger:
-        key = (row.get('Section', ''), row.get('Entry', ''))
-        rows[key] = row
     expected = set(note.expected_entries())
-    for key in note.expected_entries():
-        if key not in rows:
-            report.fail(f'{note.name}: {key[0]} {key[1]} has no ledger row')
-    for key, row in rows.items():
-        if key not in expected:
-            report.fail(f'{note.name}: ledger row {key[0]} {key[1]}: '
+    covered, seen = set(), set()
+    for row in note.ledger:
+        section = row.get('Section', '')
+        raw = row.get('Entry', '').strip()
+        entry, _ = entry_key(raw)
+        source = row.get('Source', '').strip()
+        claim = row.get('Claim', '').strip()
+        label = f'{section} {raw}'
+        if (section, raw) in seen:
+            report.fail(f'{note.name}: ledger key {label} appears twice')
+        seen.add((section, raw))
+        flagged = source.casefold() == 'flagged'
+        if entry == 'unwritten':
+            if not flagged:
+                report.fail(f'{note.name}: ledger row {label} is unwritten '
+                            'and must have Source flagged')
+            else:
+                report.flagged.append(
+                    f'{note.name}: {section}: "{claim}" has no source and is '
+                    'not written; returned to the human')
+            continue
+        if (section, entry) not in expected:
+            report.fail(f'{note.name}: ledger row {label}: '
                         'no such entry in the note')
             continue
-        source = row.get('Source', '').strip()
-        if source.casefold() == 'flagged':
-            report.flagged.append(f'{note.name}: {key[0]} {key[1]} has no '
-                                  'source and is returned to the human')
+        covered.add((section, entry))
+        if flagged:
+            report.fail(f'{note.name}: ledger row {label} is flagged but the '
+                        'claim is written into the card; remove it or find '
+                        'its source')
         elif not source:
-            report.fail(f'{note.name}: ledger row {key[0]} {key[1]} names no '
-                        'source (write the source, or mark the row flagged)')
+            report.fail(f'{note.name}: ledger row {label} names no source '
+                        '(write the source, or leave the claim unwritten and '
+                        'flagged)')
         else:
             for item in source.split(';'):
                 if not source_exists(root, item):
-                    report.fail(f'{note.name}: ledger row {key[0]} {key[1]} '
-                                f'names {item.strip()}, which is not under '
+                    report.fail(f'{note.name}: ledger row {label} names '
+                                f'{item.strip()}, which is not a file under '
                                 'reference/')
+    for key in note.expected_entries():
+        if key not in covered:
+            report.fail(f'{note.name}: {key[0]} {key[1]} has no ledger row')
 
 
 def check_sheet(sheet, report):
@@ -347,6 +356,22 @@ def check_world(root):
     return report
 
 
+def full_name(char):
+    return ' '.join(p for p in (char.get('name', ''), char.get('lastName', ''))
+                    if p).strip()
+
+
+def named_owners(text, name):
+    """Names the description writes as an owner of the character `name`."""
+    cap = r"[A-Z][\w'’-]*(?: [A-Z][\w'’-]*)?"
+    found = re.findall(
+        rf"(?i:owned by|belongs to|pet of|companion of) ({cap})", text)
+    found += re.findall(
+        rf"({cap})['’]s (?:\w+ ){{0,2}}(?i:{PET_NOUNS}|{re.escape(name)})\b",
+        text)
+    return found
+
+
 def check_export(root, world_json):
     report = Report()
     notes, sheet = load_world(root)
@@ -356,35 +381,31 @@ def check_export(root, world_json):
     with open(world_json, encoding='utf-8') as f:
         data = json.load(f)
     for char in data.get('characters', []):
-        name = char.get('name', '')
+        name = full_name(char)
         note = notes.get(name.casefold())
-        role = char.get('role', '').casefold()
+        if note is None:
+            report.fail(f'{name}: exported character has no character note')
+            continue
+        role = char.get('role', '')
         for occ in sheet.occupations.get(name.casefold(), []):
-            if occ.casefold() not in role:
+            if not re.search(rf'(?<!\w){re.escape(occ)}(?!\w)', role,
+                             re.IGNORECASE):
                 report.fail(f'{name}: role lacks the occupation "{occ}" '
                             'that the reference sheet lists')
-        appearance = char.get('appearance')
-        if (appearance and note is not None
-                and normalize(appearance) != note.preamble):
+        if normalize(char.get('appearance') or '') != note.preamble:
             report.fail(f'{name}: appearance differs from the note\'s '
                         'Body preamble')
-        owners = {o.casefold() for o in sheet.owners_of(name)}
-        if owners:
-            for sset in char.get('spriteSets', []):
-                text = sset.get('description', '')
-                for other in sheet.cast:
-                    if (other.casefold() in owners
-                            or other.casefold() == name.casefold()):
-                        continue
-                    n = re.escape(other)
-                    pattern = (rf"\b{n}['’]s\b|owned by {n}\b|"
-                               rf"belongs to {n}\b|pet of {n}\b")
-                    if re.search(pattern, text, re.IGNORECASE):
-                        report.fail(f'{name}: sprite set '
-                                    f'"{sset.get("name", "")}" description '
-                                    f'names {other} as owner; the reference '
-                                    'sheet lists '
-                                    + ', '.join(sorted(sheet.owners_of(name))))
+        owners = sheet.owners_of(name)
+        allowed = {o.casefold() for o in owners}
+        for sset in char.get('spriteSets', []):
+            for owner in named_owners(sset.get('description', ''), name):
+                if not any(owner.casefold() == a
+                           or a.startswith(owner.casefold() + ' ')
+                           for a in allowed):
+                    listed = ', '.join(sorted(owners)) or 'no owner'
+                    report.fail(f'{name}: sprite set "{sset.get("name", "")}" '
+                                f'description names {owner} as owner; the '
+                                f'Connections table lists {listed}')
     return report
 
 
