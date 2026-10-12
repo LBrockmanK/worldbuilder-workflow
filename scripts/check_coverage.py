@@ -37,8 +37,8 @@ CARD_SECTIONS = ['Background', 'Body', 'Soul', 'Relationships',
 # Sections whose entries are labelled blocks (card-format.md): an entry
 # starts at a bullet, a bold title line or a #### heading.
 BLOCK_SECTIONS = {'Voice / Dialogue', 'Story Seeds'}
-PET_NOUNS = ('pet|dog|cat|horse|chicken|bird|animal|companion|familiar|'
-             'mount|puppy|kitten')
+PET_WORDS = (['pet', 'dog', 'cat', 'horse', 'chicken', 'bird', 'animal', 'companion', 'familiar', 'mount', 'puppy', 'kitten', 'goat', 'sheep', 'cow', 'pig', 'rabbit', 'duck', 'hen', 'rooster', 'donkey', 'llama', 'alpaca', 'fish', 'turtle', 'lizard', 'snake', 'ferret', 'hamster', 'mouse', 'rat'])
+PET_NOUNS = '|'.join(PET_WORDS)
 
 
 # -- markdown reading ---------------------------------------------------
@@ -243,7 +243,10 @@ def source_exists(root, item):
         return False
     base = os.path.realpath(os.path.join(root, 'reference'))
     target = os.path.realpath(os.path.join(base, *item.split('/')))
-    inside = os.path.commonpath([base, target]) == base
+    try:
+        inside = os.path.commonpath([base, target]) == base
+    except ValueError:  # a path on another drive
+        return False
     return inside and os.path.isfile(target)
 
 
@@ -363,9 +366,10 @@ def full_name(char):
 
 def named_owners(text, name):
     """Names the description writes as an owner of the character `name`."""
-    cap = r"[A-Z][\w'’-]*(?: [A-Z][\w'’-]*)?"
+    cap = r"[A-Z][\w'’-]*(?: [A-Z][\w'’-]*)*"
+    first = r"[\w'’-]+(?: [A-Z][\w'’-]*)*"
     found = re.findall(
-        rf"(?i:owned by|belongs to|pet of|companion of) ({cap})", text)
+        rf"(?i:owned by|belongs to|pet of|companion of) ({first})", text)
     found += re.findall(
         rf"({cap})['’]s (?:\w+ ){{0,2}}(?i:{PET_NOUNS}|{re.escape(name)})\b",
         text)
@@ -385,6 +389,10 @@ def check_export(root, world_json):
         note = notes.get(name.casefold())
         if note is None:
             report.fail(f'{name}: exported character has no character note')
+            continue
+        if name.casefold() not in {c.casefold() for c in sheet.cast}:
+            report.fail(f'{name}: exported character has a card but no '
+                        'subsection under Characters in the reference sheet')
             continue
         role = char.get('role', '')
         for occ in sheet.occupations.get(name.casefold(), []):

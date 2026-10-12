@@ -40,12 +40,8 @@ Process:
 
 When working from source material (game data, existing character
 sheets, fiction, wiki references), reference documents come first.
-They are made by a prior sweep (`worldbuilder-source-ingestion`) and
-distillation, which are their own items; the creative step reads them
-and does not build them. They live in the world's `reference/` folder.
-`../source-extraction-standard.md` sets out what they hold and how a
-card is checked against them. Read it before writing a card from source
-material.
+See `../source-extraction-standard.md`, Stages and Where files live,
+before writing a card from source material.
 
 The reference documents hold extracted, provenance-bearing material
 and nothing else: no reading of what the material means. The creative

@@ -284,6 +284,19 @@ class WorldModeTests(CheckerCase):
         self.assertTrue(any('Bob.md' in l and 'reference/' in l
                             for l in self.fails(result)), result.stdout)
 
+    def test_a_source_on_another_drive_is_reported_not_a_crash(self):
+        drive = os.path.splitdrive(os.path.abspath(self.root))[0].upper()
+        other = 'D:' if drive == 'C:' else 'C:'
+        ledger = ALICE_LEDGER.replace(
+            '| Soul | 1 | claim | alice-source.md |',
+            '| Soul | 1 | claim | ' + other + chr(92) + 'source.md |')
+        self.put('notes/Alice.md', alice_note(ledger=ledger))
+        result = self.world()
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertNotIn('Traceback', result.stderr)
+        self.assertTrue(any('source.md' in l and 'reference/' in l
+                            for l in self.fails(result)), result.stdout)
+
     def test_an_unwritten_flagged_claim_is_listed_and_does_not_fail(self):
         ledger = ALICE_LEDGER + (
             "\n| Soul | unwritten | She fears water | flagged | |")
@@ -402,6 +415,39 @@ class ExportModeTests(CheckerCase):
         chars[0]['spriteSets'][0]['description'] = 'Pet of Bob, at rest'
         result = self.export(chars)
         self.assertTrue(any('Alice' in l and 'Bob' in l
+                            for l in self.fails(result)), result.stdout)
+
+    def test_a_card_with_no_sheet_subsection_is_reported(self):
+        self.put('notes/Dave.md', alice_note().replace(
+            'title: Alice', 'title: Dave'))
+        chars = self.good() + [{'name': 'Dave', 'role': 'x',
+                                'appearance': 'Red hair. Green eyes.'}]
+        result = self.export(chars)
+        self.assertTrue(any('Dave' in l and 'reference sheet' in l
+                            for l in self.fails(result)), result.stdout)
+
+    def test_a_multi_word_owner_name_is_read_whole(self):
+        sheet = SHEET.replace('| ownership | Bob | Rex |',
+                              '| ownership | Mary Jane Watson | Rex |')
+        self.put('reference/Reference sheet.md', sheet)
+        chars = self.good()
+        chars[2]['spriteSets'][0]['description'] = (
+            "Mary Jane Watson's dog, sitting")
+        result = self.export(chars)
+        self.assertEqual(result.returncode, 0, result.stdout)
+
+    def test_owned_by_matches_in_any_case(self):
+        chars = self.good()
+        chars[2]['spriteSets'][0]['description'] = 'owned by mary, sitting'
+        result = self.export(chars)
+        self.assertTrue(any('Rex' in l and 'mary' in l
+                            for l in self.fails(result)), result.stdout)
+
+    def test_a_farm_animal_word_counts_as_a_pet_word(self):
+        chars = self.good()
+        chars[2]['spriteSets'][0]['description'] = "Holt's goat, sitting"
+        result = self.export(chars)
+        self.assertTrue(any('Rex' in l and 'Holt' in l
                             for l in self.fails(result)), result.stdout)
 
     def test_an_appearance_that_differs_from_the_preamble_fails(self):

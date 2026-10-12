@@ -92,8 +92,8 @@ dependencies so workers do not collide.
 
 ### Extraction depth
 
-Three levels, always user-directed. A character corpus is swept
-completely instead (see `../source-extraction-standard.md`, Stages):
+Three levels, always user-directed. For a character corpus see
+`../source-extraction-standard.md`, Stages:
 
 - **Full** — extract all fields with values. Default for sources
   central to the entity being built (a character's dialogue files,
