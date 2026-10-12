@@ -95,7 +95,7 @@ Fix every discrepancy in the cards, or return it to the human. The boundary is t
 The export copies several facts out of the cards: `role`, `appearance`, and each `spriteSets[].description`. The check runs over an exported `world.json` and compares each of these with the sheet and the cards:
 
 - `role` must contain every occupation the sheet lists for the character.
-- `appearance` must equal the card's Body preamble, ignoring whitespace.
+- `appearance` must equal the card's Body preamble, ignoring whitespace. A character with no card is not compared.
 - A `spriteSets[].description` must not name an owner for an owned character other than the owners the Connections table lists. The check reads a name as an owner when the description writes `<Name>'s`, `owned by <Name>`, `belongs to <Name>` or `pet of <Name>`.
 
 Every difference is reported. The checker script (`scripts/check_coverage.py`, `export` mode) runs it. Wiring it into the export procedure belongs to the export rework item; until then, someone runs it after an export.
