@@ -17,6 +17,8 @@ skills) handles interpretation when it consumes the references.
 
 **Governing spec:** "2026-08-15-source-ingestion-skill-reference-document-structure-and-extraction-principles" in the Anima vault's worldbuilder-workflow domain.
 
+**Extraction standard:** `../source-extraction-standard.md` governs extraction for characters. Read it before extracting for characters.
+
 ---
 
 ## The No-Inference Principle
@@ -65,6 +67,9 @@ is interpretation):
 5. Output one or more reference documents
 6. The Q&A workflow consumes the references as source material
 
+For a character corpus, follow `../source-extraction-standard.md`: its
+Stages and The source map sections govern steps 2 to 4 above.
+
 ### Exploring the source
 
 Before extracting, map the source's structure: directory tree, file
@@ -87,7 +92,8 @@ dependencies so workers do not collide.
 
 ### Extraction depth
 
-Three levels, always user-directed:
+Three levels, always user-directed. For a character corpus see
+`../source-extraction-standard.md`, Stages:
 
 - **Full** — extract all fields with values. Default for sources
   central to the entity being built (a character's dialogue files,
@@ -119,13 +125,14 @@ extraction) — those conflict with the no-inference principle.
 python "<scraibe-plugin>/scripts/new_doc.py" --type reference \
   --title "<Topic> — <Source Label>" \
   --description "<what this document contains>" \
-  --dir <project entity directory>/reference
+  --dir <world root>/reference
 ```
 
 Record source paths in the frontmatter `resources` field.
 
 The date-prefixed filename from `new_doc.py` is the default. Rename
-only if the generated filename is misleading.
+only if the generated filename is misleading. The reference sheet has a
+fixed name (see `../source-extraction-standard.md`, Where files live).
 
 ---
 
@@ -162,12 +169,14 @@ with section breaks preserving each source's path as headings —
 prefer this over creating many tiny documents. The test: if each
 document would be under ~50 lines of extracted content, combine them.
 
-**Per-entity vs type-level documents:** character ingestion creates
-per-entity directories (`notes/adeline/reference/`) because each
-character draws from many sources. Non-character entities often come
-from a single source covering many instances (a locations file
-defining 60 locations, a festivals file defining 4 events). These
-produce type-level reference documents in `notes/<entity-type>/reference/`.
+**Where documents go:** a world keeps all reference documents in its
+`reference/` folder at the world root, never under `notes/`. A
+character corpus is swept once for the whole cast, so its documents are
+organized by source, not by character (see the naming rules below).
+Non-character entities often come from a single source covering many
+instances (a locations file defining 60 locations, a festivals file
+defining 4 events); these produce type-level documents in the same
+`reference/` folder.
 
 **Entity placement:** when the source doesn't map to an obvious
 entity note type:

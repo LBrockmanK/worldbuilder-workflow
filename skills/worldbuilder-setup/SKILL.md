@@ -64,7 +64,7 @@ If the domain folder does not exist, stop with this message: "The world's domain
 - Overlay this skill's `worldvault/.obsidian/` directory on top (app config, community-plugin registration, and the vendored Templater plugin).
 - Copy this skill's `worldvault/Home.md` to the project root, replacing `{{PROJECT_NAME}}` with the project name.
 - Copy this skill's `worldvault/_bases/` directory to `<project>/_bases/`.
-- Create empty directories: `notes/`, `project/`, `_attachments/`.
+- Create empty directories: `notes/`, `project/`, `reference/`, `_attachments/`.
 
 Chrome lives at the vault root — `Home.md` and the Bases carry no vault frontmatter, and that is correct. Scraibe's corpus rule excludes reserved spaces (`+/`, `repo/`, `.claude/`, `Imports/`), so nothing there is validated as a vault document.
 
@@ -87,6 +87,7 @@ From the project root, with this plugin's root recorded as `<worldbuilder>`:
     python <worldbuilder>/scripts/generate_templates.py --out . \
       --dir "notes/=character,location,faction,event,concept,story" \
       --dir "project/=foundation,plan,direction" \
+      --dir "reference/=reference" \
       --obsidian
 
 The generator reads its type roster from this plugin's own
@@ -95,7 +96,7 @@ the project.
 
 This writes `_templates/` (one template per type plus a type-picker per
 directory) and points the vendored Templater's folder attachments at
-them. From here on, a note created in `notes/` or `project/` inside
+them. From here on, a note created in `notes/`, `project/` or `reference/` inside
 Obsidian receives compliant frontmatter and its type body at creation —
 the type-picker asks one question in mixed directories.
 
