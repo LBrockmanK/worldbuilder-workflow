@@ -38,10 +38,8 @@ Process:
 
 ## Source Ingestion
 
-When working from source material (game data, existing character
-sheets, fiction, wiki references), reference documents come first.
-See `../source-extraction-standard.md`, Stages and Where files live,
-before writing a card from source material.
+When working from source material, see `../source-extraction-standard.md`,
+Stages and Where files live.
 
 The reference documents hold extracted, provenance-bearing material
 and nothing else: no reading of what the material means. The creative

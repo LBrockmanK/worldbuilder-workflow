@@ -364,15 +364,48 @@ def full_name(char):
                     if p).strip()
 
 
-def named_owners(text, name):
-    """Names the description writes as an owner of the character `name`."""
-    cap = r"[A-Z][\w'’-]*(?: [A-Z][\w'’-]*)*"
-    first = r"[\w'’-]+(?: [A-Z][\w'’-]*)*"
-    found = re.findall(
-        rf"(?i:owned by|belongs to|pet of|companion of) ({first})", text)
-    found += re.findall(
-        rf"({cap})['’]s (?:\w+ ){{0,2}}(?i:{PET_NOUNS}|{re.escape(name)})\b",
-        text)
+NOT_OWNERS = {'anyone', 'anybody', 'someone', 'somebody', 'nobody',
+              'noone', 'no', 'none', 'everyone'}
+WORD = r"[^\W\d_][\w'’-]*"
+
+
+def named_owners(text, name, known):
+    """Names the description writes as an owner of the character `name`.
+
+    A capitalised word (first character upper case, in any script) is a
+    name, together with the capitalised words after it. After "owned by"
+    and the like, a word in lower case counts only when it is one of the
+    casefolded cast or connection names in `known`.
+    """
+    found = []
+    phrase = (r"(?i:\bowned by|\bbelongs to|\bpet of|\bcompanion of)"
+              rf"\s+({WORD}(?:\s+{WORD})*)")
+    for m in re.finditer(phrase, text):
+        words = m.group(1).split()
+        first = words[0]
+        if first.casefold() in NOT_OWNERS:
+            continue
+        if first[:1].isupper():
+            run = []
+            for w in words:
+                if not w[:1].isupper():
+                    break
+                run.append(w)
+            found.append(' '.join(run))
+        elif any(k == first.casefold() or k.startswith(first.casefold() + ' ')
+                 for k in known):
+            found.append(first)
+    possessive = (rf"({WORD})['’]s (?:\w+ ){{0,2}}"
+                  rf"(?i:{PET_NOUNS}|{re.escape(name)})\b")
+    for m in re.finditer(possessive, text):
+        if not m.group(1)[:1].isupper():
+            continue
+        run = [m.group(1)]
+        for w in reversed(text[:m.start(1)].split()):
+            if not (re.fullmatch(WORD, w) and w[:1].isupper()):
+                break
+            run.insert(0, w)
+        found.append(' '.join(run))
     return found
 
 
@@ -390,6 +423,9 @@ def check_export(root, world_json):
         if note is None:
             report.fail(f'{name}: exported character has no character note')
             continue
+        if normalize(char.get('appearance') or '') != note.preamble:
+            report.fail(f'{name}: appearance differs from the note\'s '
+                        'Body preamble')
         if name.casefold() not in {c.casefold() for c in sheet.cast}:
             report.fail(f'{name}: exported character has a card but no '
                         'subsection under Characters in the reference sheet')
@@ -400,13 +436,14 @@ def check_export(root, world_json):
                              re.IGNORECASE):
                 report.fail(f'{name}: role lacks the occupation "{occ}" '
                             'that the reference sheet lists')
-        if normalize(char.get('appearance') or '') != note.preamble:
-            report.fail(f'{name}: appearance differs from the note\'s '
-                        'Body preamble')
         owners = sheet.owners_of(name)
         allowed = {o.casefold() for o in owners}
+        known = ({c.casefold() for c in sheet.cast}
+                 | {r.get(k, '').casefold() for r in sheet.connections
+                    for k in ('From', 'To')})
         for sset in char.get('spriteSets', []):
-            for owner in named_owners(sset.get('description', ''), name):
+            for owner in named_owners(sset.get('description', ''), name,
+                                      known):
                 if not any(owner.casefold() == a
                            or a.startswith(owner.casefold() + ' ')
                            for a in allowed):

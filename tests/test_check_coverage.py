@@ -427,21 +427,54 @@ class ExportModeTests(CheckerCase):
                             for l in self.fails(result)), result.stdout)
 
     def test_a_multi_word_owner_name_is_read_whole(self):
-        sheet = SHEET.replace('| ownership | Bob | Rex |',
-                              '| ownership | Mary Jane Watson | Rex |')
-        self.put('reference/Reference sheet.md', sheet)
         chars = self.good()
         chars[2]['spriteSets'][0]['description'] = (
             "Mary Jane Watson's dog, sitting")
         result = self.export(chars)
-        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertTrue(any('Rex' in l and 'Mary Jane Watson' in l
+                            for l in self.fails(result)), result.stdout)
 
-    def test_owned_by_matches_in_any_case(self):
+    def know_mary(self):
+        self.put('reference/Reference sheet.md', SHEET.replace(
+            '| friend | Alice | Bob | Alice and Bob are friends | alice-source.md |',
+            '| friend | Alice | Bob | Alice and Bob are friends | alice-source.md |\n'
+            '| friend | Mary | Bob | Mary knows Bob | bob-source.md |'))
+
+    def test_owned_by_matches_a_known_name_in_any_case(self):
+        self.know_mary()
         chars = self.good()
         chars[2]['spriteSets'][0]['description'] = 'owned by mary, sitting'
         result = self.export(chars)
         self.assertTrue(any('Rex' in l and 'mary' in l
                             for l in self.fails(result)), result.stdout)
+
+    def test_owned_by_nobody_is_not_an_owner(self):
+        self.know_mary()
+        for text in ('not owned by anyone, sitting', 'owned by no one',
+                     'belongs to nobody', 'owned by a farmer'):
+            chars = self.good()
+            chars[2]['spriteSets'][0]['description'] = text
+            result = self.export(chars)
+            self.assertEqual(result.returncode, 0, text + result.stdout)
+
+    def test_a_capital_letter_in_another_script_starts_a_name(self):
+        chars = self.good()
+        chars[2]['spriteSets'][0]['description'] = "Élodie's goat, sitting"
+        result = self.export(chars)
+        self.assertTrue(any('Rex' in l and 'lodie as owner' in l
+                            for l in self.fails(result)), result.stdout)
+
+    def test_both_a_wrong_appearance_and_a_missing_subsection_are_reported(self):
+        self.put('notes/Dave.md', alice_note().replace(
+            'title: Alice', 'title: Dave'))
+        chars = self.good() + [{'name': 'Dave', 'role': 'x',
+                                'appearance': 'Wrong.'}]
+        result = self.export(chars)
+        fails = self.fails(result)
+        self.assertTrue(any('Dave' in l and 'appearance' in l
+                            for l in fails), result.stdout)
+        self.assertTrue(any('Dave' in l and 'reference sheet' in l
+                            for l in fails), result.stdout)
 
     def test_a_farm_animal_word_counts_as_a_pet_word(self):
         chars = self.good()
