@@ -12,6 +12,13 @@ _Q&A capture: what the user said they wanted this character to be._
 
 _Design decisions, narrative function, external references._
 
+### Coverage ledger
+
+_One row per claim, filled when the card is written from source material. Format and rules: `skills/source-extraction-standard.md`._
+
+| Section | Entry | Source | Derived copies |
+|---|---|---|---|
+
 ## Background
 
 _Where this character comes from. Fact pairs: [Fact] → [what it made true]. No behavioral content._

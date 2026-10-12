@@ -16,15 +16,16 @@ A player project after `worldbuilder-setup`:
   Home.md  _bases/  _attachments/   ← chrome
   project/              ← foundation.md, plan.md, direction.md
   notes/                ← all entity notes, flat
+  reference/            ← sweep documents, the reference sheet (type reference)
 ```
 
-A world has two scope folders. `notes/` holds world content and `project/` holds the project documents. A folder decides scope and never type: the type of a note comes from its `type` property, and the worldbuilder keeps its own type roster in this plugin rather than adopting the main vault's schema.
+A world has three scope folders. `notes/` holds world content, `project/` holds the project documents, and `reference/` holds extracted source material and the reference sheet (see `skills/source-extraction-standard.md`). A folder decides scope and never type: the type of a note comes from its `type` property, and the worldbuilder keeps its own type roster in this plugin rather than adopting the main vault's schema.
 
 No configuration file is written into the project: the project is a worldbuilder project because scraibe and this plugin are enabled for it, which `fleet:setup` records. Scraibe's corpus rule excludes reserved spaces (`+/`, `repo/`, `.claude/`, `Imports/`); everything else is a vault document. Chrome at the root — `Home.md` and the Bases — carries no frontmatter, and that is fine.
 
 ## Types
 
-Defined in `defaults/types.json`, this plugin's internal roster. Entity types live in `notes/`; project types live in `project/`.
+Defined in `defaults/types.json`, this plugin's internal roster. Entity types live in `notes/`; project types live in `project/`; the `reference` type lives in `reference/`.
 
 **character** — the comprehensive Wide-phase behavioral specification for one character; the source every export card derives from. _Avoid_: blueprint, draft card.
 
@@ -44,7 +45,7 @@ Defined in `defaults/types.json`, this plugin's internal roster. Entity types li
 
 **direction** — the standing creative brief (`project/direction.md`); the story engine's primary guard rail, exported verbatim as `arcManagerGuidance`.
 
-**reference** — ingested external material with provenance, created by `scraibe:ingest`.
+**reference** — ingested external material with provenance, or the reference sheet distilled from it; lives in `reference/`.
 
 ## Properties
 
