@@ -17,6 +17,8 @@ skills) handles interpretation when it consumes the references.
 
 **Governing spec:** "2026-08-15-source-ingestion-skill-reference-document-structure-and-extraction-principles" in the Anima vault's worldbuilder-workflow domain.
 
+**Extraction standard:** `../source-extraction-standard.md` defines how a character corpus is extracted: one sweep over the whole corpus for all characters at once, then a reference sheet. Read it before extracting for characters.
+
 ---
 
 ## The No-Inference Principle
@@ -64,6 +66,12 @@ is interpretation):
 4. Extract content following the source's own organization
 5. Output one or more reference documents
 6. The Q&A workflow consumes the references as source material
+
+For a corpus that feeds more than one character, run the extraction as
+one sweep for all characters at once, never one pass per character. The
+sweep records the source map and the asset inventory with content
+hashes, as `../source-extraction-standard.md` sets out. The sweep
+records facts, absences and discrepancies; it never settles them.
 
 ### Exploring the source
 
@@ -119,7 +127,7 @@ extraction) — those conflict with the no-inference principle.
 python "<scraibe-plugin>/scripts/new_doc.py" --type reference \
   --title "<Topic> — <Source Label>" \
   --description "<what this document contains>" \
-  --dir <project entity directory>/reference
+  --dir <world root>/reference
 ```
 
 Record source paths in the frontmatter `resources` field.
@@ -162,12 +170,14 @@ with section breaks preserving each source's path as headings —
 prefer this over creating many tiny documents. The test: if each
 document would be under ~50 lines of extracted content, combine them.
 
-**Per-entity vs type-level documents:** character ingestion creates
-per-entity directories (`notes/adeline/reference/`) because each
-character draws from many sources. Non-character entities often come
-from a single source covering many instances (a locations file
-defining 60 locations, a festivals file defining 4 events). These
-produce type-level reference documents in `notes/<entity-type>/reference/`.
+**Where documents go:** a world keeps all reference documents in its
+`reference/` folder at the world root, never under `notes/`. A
+character corpus is swept once for the whole cast, so its documents are
+organized by source, not by character (see the naming rules below).
+Non-character entities often come from a single source covering many
+instances (a locations file defining 60 locations, a festivals file
+defining 4 events); these produce type-level documents in the same
+`reference/` folder.
 
 **Entity placement:** when the source doesn't map to an obvious
 entity note type:

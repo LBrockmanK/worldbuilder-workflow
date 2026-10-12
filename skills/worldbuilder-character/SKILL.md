@@ -42,8 +42,11 @@ When working from source material (game data, existing character
 sheets, fiction, wiki references), reference documents come first.
 They are made by a prior `worldbuilder-source-ingestion` run, which is
 its own item; the creative step reads them and does not build them. Reference documents organize the raw material
-into a reviewable evidence base. They live in a `reference/`
-subdirectory alongside the character card.
+into a reviewable evidence base. They live in the world's `reference/`
+folder at the world root. How a corpus is swept, how the reference sheet
+is distilled from it, and how each card is checked against it are set
+out in `../source-extraction-standard.md`. Read that standard before
+writing a card from source material.
 
 The reference set depends on what the source material provides, but
 typically includes:
@@ -211,7 +214,7 @@ The introduction note is also a story note (introduction scope). Propose it as a
 
 ## Post-Group Sync Pass
 
-After completing a household group or batch of characters, run a relationship sync pass before moving on. Characters develop during the blueprinting sequence. A character written later may shift in ways that make an earlier character's relationship entry inaccurate. Check the group's notes against each other: are named relationships still consistent? Update when the sequence reveals something that changes the picture.
+After completing a household group or batch of characters, run the cross-card pass defined in `../source-extraction-standard.md` before moving on. Characters develop during the blueprinting sequence. A character written later may shift in ways that make an earlier character's relationship entry inaccurate. Update when the sequence reveals something that changes the picture.
 
 ---
 
@@ -222,6 +225,8 @@ The note is open until it carries a closure tag. Mark it `complete` when every i
 - [ ] All required doctrine entries present or explicitly waived with a recorded reason
 - [ ] Each Core section (Background, Body, Soul) has at least one entry. Target ranges in `card-format.md` are guidance, not gates
 - [ ] Reference documents from a prior ingestion run read when working from source material
+- [ ] When working from source material: the `### Coverage ledger` under Design Notes has one row per claim, no claim lacks a source, and flagged rows are returned to the human (`../source-extraction-standard.md`)
+- [ ] When working from source material: evidence readback done, Background, Soul and Voice / Dialogue entries re-read against the evidence their ledger rows cite (`../source-extraction-standard.md`)
 - [ ] Story Seeds section present with entries (every character; 5-12 target range)
 - [ ] Other selected addon blocks completed (Relationships, Intimate Dynamics, Voice / Dialogue as determined in the Specification)
 - [ ] No trait adjectives anywhere in the note. Each replaced by the behavior that earned it
