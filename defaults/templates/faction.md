@@ -1,29 +1,27 @@
-> For future agents: this is a faction note. The filename is the faction's name. Use `worldbuilder-faction` to build it out.
+> For future agents: this is a faction note. Use `worldbuilder-faction` to build it out.
 
-## Preamble
+## Design Notes
 
-_2–3 sentences orienting a future agent to this faction._
+### Session Notes
 
-## Concept
+### Builder Context
 
-_What this faction is and its role in the world._
+## Origin & Structure
 
-## Origin & Purpose
+### Founding
 
-_How and why this faction formed._
+### Current holdings
+
+### Active goals
+
+### Membership
 
 ## Collective Behavior
 
-_How the faction acts as a group._
+### Shared behavioral tendencies
 
-## Membership
+### The collective mask (Demeanor)
 
-_Who belongs, how membership works._
+### The variation layer (Nature)
 
-## Inter-Faction Web
-
-_Relationships to other factions._
-
-## Storylines
-
-_Faction-level story participation._
+### Inter-Faction Web

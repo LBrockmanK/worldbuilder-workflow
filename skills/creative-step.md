@@ -6,7 +6,7 @@ A worldbuilder entity item is a tracked item with three middle steps: a creative
 
 This file covers the entity notes of an entity item only. The Foundation item's documents (the foundation document and `project/direction.md`) are written by that item's builder, outside the creative step.
 
-The interview does not happen in the creative step. The definer ran it in rounds on the answer page before the item's Specification was approved, and the Specification holds the answers. The interview questions for each entity live in the entity skill's `## Interview` section, which the definer reads.
+The interview does not happen in the creative step. The definer ran it in rounds on the answer page before the item's Specification was approved, and the Specification holds the answers. The interview questions for each entity live in the entity skill's `## Interview` section, which the definer reads. `## What every entity note shares` below holds the rules that apply to every entity note and every interview; the entity skills cite it and do not restate it.
 
 ---
 
@@ -41,4 +41,37 @@ The orchestrator writes each proposal as a seed note in the world's Anima domain
 
 ## Hand on
 
-The creative step ends by returning: the paths of the notes it wrote or changed, any questions, and the spin-off proposals. After the first creative step, the critic step runs next (`worldbuilder-review`). After the revision step, the item goes to its final review.
+The creative step ends by returning: the paths of the notes it wrote or changed, any questions, and the spin-off proposals. After the first creative step, the critic step runs next: `worldbuilder-review` with the entity notes, each note's governing format document and all reference material used. The revision step applies the auto-fix findings, and escalated findings go to the human. After the revision step, the item goes to its final review.
+
+---
+
+## What every entity note shares
+
+Each rule in this section is stated here once. The entity skills cite it by heading.
+
+### Interview
+
+The definer asks one question at a time and waits for the answer. Follow threads: when an answer implies something about a different section, surface it and pursue it before changing topics. The human can override at any point: answer, skip questions, write entries directly, or provide source material in place of answers. The definer's rounds run on the answer page, and the human's answers go into the item's Specification.
+
+An interview opens with the question that decides which optional parts of the note apply, then asks per-section questions in the note's writing order. A question asks and does not restate the rule it serves; the rule lives in the format document.
+
+### Frontmatter and filename
+
+The plugin's type roster defines the frontmatter and the generated templates stamp it at creation (scraibe's `new_doc.py` creates the note). The script produces a date-prefixed filename. Rename the fresh note to the entity's own name before adding content: that is the filename convention the templates state, and it is safe while nothing links to the note yet.
+
+### Design Notes
+
+Design Notes is the builder record. It is excluded from all exports and from review. It has two subsections:
+
+- **Session Notes:** the interview capture, taken from the Specification: what the human said they wanted this note to be. Written before the body is drafted. Raw intent, plain language, bullet points. A future agent that revisits the note reads Session Notes first.
+- **Builder Context:** narrative function, inspirations and what is drawn from each, design decisions, open questions. Bullet points. Leave it blank when nothing is worth capturing. Do not pad.
+
+The entity skill's format document names what Builder Context holds for that type.
+
+### Required entries and waivers
+
+A format document's required entries are the entries or tests its type treats as mandatory. A note is not finalized until each required entry is present or the item's Specification waives it with a recorded reason.
+
+### Closure
+
+The note is open until it carries a closure tag. Mark it `complete` when the entity skill's self-check passes (`../CONTEXT.md`, Status lifecycle).

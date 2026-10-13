@@ -17,6 +17,7 @@ The critic runs read-only on Sol through the codex CLI: `codex exec --sandbox re
 
 - **Document to review** (required) — path to the worldbuilder document.
 - **Governing format document** (required) — path to the format doc (e.g., `card-format.md`).
+- **Declared starting point** (when the project has one) — path to the project's starting-world-state document. When there is none, the starting point is the boundary the item's Specification records.
 - **Reference material** (required when the document was produced from Q&A or source ingestion; omitted only when no source material exists) — paths to source documents (behavioral evidence, data profiles, Q&A transcripts, or equivalent), or the item's Specification when it holds the interview answers.
 
 ---
@@ -30,6 +31,8 @@ Open the format document's `## Review criteria` section. If it exists, use its C
 ### Phase 2: Review
 
 Read each entry in the document. For each entry, check it against every applicable rule from the Checks list (section-scoped checks filtered by which section the entry belongs to; document-level checks applied across the whole document). Also check against `docs/slop-phrases.md` and `../writing-style.md`. Record each finding with: the rule violated (by name and location in the format doc or shared resource), the entry text, and the specific violation.
+
+**Temporal scope.** This check applies to every entity type, and each format document's Exempt list names the sections it does not cover. An entry that describes the world's present state must not reference an event, an outcome or a character that does not exist at the declared starting point. Hypothetical variations inside a present-state section, such as a location's crisis circumstance or a faction's active goals, are present-state description, and the check covers them. Sections that hold story content are exempt where the format document says so. When no starting point is declared, flag each entry that appears to reference a progression-gated event and escalate it for confirmation. The finding quotes the entry and names the later event, outcome or character.
 
 ### Phase 3: Classify findings
 

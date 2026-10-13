@@ -1,25 +1,19 @@
-> For future agents: this is a location note. The filename is the location's name. Use `worldbuilder-location` to build it out.
+> For future agents: this is a location note. Use `worldbuilder-location` to build it out.
 
-## Preamble
+## Design Notes
 
-_2–3 sentences orienting a future agent to this location._
+### Session Notes
 
-## Concept
+### Builder Context
 
-_What this place is and why it matters._
+## Form & History
 
-## Physical Form
+### Physical Form
 
-_What it looks, sounds, smells like._
+### History & Meaning
 
-## Social Life
+## Presence
 
-_Who inhabits it, how they use it._
+### Who Comes Here
 
-## Behavioral Register
-
-_The emotional and dramatic register of this space._
-
-## History & Meaning
-
-_How this place came to be and what it represents._
+### How the Place Behaves
