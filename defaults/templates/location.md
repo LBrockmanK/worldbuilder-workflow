@@ -1,4 +1,4 @@
-> For future agents: this is a location note. The filename is the location's name. Use `worldbuilder-location` to build it out.
+> For future agents: this is a location note. Use `worldbuilder-location` to build it out.
 
 ## Design Notes
 

@@ -1,4 +1,4 @@
-> For future agents: this is a character note. The filename is the character's name. Use `worldbuilder-character` to build it out. Card format defined in `skills/worldbuilder-character/card-format.md`.
+> For future agents: this is a character note. Use `worldbuilder-character` to build it out. Card format defined in `skills/worldbuilder-character/card-format.md`.
 
 ## Design Notes
 

@@ -279,8 +279,8 @@ class TemplateStructureTests(unittest.TestCase):
       * a table row (the empty coverage-ledger table: header and
         separator, no data rows);
       * the opening `> For future agents:` line, which may only name the
-        note type, the filename convention and the skill to use (the
-        PREAMBLE pattern); it carries no rule;
+        note type and the skill to use (the PREAMBLE pattern), plus the
+        character template's pointer to card-format.md; it carries no rule;
       * in the character template only, a pointer line: an italic line
         (`_..._`) naming the governing document that holds the rule
         (`card-format.md`, or `source-extraction-standard.md` for the
@@ -291,11 +291,10 @@ class TemplateStructureTests(unittest.TestCase):
     POINTER = re.compile(
         r'^_[^_].*`[^`]*(card-format|source-extraction-standard)\.md`.*_$')
 
-    # The opening line names the note type and the skill to use, and
-    # nothing else (no rules).
+    # The opening line names the note type and the skill to use, plus in
+    # the character template one pointer to card-format.md. Nothing else.
     PREAMBLE = re.compile(
         r'^> For future agents: this is an? [a-z]+ note\. '
-        r"The filename is the [a-z]+'s name\. "
         r'Use `worldbuilder-[a-z]+` to build it out\.'
         r'( Card format defined in `skills/worldbuilder-character/card-format\.md`\.)?$')
 
