@@ -105,7 +105,7 @@ class CheckEnablementTests(unittest.TestCase):
         rows = self.verdicts(out)
         self.assertEqual(rows['worldbuilder-workflow'][0], 'disabled')
         self.assertEqual(rows['scraibe'][0], 'enabled')
-        self.assertIn('fleet:setup', out)
+        self.assertIn('Run fleet:setup at', out)
         self.assertIn('clear the disable through fleet:setup', out)
 
     def test_f_user_false_is_not_enabled(self):
