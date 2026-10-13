@@ -30,7 +30,7 @@ Every agent that writes or reviews card content must read the governing document
 | Writing style | `../writing-style.md` | Prose rules: plain style, staging test, trait-word ban, tense, Orwell's rules |
 | Card format | `card-format.md` | Section-scoped writing rules, depth-of-access grid, review criteria |
 | Section guide | `relationships.md`, `intimate.md`, etc. | Section-specific framework, archetypes, coverage requirements, entry format |
-| Starting world state | *project-level, path varies* | Timeline boundary, pre-story scope, which characters are present |
+| Starting world state | *project-level, path varies* | The declared starting point (`../worldbuilder-review/SKILL.md`, Phase 2) |
 
 ### For the character itself
 
@@ -53,7 +53,7 @@ Every dispatched agent gets a brief containing:
 1. **Task:** What section to write, for which character, how many entries expected
 2. **Reading list:** Absolute paths to every file in the Required Reading Set. Not descriptions of what the files contain — the actual paths, with the instruction "Read these files before writing."
 3. **Exemplars:** 2-3 completed entries from other characters in the same project that represent the target quality. The agent matches the exemplars' style, not a verbal description of it.
-4. **Constraints:** Project-specific rules (pre-story scope, dateable vs. supporting character minimums, cast-connectivity requirements)
+4. **Constraints:** Project-specific rules (the declared starting point, dateable vs. supporting character minimums, cast-connectivity requirements)
 5. **Acceptance criteria:** What the output must pass before the agent reports done
 
 ### What not to put in the brief

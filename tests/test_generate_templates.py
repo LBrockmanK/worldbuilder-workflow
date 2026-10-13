@@ -263,5 +263,62 @@ class OpenViewTests(unittest.TestCase):
             self.assertEqual(len(clauses), 4, name)
 
 
+class TemplateStructureTests(unittest.TestCase):
+    """Presets (the note templates) carry headings and empty placeholders
+    only. Rules live in the format documents, stated once (the content
+    doctrine's criterion 5).
+
+    Part 1 covers character, location, faction, event and concept. The
+    story template joins when the story framework lands.
+
+    An "empty placeholder" is one of the following, and nothing else is
+    allowed outside headings:
+      * a blank line;
+      * a bare list marker (a line that is only `-`), the empty entry
+        slot the character template uses;
+      * a table row (the empty coverage-ledger table: header and
+        separator, no data rows);
+      * the opening `> For future agents:` line, which names the note
+        type and its skill and is stamped at creation;
+      * in the character template only, a pointer line: an italic line
+        (`_..._`) naming the governing document that holds the rule
+        (`card-format.md`, or `source-extraction-standard.md` for the
+        coverage ledger).
+    """
+
+    IN_SCOPE = ['character', 'location', 'faction', 'event', 'concept']
+    POINTER = re.compile(
+        r'^_[^_].*`[^`]*(card-format|source-extraction-standard)\.md`.*_$')
+
+    def read_template(self, name):
+        path = os.path.join(TEMPLATE_DIR, f'{name}.md')
+        with open(path, encoding='utf-8') as f:
+            return f.read().splitlines()
+
+    def test_every_in_scope_template_has_design_notes(self):
+        for name in self.IN_SCOPE:
+            self.assertIn('## Design Notes', self.read_template(name), name)
+
+    def test_templates_hold_headings_and_empty_placeholders_only(self):
+        for name in self.IN_SCOPE:
+            for i, line in enumerate(self.read_template(name), start=1):
+                text = line.strip()
+                if (not text or text.startswith('#') or text == '-'
+                        or text.startswith('|')
+                        or text.startswith('> For future agents:')):
+                    continue
+                if name == 'character' and self.POINTER.match(text):
+                    continue
+                self.fail(f'{name}.md line {i} is not a heading or an '
+                          f'empty placeholder: {text[:80]!r}')
+
+    def test_only_the_character_template_carries_pointer_lines(self):
+        for name in self.IN_SCOPE:
+            if name == 'character':
+                continue
+            for line in self.read_template(name):
+                self.assertFalse(self.POINTER.match(line.strip()), name)
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)

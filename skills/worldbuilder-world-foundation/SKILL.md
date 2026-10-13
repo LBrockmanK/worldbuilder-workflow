@@ -200,6 +200,8 @@ Per-phase "done" definitions. If any item is unresolved, surface it to the user 
 
 **Faction notes complete** — every household cluster from the foundation document has a faction note; each passes the `worldbuilder-faction` self-check.
 
+**Planning record, then entity notes.** The foundation document's locations list and household list are the Foundation phase's planning record. Once a location note or a faction note exists, that note is the home of those facts. A later correction goes to the note and never to the foundation document.
+
 **Cast plan complete** — the coverage check above passes; every entry has household, type, species/age, role, archetype, key relationships, summary; intimate-dynamics flags set where applicable.
 
 **Character notes complete** — per character, the self-check in `worldbuilder-character` is the authoritative gate.

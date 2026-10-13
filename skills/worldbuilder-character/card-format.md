@@ -26,9 +26,8 @@ Physical presence and habits. What you see and experience physically.
 
 **Appearance preamble:** Body opens with short descriptive prose
 (sentences or descriptive clauses) covering the character's static
-physical appearance. The preamble is exempt from the staging test.
-Orwell co-anchor and trait-word ban apply. No meta-vocabulary from
-the builder abstraction layer. Content: hair, eyes, skin, build,
+physical appearance. The preamble is exempt from the staging test;
+the other rules in Section-scoped writing rules apply to it. Content: hair, eyes, skin, build,
 distinguishing physical features, default or seasonal clothing, and
 hidden static features (scars, marks, tattoos) when relevant —
 everything about what this person looks like, regardless of
@@ -73,7 +72,7 @@ A 3x3 grid crossing the three information-type rows with a depth-of-access progr
 
 ## Required doctrine entries
 
-A card is not finalized until all of the following are present or the user explicitly waives specific entries with a recorded reason.
+A card is not finalized until every entry below is present or waived (`../creative-step.md`, Required entries and waivers).
 
 1. **Core want** (behavioral, Soul). How the want shows in action, not a label. Provenance: Character Builder v3's Core slot; community consensus on motivational engine.
 
@@ -88,8 +87,6 @@ A card is not finalized until all of the following are present or the user expli
 6. **Values with costs** (Background or Soul). At least one top value with its stated price. A value without a cost is decoration. Provenance: Character Builder v3 via Hoplight review.
 
 7. **Protective strategy** (behavioral, Soul). The habitual first response to any perceived threat — what the character does before they identify what they are afraid of. Observable action, not a coping label. Provenance: Writer's Workbench 'protective strategy' field; Character Codex 'override specification'; community consensus on default defensive behavior.
-
-**Finalization gate:** the card is not finalized until every required entry above is present or explicitly waived.
 
 ---
 
@@ -131,9 +128,8 @@ that could trigger it, not a scripted outcome. Labeled prose blocks:
 each entry has a short title, a trigger/condition note, and 2-4
 sentences of scenario prose describing the setup (where and when),
 the key action or exchange, and what the event reveals about the
-character. Prose follows the action-line convention. Staging test
-applies. Orwell co-anchor applies. No meta-vocabulary. Condition
-notes are factual, not prose-styled.
+character. Prose follows the Body and Soul rules in Section-scoped
+writing rules. Condition notes are factual, not prose-styled.
 
 **Target range:** 5-12 entries. Err on the side of more rather
 than fewer — entries can be pared down later, but gaps in coverage
@@ -198,7 +194,9 @@ character's Design Notes so it is not forgotten.
   festival date at a milestone) is a Story Seed referencing the
   calendar context.
 - vs. story notes: Story Seeds are character-local hooks inside the
-  card. Story notes are full arc documents outside it.
+  card. Story notes are full arc documents outside it. A scenario
+  that needs more than 2-4 sentences is a story note; propose it as
+  a spin-off (`SKILL.md`, Story Notes).
 
 ---
 
@@ -206,43 +204,38 @@ character's Design Notes so it is not forgotten.
 
 These are overridable defaults. The user can override any rule for their project.
 
+### All sections
+
+No meta-vocabulary from the builder abstraction layer.
+
 ### Background entries
 
-Background is factual, not behavioral. The following rules apply:
-- **Orwell co-anchor:** shortest word, active voice, cut waste
-- **No meta-vocabulary** from the builder abstraction layer
-
-The staging test, action-line convention, and fact-to-manifestation transformation do not apply to Background. Background states what is true; other sections handle how that truth manifests as behavior.
+Background is factual, not behavioral. The Orwell co-anchor and the trait-word ban from `../writing-style.md` (Style Model; Content Standards) apply. The staging test, action-line convention, and fact-to-manifestation transformation do not apply to Background. Background states what is true; other sections handle how that truth manifests as behavior.
 
 ### Body and Soul entries
 
-Body and Soul are behavioral. The following rules apply:
-- **Action-line convention:** present tense, only what can be seen or heard in a scene
-- **Staging test:** "Can a director stage this?" The Because clause in Soul entries is exempt. It may name an internal state if the state is specific.
-- **Trait-word ban:** no adjective labels. Behavior earns the word. Replace the label with what happens that makes people reach for it.
-- **Orwell co-anchor:** shortest word, active voice, cut waste
-- **Fact-to-manifestation:** reproduce semantic content from the user's answer, never reproduce the phrasing. The input is the fact; the output is the staged behavior the fact produces.
+Body and Soul are behavioral. The action-line convention, the staging test, the trait-word ban and the Orwell co-anchor from `../writing-style.md` (Style Model; Content Standards) apply. Two points are specific to the card:
 
-For the full writing doctrine, see `../writing-style.md`.
+- **Because clause:** exempt from the staging test in Soul entries. It may name an internal state if the state is specific.
+- **Fact-to-manifestation:** reproduce semantic content from the user's answer, never reproduce the phrasing. The input is the fact; the output is the staged behavior the fact produces.
 
 ---
 
+## Prompt placement
+
+Four interview prompts shape character entries. Each has one home, stated here.
+
+- **Protective strategy:** kept. It is required entry 7, in Required doctrine entries. Character only: a group's default response to a threat is already a Collective Behavior situation (`../worldbuilder-faction/note-format.md`).
+- **Cultural shorthand:** kept. `SKILL.md`, Interview, Background guidance asks it, and the answer is a Background entry. Generalized to location, faction and event: each asks a form of it in its own Interview, and its `note-format.md` names the section that carries the answer.
+- **Location as pressure:** kept. `SKILL.md`, Interview, Background guidance asks it, and the answer is a Background fact pair. Generalized to faction, where the answer lands in Origin & Structure (`../worldbuilder-faction/note-format.md`).
+- **Growth trigger:** kept. `SKILL.md`, Interview, Story Seeds asks it, and the answers become Story Seeds. It is not a coverage requirement. Character only: the other types' state changes are already covered by their own sections.
+
 ## Starting world state
 
-Core sections (Background, Body, Soul) and Relationships describe
-who the character is at the project's declared starting point — the
-moment the story begins. Events, outcomes, and characters that
-arrive after that point are story content and belong in Story Seeds.
+The temporal-scope rule is stated once, in `../worldbuilder-review/SKILL.md`, Phase 2. For a character card:
 
-The starting world state is a project-level document, not part of
-the card format. When a project declares one, it is the authority on
-what counts as pre-story. When no starting state is declared, the
-card author applies their best judgment and the reviewer flags
-entries that appear to reference progression-gated events.
-
-Voice / Dialogue scenes are composites illustrating the character's
-voice. They should depict situations plausible at the starting
-state, not scenes from specific story events.
+- **Pre-story sections:** Background, Body, Soul and Relationships describe who the character is at the project's declared starting point.
+- **Story sections:** Story Seeds holds the events, outcomes and characters that arrive after that point. Voice / Dialogue scenes are composites illustrating the character's voice. They depict situations plausible at the starting state, not scenes from specific story events.
 
 ## Player references
 
@@ -291,13 +284,9 @@ violation pattern — it does not reproduce the full rule text.
 - Writing doctrine compliance (`skills/writing-style.md`;
   `.claude/adr/0004-action-line-style-model.md`). Violation: any
   failure mode listed in those documents.
-- Starting-state scope (this document, Starting world state section).
-  Violation: entry in Background, Body, Soul, or Relationships
-  references an event, outcome, or character that does not exist at
-  the project's declared starting point. Story Seeds and Voice /
-  Dialogue are exempt. When no starting state is declared, flag
-  entries that appear to reference progression-gated events and
-  escalate for confirmation.
+- Temporal scope (`skills/worldbuilder-review/SKILL.md`, Phase 2;
+  this document, Starting world state section for the section
+  mapping). Violation: as that rule states.
 - Player reference scope (this document, Player references section).
   Violation: the player is referenced by name or role in Background,
   Body, Soul, or Relationships. Story Seeds and Voice / Dialogue may
@@ -308,10 +297,9 @@ violation pattern — it does not reproduce the full rule text.
 - Fact-pair format (this document, Background section). Violation:
   result half contains behavioral framing instead of a concrete fact.
 - No meta-vocabulary (this document, Section-scoped writing rules —
-  Background).
-- Orwell co-anchor (this document, Section-scoped writing rules —
-  Background).
-- Trait-word ban (`skills/writing-style.md`, trait-word ban).
+  All sections).
+- Orwell co-anchor (`skills/writing-style.md`, Style Model).
+- Trait-word ban (`skills/writing-style.md`, Content Standards).
   Violation: trait adjective anywhere in a Background entry.
 
 **Body preamble:**
@@ -319,23 +307,24 @@ violation pattern — it does not reproduce the full rule text.
   Body section — Appearance preamble). Violation: preamble formatted
   as a bullet entry.
 - Staging test exempt (this document, Body section — Appearance
-  preamble).
-- Orwell co-anchor and trait-word ban apply.
+  preamble). Other writing rules apply.
 
 **Body entries:**
 - Entry format (this document, Body section) and action-line
-  convention (Section-scoped writing rules). Violation:
+  convention (`skills/writing-style.md`, Style Model). Violation:
   multi-sentence entries, past tense, internal states.
-- Staging test (this document, Section-scoped writing rules — Body
-  and Soul). Violation: entries a director cannot stage.
-- Trait-word ban. Violation: adjective labels instead of behavior.
+- Staging test (`skills/writing-style.md`, Style Model). Violation:
+  entries a director cannot stage.
+- Trait-word ban (`skills/writing-style.md`, Content Standards).
+  Violation: adjective labels instead of behavior.
 
 **Soul entries:**
 - Entry format (this document, Soul section). Violation: missing
   When trigger, missing Behavior, missing Because reason.
-- Action-line convention (Section-scoped writing rules — Body and
-  Soul). Violation: internal states outside the Because clause.
-- Staging test; Because clause exempt.
+- Action-line convention (`skills/writing-style.md`, Style Model).
+  Violation: internal states outside the Because clause.
+- Staging test; Because clause exempt (this document, Section-scoped
+  writing rules — Body and Soul).
 - Trait-word ban.
 
 **Relationship entries:**
@@ -383,18 +372,22 @@ violation pattern — it does not reproduce the full rule text.
   starting-state situation.
 
 **Story Seeds entries (when included):**
-- Action-line convention, staging test, Orwell co-anchor (this
-  document, Addon blocks — Story Seeds).
+- Action-line convention, staging test, Orwell co-anchor
+  (`skills/writing-style.md`, Style Model), applied as this document's
+  Addon blocks — Story Seeds section says.
 - No meta-vocabulary.
 - Condition notes are factual, not prose-styled.
 
 ### Exempt
 
-- **Design Notes:** exempt from all review checks. Design Notes are
-  excluded from all exports and exist as a builder record.
+- **Design Notes:** exempt from all review checks (`../creative-step.md`,
+  Design Notes).
 - **Working annotations** (doctrine labels like `*(core want)*`,
   `*(false belief)*`): stripped at export; drafting aids, not
   meta-vocabulary violations.
+- **Story-content sections:** Story Seeds, and Voice / Dialogue for
+  the temporal-scope check (`skills/worldbuilder-review/SKILL.md`,
+  Phase 2). The Voice / Dialogue scene check under Checks still applies.
 - **In-world quoted text:** exempt from the trait-word ban. Text
   quoted from the source material (game dialogue, in-world documents)
   is not prose the card author chose.
@@ -405,9 +398,7 @@ violation pattern — it does not reproduce the full rule text.
 
 ### Judgment calls
 
-The general rule (D4 of the governing spec): auto-fix when the
-violation is clear AND the repair is safe (mechanical restructuring
-only). Escalate when either is ambiguous.
+Classify as `skills/worldbuilder-review/SKILL.md`, Phase 3, sets out.
 
 Character-card-specific guidance:
 - Splitting a multi-sentence Body entry into one sentence: auto-fix

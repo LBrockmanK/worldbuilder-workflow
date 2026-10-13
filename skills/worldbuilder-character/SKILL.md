@@ -54,13 +54,13 @@ future sessions to update.
 
 ## Interview
 
-The definer draws on this section. The definer's rounds run on the answer page, and the human's answers go into the item's Specification, where the creative step reads them. The human can override at any point: write entries directly instead of answering, skip questions, or provide source material (existing character sheets, fiction excerpts, reference images) in place of answers.
+The definer draws on this section and follows `../creative-step.md`, Interview.
 
-Ask one question at a time. Wait for the answer before asking the next. Follow threads: when an answer implies something about a different section, surface it immediately and pursue it before changing topics.
+Where the protective strategy, cultural shorthand, location-as-pressure and growth-trigger prompts live: `card-format.md`, Prompt placement.
 
 ### Opening questions
 
-**Starting world state:** Check whether the project has a starting world state document (a project-level reference listing the timeline boundary, which characters are present at the start, and what has already happened before the story begins). If one exists, read it before asking any questions — it governs what counts as pre-story content for Core sections and Relationships versus story content for Story Seeds. If one does not exist, establish the boundary with the human in this interview; the Specification holds it. If a durable starting-state document is wanted, the creative step proposes it as a spin-off (see `../creative-step.md`) and does not create it.
+**Starting world state:** Check whether the project has a starting world state document (a project-level reference listing the timeline boundary, which characters are present at the start, and what has already happened before the story begins). If one exists, read it before asking any questions. If one does not exist, establish the boundary with the human in this interview; the Specification holds it. If a durable starting-state document is wanted, the creative step proposes it as a spin-off (see `../creative-step.md`) and does not create it. Which card sections are pre-story and which are story content: `card-format.md`, Starting world state.
 
 Before the character questions, determine which addon blocks to include. Record the decision in the Specification.
 
@@ -91,7 +91,7 @@ For the Body section, ask about appearance first (preamble), then physical manne
 
 **Intimate Dynamics:** Ask about attraction expression, hesitation and limits, and any specific dynamic. Ensure at least one friction point. See `intimate.md` for coverage areas.
 
-**Voice / Dialogue:** The human picks 2-4 situation categories from the list in `card-format.md`.
+**Voice / Dialogue:** The human picks situation categories from the list in `card-format.md`.
 
 **Story Seeds:** Ask the growth-trigger prompt: "What experience or evidence could make this character reconsider their false belief, shift their value hierarchy, or change a core behavior?" The answers become Story Seeds. This prompt is not a coverage requirement.
 
@@ -119,7 +119,7 @@ When working from source material, write relationships from the reference docume
 
 **Voice / Dialogue:** For each chosen category, write a composite dialogue snippet showing the character pulling from multiple Core areas at the same time. Include enough scene context to establish the situation.
 
-**Story Seeds:** Work through Story Seeds after Voice / Dialogue (or after the last selected addon block). Draw from three sources: explicit events in source material, implicit scenarios suggested by the character's psychology and relationships, and invented hooks that serve the character's arc. Consolidate multi-step source arcs into single setup beats — describe the premise and the character's stake, not a scripted sequence. Write for freeform play: setups, not outcomes. Aim for the high end of the target range (5-12); thin coverage is a bigger risk than generous coverage. See `card-format.md` for entry format, writing rules, and distinctions from other sections.
+**Story Seeds:** Work through Story Seeds after Voice / Dialogue (or after the last selected addon block). Draw from three sources: explicit events in source material, implicit scenarios suggested by the character's psychology and relationships, and invented hooks that serve the character's arc. Consolidate multi-step source arcs into single setup beats — describe the premise and the character's stake, not a scripted sequence. Write for freeform play: setups, not outcomes. Entry count, entry format, writing rules and the distinctions from other sections: `card-format.md`, Story Seeds.
 
 ---
 
@@ -131,17 +131,7 @@ Report depth-of-access observations: which columns (immediate, over time, hidden
 
 ### After the full Core block
 
-Check for missing required doctrine entries (defined in `card-format.md`). The required entries are:
-
-1. Core want (behavioral, Soul)
-2. Core fear (behavioral, Soul)
-3. False belief the character acts on (Soul)
-4. Value-conflict stance (Soul)
-5. At least one unresolved tension or competing pull (Soul)
-6. Values with costs (Background or Soul)
-7. Protective strategy (behavioral, Soul)
-
-Missing required entries must be addressed before finalization or waived in the Specification with a recorded reason.
+Check for missing required doctrine entries (`card-format.md`, Required doctrine entries). Address a missing entry before finalization, or waive it as `../creative-step.md` sets out under Required entries and waivers.
 
 ---
 
@@ -155,36 +145,21 @@ The document may carry optional annotations (grid position, coverage area) durin
 
 ## Design Notes
 
-Design Notes is the builder record. It is excluded from all exports. Two H3 subheadings:
-
-### Session Notes
-
-Interview capture: what the human said they wanted this character to be, taken from the Specification. Written before entries are drafted. Raw intent, plain language, bullet points. Future agents revisiting this character read Session Notes first to understand original intent.
-
-### Builder Context
-
-Narrative function, external references, design decisions, open questions. Bullet points. Leave blank if there is nothing worth capturing. Do not pad.
+Design Notes holds Session Notes and Builder Context as `../creative-step.md` defines them, and the coverage ledger when the card is written from source material (`../source-extraction-standard.md`).
 
 ---
 
 ## Frontmatter and File Naming
 
-The plugin's type roster defines the frontmatter and the generated templates stamp it at creation (scraibe's `new_doc.py` creates the note). The script produces a date-prefixed filename; rename the fresh note to the character's name (e.g. `notes/Maren Holt.md`) before adding content. Set the `sex` property to `female`, `male` or a short free-text value; `CONTEXT.md` documents it. The export reads it to keep pronouns right.
+Frontmatter and filename follow `../creative-step.md` (the example name here is `notes/Maren Holt.md`). Set the `sex` property to `female`, `male` or a short free-text value; `CONTEXT.md` documents it. The export reads it to keep pronouns right.
 
-**Description field:** the cast navigation summary. Who this character is in the world, their key traits, their place in the social ecosystem. Described, not prescribed: no relationship recommendations, no design rationale. Written last, after the full blueprint is complete.
+**Description field:** the cast navigation summary. Who this character is in the world, their key traits, their place in the social ecosystem. Described, not prescribed: no relationship recommendations, no design rationale. Written last (`../../CONTEXT.md`, Properties).
 
 ---
 
 ## Story Notes
 
-Story possibilities for this character live in separate story notes, not in the character note. When you have enough clarity on a character's arc, propose a story note with intention scope as a spin-off (see `../creative-step.md`). See `worldbuilder-story` for story note structure.
-
-Story Seeds (the addon block) are character-local scenario sketches —
-hooks short enough to live inside the character card. A story note is
-a full narrative document with arc structure, scope, and its own
-lifecycle. Story Seeds may reference story notes for arcs they
-participate in. If a scenario needs more than 2-4 sentences to
-describe, it belongs in a story note.
+Story possibilities for this character live in separate story notes, not in the character note. When you have enough clarity on a character's arc, propose a story note with intention scope as a spin-off (see `../creative-step.md`). See `worldbuilder-story` for story note structure. What a Story Seed is, and where it stops and a story note starts: `card-format.md`, Story Seeds.
 
 The introduction note is also a story note (introduction scope). Propose it as a spin-off when you have enough character clarity to know where and how the player first meets this character.
 
@@ -198,21 +173,19 @@ After completing a household group or batch of characters, run the cross-card pa
 
 ## Completion Checklist
 
-The note is open until it carries a closure tag. Mark it `complete` when every item below passes.
+Mark the note `complete` when every item below passes (`../creative-step.md`, Closure).
 
-- [ ] All required doctrine entries present or explicitly waived with a recorded reason
+- [ ] All required doctrine entries present or waived (`../creative-step.md`, Required entries and waivers)
 - [ ] Each Core section (Background, Body, Soul) has at least one entry. Target ranges in `card-format.md` are guidance, not gates
 - [ ] Reference documents from a prior ingestion run read when working from source material
 - [ ] When working from source material: the coverage ledger, the evidence readback and the checker run are done as `../source-extraction-standard.md` sets out in The coverage ledger, The evidence readback and The checker
-- [ ] Story Seeds section present with entries (every character; 5-12 target range)
+- [ ] Story Seeds section present with entries (every character; target range in `card-format.md`)
 - [ ] Other selected addon blocks completed (Relationships, Intimate Dynamics, Voice / Dialogue as determined in the Specification)
-- [ ] No trait adjectives anywhere in the note. Each replaced by the behavior that earned it
-- [ ] Entries follow section-appropriate writing rules per `card-format.md`
-- [ ] `### Session Notes` present with the interview capture
-- [ ] `### Builder Context` present as applicable; not padded
+- [ ] Entries follow section-appropriate writing rules per `card-format.md`, including the rules it takes from `../writing-style.md`
+- [ ] Design Notes present with both subsections (`../creative-step.md`, Design Notes)
 - [ ] Story notes proposed as spin-offs for any known character arcs
-- [ ] `description` field written last and reflects the completed character
-- [ ] Handed on to the critic: the critic step runs `worldbuilder-review` with this document, `card-format.md` as the governing format document, and all reference material used to produce the document. The revision step applies the auto-fix findings; escalated findings go to the human.
+- [ ] `description` field written last (`../../CONTEXT.md`, Properties) and reflects the completed character
+- [ ] Handed on to the critic (`../creative-step.md`, Hand on), with `card-format.md` as the governing format document
 
 ---
 
