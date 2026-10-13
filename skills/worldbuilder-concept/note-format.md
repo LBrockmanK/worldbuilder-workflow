@@ -125,7 +125,7 @@ The export skill derives keyword triggers from `aliases`, so write them for how 
 
 ## Section-scoped writing rules
 
-- Style rules (decide, do not hedge; write plainly, no flair) are in `../writing-style.md`. This format adds none.
+- Style rules: `../writing-style.md`. This format adds none.
 - Design Notes content stays in Design Notes (see Note structure).
 - **Short is usually better.** An entry that injects 50 tokens of precise context beats one that injects 300 tokens of unfocused description.
 - **Separate entries for separate topics.** Do not pack "the old mill and the mill family and the flood of thirty years ago" into one entry. Split them so each triggers independently and does not bloat context when only one is relevant.

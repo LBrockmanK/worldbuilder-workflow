@@ -86,7 +86,7 @@ A note is not finalized until each of these is present or waived (`../creative-s
 
 ## Section-scoped writing rules
 
-- Style rules (decide, do not hedge; write plainly, no flair) are in `../writing-style.md`. This format adds none.
+- Style rules: `../writing-style.md`. This format adds none.
 - Design Notes content stays in Design Notes (see Note structure).
 - An arc note develops what the direction document establishes. It does not contradict it.
 
@@ -132,7 +132,7 @@ Rules the critic enforces, organized by scope. Each check names the rule and its
 Classify as `skills/worldbuilder-review/SKILL.md`, Phase 3, sets out. Story-specific guidance:
 
 - A Story Possibilities entry written as a script: auto-fix by rewording as a possibility when the entry keeps its meaning. Escalate when the entry states its outcome as certain and the fix would change what happens.
-- A Situation entry in past or future tense: auto-fix to present tense.
+- A Situation entry in past or future tense: auto-fix to present tense only when the change keeps its temporal meaning, such as a standing condition written in the past. Escalate when the rewrite would change what is true at the starting point, such as a past event that would read as ongoing (`skills/worldbuilder-review/SKILL.md`, Phase 3).
 - No key moment named: escalate. The moment must be invented.
 - No connection noted: escalate. The connection must be sourced.
 - Creative intent written into a body section: auto-fix by moving it to Builder Context when the sentence stands alone. Escalate when the section depends on it.

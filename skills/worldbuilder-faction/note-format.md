@@ -110,7 +110,7 @@ A note is not finalized until each of these is present or waived (`../creative-s
 
 ## Section-scoped writing rules
 
-- Style rules (decide, do not hedge; write plainly, no flair) are in `../writing-style.md`. This format adds none.
+- Style rules: `../writing-style.md`. This format adds none.
 - Design Notes content stays in Design Notes (see Note structure).
 - Storylines belong in story notes, not faction notes. When a story possibility is anchored by this faction's existence, propose a story note as a spin-off (`../creative-step.md`, Spin-offs).
 

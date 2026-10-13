@@ -47,7 +47,7 @@ For the direction document, the questions are the topics under Ongoing Story Dir
 5. What turns could it take, and what is the key moment of each? See `note-format.md`, Story Possibilities.
 
 **The directions it could resolve (goes to Story Possibilities).**
-6. Which directions could it resolve in, with none scripted?
+6. Which directions could it resolve in? See `note-format.md`, Story Possibilities.
 7. How does it connect to other arcs or characters?
 
 **What stays unresolved (goes to Design Notes).**

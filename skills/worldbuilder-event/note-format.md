@@ -67,7 +67,7 @@ A note is not finalized until each of these is present or waived (`../creative-s
 
 ## Section-scoped writing rules
 
-- Style rules (decide, do not hedge; write plainly, no flair) are in `../writing-style.md`. This format adds none.
+- Style rules: `../writing-style.md`. This format adds none.
 - Design Notes content stays in Design Notes (see Note structure).
 - Vague timing is fine. What Happens states the approximate season and does not assign a day.
 
