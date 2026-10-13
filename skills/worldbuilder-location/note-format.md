@@ -81,7 +81,7 @@ A note is not finalized until each of these is present or waived (`../creative-s
 
 ## Section-scoped writing rules
 
-- Style rules (decide, do not hedge; write plainly, no flair) are in `../writing-style.md`. This format adds none.
+- Style rules: `../writing-style.md`. This format adds none.
 - Design Notes content stays in Design Notes (see Note structure).
 - Form & History is physical reality and what the place carries. Behavior belongs in Presence.
 

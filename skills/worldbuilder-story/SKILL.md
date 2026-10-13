@@ -5,7 +5,7 @@ description: Use when writing arc or intention notes for an AI-powered narrative
 
 # Story
 
-*All prose this skill produces follows `../writing-style.md`. Read it before writing. For arc, intention and introduction notes, a creative step starts and ends as `../creative-step.md` says; the interview answers it works from are in the item's Specification, and the questions behind them are in `## Interview` below.*
+*All prose this skill produces follows `../writing-style.md`. Read it before writing. For arc, intention and introduction notes, a creative step starts and ends as `../creative-step.md` says; the interview answers it works from are in the item's Specification, and the questions behind them are in `## Interview` below. Rules shared by every entity note are in `../creative-step.md`, What every entity note shares.*
 
 ## Overview
 
@@ -13,127 +13,80 @@ This skill serves two related purposes:
 
 **The direction document (Foundation phase):** `project/direction.md` is the world's standing creative brief and the story engine's primary guard rail. It is a project document, written by the Foundation item's builder using this skill's section templates as guidance. It is outside the creative step and is not governed by `../creative-step.md`. See the Ongoing Story Direction section below for its complete structure.
 
-**Arc, intention, and introduction notes (Wide phase):** Once the direction document exists, this skill creates the story notes that extend it. Story notes link to their parent via the `up` field.
+**Arc, intention, and introduction notes (Wide phase):** Once the direction document exists, this skill creates the story notes that extend it. Story notes link to their parent via the `up` field. Read the direction document before writing an arc note.
 
 Story note types:
 
-**Arc** (scope: arc) — A major story section, linking up to the direction document. Covers a season, a storyline, or a thematic phase.
+**Arc** (scope: arc) — A major story section. Covers a season, a storyline, or a thematic phase.
 
-**Intention** (scope: intention) — A specific story possibility within an arc, linking up to that arc. Not scripted outcomes — soft targets the world is set up to enable.
+**Intention** (scope: intention) — A specific story possibility within an arc. Not a scripted outcome: a soft target the world is set up to enable.
 
 **Introduction** (scope: introduction) — First-contact scene for a specific character. Created during or after character note work, not during the story notes phase.
 
-The plugin's type roster defines the frontmatter and the generated templates stamp it at creation (scraibe's `new_doc.py` creates the note). The script produces a date-prefixed filename; rename the fresh note to the story's name itself (e.g. `notes/Introduction - Maren.md`) before adding content — the filename convention the templates state, and safe while nothing links to the note yet. Set `scope` to arc, intention, or introduction, and point `up` at the parent note.
-
-**Description field:** 1–2 sentences naming what this note is — for an arc, the emotional territory it covers; for an intention, the story possibility in one sentence; for an introduction, who it introduces and the first impression. Written last; other agents scan this field when planning arcs or building character notes.
-
-Structure for arc, intention, and introduction notes:
-
-| Section | Notes |
-|---|---|
-| Design Notes | Builder record; excluded from exports |
-| Situation | State of affairs before player involvement |
-| Story Possibilities | What could happen; phrased as possibility not script |
-
-Read the direction document before creating arc notes. Arc notes develop what the brief establishes — they do not contradict it.
+`note-format.md` is the governing document for the note structure, scope values, the `up` field, the description, section contents, required entries and section-scoped writing rules. Read it before writing any section.
 
 ---
 
 ## Interview
 
-The definer draws on this section. The definer's rounds run on the answer page, and the human's answers go into the item's Specification, where the creative step reads them. Ask one question at a time and follow threads. The human can answer, skip, or provide source material in place of answers.
+The definer draws on this section and follows `../creative-step.md`, Interview. The questions for arc, intention and introduction notes follow the order of a narrative arc, from the standing state to what stays open. The arc is the frame; each answer goes to one section of the note, as `note-format.md`, Note structure, sets out.
 
-For the direction document, the questions are the topics under Ongoing Story Direction below. For arc, intention, and introduction notes:
+For the direction document, the questions are the topics under Ongoing Story Direction below.
 
+**Opening question.**
 1. Which scope is it (arc, intention, or introduction), and which note is its parent?
-2. What kind of story is it emotionally, and what should it feel like when it plays out?
-3. Which scenes, arcs, or moments from other media does it evoke, and what specifically is drawn from each?
-4. Why is it worth building toward?
-5. What is the state of affairs before any player involvement, and which preconditions hold?
-6. What could happen? State each possibility as a possibility, not a script, and name at least one key moment or set piece.
+
+**The standing state (goes to Situation).**
+2. What is the state of affairs before any player involvement, and what pressure sits in it?
+3. Who is involved, what does each want or fear, and which preconditions must hold? See `note-format.md`, Situation.
+
+**What sets it moving (goes to Story Possibilities).**
+4. What could set it moving?
+
+**The turns (goes to Story Possibilities).**
+5. What turns could it take, and what is the key moment of each? See `note-format.md`, Story Possibilities.
+
+**The directions it could resolve (goes to Story Possibilities).**
+6. Which directions could it resolve in? See `note-format.md`, Story Possibilities.
 7. How does it connect to other arcs or characters?
+
+**What stays unresolved (goes to Design Notes).**
 8. What is unresolved about it, thematically, structurally, or in a specific character's behavior?
+
+**Creative intent (goes to Design Notes).**
+9. What is the arc for emotionally, and what should it feel like when it plays out?
+10. Which scenes, arcs, or moments from other media does it evoke, and what specifically is drawn from each?
+11. Why is it worth building toward?
 
 ---
 
-## Arc, Intention, and Introduction Notes
+## Writing the Note
 
-### Design Notes
+Work through the sections in the order `note-format.md` gives. Write Session Notes from the Specification first, then Situation and Story Possibilities, then the rest of Design Notes, which records the creative intent against the arc those two sections hold. Write the description last.
 
-> **Excluded from exports.** The story engine acts on Situation and Story Possibilities. Design Notes are for the builder.
-
-This section captures creative intent — the thinking behind the arc or moment before it becomes structure.
-
-Cover:
-
-- **Creative intent:** What kind of story is this emotionally? What should it feel like when it plays out? What experience is the builder trying to create for the player?
-- **Inspirations:** Specific scenes, arcs, or moments from other media being evoked. Name what is being drawn from each — not just "like the opening of Episode 4" but what specifically about that opening: the scale, the stillness before action, the sense of something already in motion.
-- **Why this is worth building toward:** What makes this arc or moment interesting? Why does it earn space in the world?
-- **Open questions:** What is not yet resolved about this arc — thematic, structural, or about a specific character's behavior in it?
-
-### Situation
-
-This section establishes the state of things before any player involvement. Write in present tense.
-
-**For arc and intention notes:**
-
-- The current state of affairs in the world that makes this arc or intention possible
-- Who is involved and what each party wants or fears going in
-- Timing constraints or seasonal considerations if relevant
-- Preconditions: what needs to be true — player trust level, prior events, season — for this arc or intention to be accessible
-
-**For introduction notes:**
-
-- Where and when the introduction could happen
-- Who else is present
-- What the circumstances are that make this a natural first meeting
-
-### Story Possibilities
-
-This section covers what could happen and how it could develop. Phrased as possibility, not script: use "may," "could," "there is a possibility that."
-
-Do not script outcomes. Write for robustness — arcs that remain interesting whether or not a specific beat fires.
-
-**For arc notes:**
-
-- What could happen and how it could develop
-- Key moments: the set pieces that make the arc feel real if they fire
-- Resolution directions: natural ways things could go, not scripted outcomes
-- Connection to other arcs or characters
-
-**For intention notes:**
-
-Typically shorter — one key possibility with the moment that would trigger it and the direction it could go.
-
-**For introduction notes:**
-
-How the scene plays, what the character does, what invitation it extends to the player.
+Frontmatter and filename follow `../creative-step.md` (the example name here is `notes/Introduction - Maren.md`).
 
 ---
 
 ## Self-Check Before Marking Complete (arc, intention, introduction notes)
 
-The note is open until it carries a closure tag. Mark it `complete` when every item below passes.
+Mark the note `complete` when every item passes (`../creative-step.md`, Closure).
 
-**Description**
-- [ ] Written last
-- [ ] 1–2 sentences; navigable summary of what this arc or intention is
+**Frontmatter**
+- [ ] `scope` and `up` set; description written last (`note-format.md`, Frontmatter)
 
 **Design Notes**
-- [ ] Creative intent stated
-- [ ] Inspirations named with what specifically is being drawn
+- [ ] Present with both subsections; creative intent, inspirations and open questions recorded (`note-format.md`, Design Notes)
 - [ ] Not padded
 
 **Situation**
-- [ ] State of affairs before player involvement stated
-- [ ] Preconditions named
+- [ ] State of affairs before player involvement stated; preconditions named (`note-format.md`, Situation)
 
 **Story Possibilities**
-- [ ] All entries phrased as possibility, not script
-- [ ] At least one key moment or set piece named
-- [ ] Connection to other arcs or characters noted
+- [ ] Every required entry present or waived (`note-format.md`, Required entries)
+- [ ] All entries phrased as possibility (`note-format.md`, Story Possibilities)
 
-**Hand on.** When every item passes, hand the note on to the critic: the critic step runs `worldbuilder-review` with this document and its governing format document. The revision step applies the auto-fix findings; escalated findings go to the human.
+**Hand on.** When every item passes, hand the note on as `../creative-step.md`, Hand on, says.
 
 ---
 

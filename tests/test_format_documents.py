@@ -5,8 +5,8 @@ Every entity skill in scope has a format document that ends with a
 `### Judgment calls`, in that order. The critic reads that section
 (`skills/worldbuilder-review/SKILL.md`, Phase 1).
 
-Part 1 covers character, location, faction, event and concept. The story
-skill joins when the story framework lands.
+Part 1 covers character, location, faction, event and concept. Part 2 adds
+the story skill.
 
 The character skill also keeps each required doctrine entry name in
 `card-format.md` only: one home per rule.
@@ -25,6 +25,7 @@ FORMAT_DOCUMENTS = {
     'worldbuilder-faction': 'note-format.md',
     'worldbuilder-event': 'note-format.md',
     'worldbuilder-concept': 'note-format.md',
+    'worldbuilder-story': 'note-format.md',
 }
 
 REQUIRED_ENTRY_NAMES = [
