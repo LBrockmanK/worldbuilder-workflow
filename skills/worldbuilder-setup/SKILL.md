@@ -56,7 +56,7 @@ The marketplace suffix varies by install (`scraibe@<marketplace>`); the script m
 
 - Exit 0: both plugins are enabled. Continue.
 - Exit 1: **stop** and show the user the script's message. It tells them to run `fleet:setup` at `<session-root>`, and to clear a disable through `fleet:setup`.
-- Exit 2: a settings file is not readable JSON. **Stop** and show the user the file the script named.
+- Exit 2: a settings file is not readable JSON, or is valid JSON whose root is not an object. **Stop** and show the user the file the script named.
 
 Do not work around a failed check by writing config into the project or into the user-level settings file — fleet:setup is the sole writer of plugin enablement, and proceeding would make "adopted" mean nothing.
 

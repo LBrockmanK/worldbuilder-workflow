@@ -105,6 +105,8 @@ class CheckEnablementTests(unittest.TestCase):
         rows = self.verdicts(out)
         self.assertEqual(rows['worldbuilder-workflow'][0], 'disabled')
         self.assertEqual(rows['scraibe'][0], 'enabled')
+        self.assertIn('fleet:setup', out)
+        self.assertIn('clear the disable through fleet:setup', out)
 
     def test_f_user_false_is_not_enabled(self):
         self.committed({})
@@ -119,6 +121,21 @@ class CheckEnablementTests(unittest.TestCase):
         code, out, _ = self.run_check()
         self.assertEqual(code, 1)
         self.assertEqual(self.verdicts(out)['scraibe'][0], 'disabled')
+
+    def test_g2_project_same_layer_conflict(self):
+        self.committed({'scraibe@a': True, 'scraibe@b': False,
+                        'worldbuilder-workflow@m': True})
+        code, out, _ = self.run_check()
+        self.assertEqual(code, 1)
+        self.assertEqual(self.verdicts(out)['scraibe'], ('disabled', 'project'))
+
+    def test_g3_user_same_layer_conflict(self):
+        self.committed({})
+        self.user_file({'scraibe@a': True, 'scraibe@b': False,
+                        'worldbuilder-workflow@m': True})
+        code, out, _ = self.run_check()
+        self.assertEqual(code, 1)
+        self.assertEqual(self.verdicts(out)['scraibe'][0], 'missing')
 
     def test_h_user_file_with_bom(self):
         self.committed({})
