@@ -2,6 +2,10 @@
 
 ## Design Notes
 
+### Session Notes
+
+### Builder Context
+
 ## What Happens
 
 ## Scene Effects
