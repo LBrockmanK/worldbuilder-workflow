@@ -31,7 +31,7 @@ The definer draws on this section and follows `../creative-step.md`, Interview. 
 **Form & History.**
 2. What kind of place is it: scale, age, condition, environment, and one specific detail?
 3. Why does it exist, what does it carry from the past, and what does it imply about the world? Does it hold any secrets?
-4. Cultural shorthand: "For a real-world or historically grounded place: what real places, media, or cultural references does it call to mind, and what does each contribute? These references activate existing model associations cheaply. Skip for original-fantasy places where the model has no real-world associations to draw on." The answer lands in Form & History.
+4. Which real places, media or cultural references does it call to mind? See `note-format.md`, Form & History.
 
 **Presence.**
 5. Who comes here and why? What do they want that the place does or does not provide?

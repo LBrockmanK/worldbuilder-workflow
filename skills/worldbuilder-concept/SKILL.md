@@ -76,10 +76,10 @@ World knowledge is a living collection, not a phase that opens and closes. Any s
 Mark the note `complete` when every item passes (`../creative-step.md`, Closure). The note is ready when it can constrain or shape any scene that touches the concept: a scene author reading it knows what is impossible, what costs something, and what is inevitable because this thing exists.
 
 **Frontmatter**
-- [ ] `layer` set; `aliases` complete (`note-format.md`, Alias writing); other fields per the concept entry in the plugin's type roster
+- [ ] `layer` set and `aliases` complete (`note-format.md`, Alias writing), or waived in the Specification (waiver: `../creative-step.md`, Required entries and waivers); other fields per the concept entry in the plugin's type roster
 
 **Description**
-- [ ] Written per `../../CONTEXT.md`, Properties; 1–2 sentences; covers what this knowledge is and when it matters
+- [ ] Written per `../../CONTEXT.md`, Properties, or waived in the Specification (waiver: `../creative-step.md`, Required entries and waivers); 1–2 sentences; covers what this knowledge is and when it matters
 
 **Design Notes**
 - [ ] Present with both subsections; narrative purpose and layer rationale stated (`note-format.md`, Design Notes)
@@ -89,7 +89,7 @@ Mark the note `complete` when every item passes (`../creative-step.md`, Closure)
 
 **Implications**
 - [ ] Behavioral and social consequences, not just restrictions; activation context stated (`note-format.md`, Implications)
-- [ ] Costs and limits present for rule-bearing concepts, or waived (`note-format.md`, Required entries)
+- [ ] Costs and limits present for rule-bearing concepts (`note-format.md`, Required entries), or waived in the Specification (waiver: `../creative-step.md`, Required entries and waivers)
 
 **Hand on.** When every item passes, hand the note on to the critic (`../creative-step.md`, Hand on), with `note-format.md` as the governing format document.
 

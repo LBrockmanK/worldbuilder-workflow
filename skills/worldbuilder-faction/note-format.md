@@ -132,7 +132,8 @@ Rules the critic enforces, organized by scope. Each check names the rule and its
 - Current holdings are specific (this document, Origin & Structure). Violation: "influence" or another holding that names nothing.
 - Active goals are specific and active (this document, Origin & Structure). Violation: a goal with no concrete target or timing.
 - Membership is thin on named members and covers acquisition, loss and ambiguity cases (this document, Origin & Structure — Membership). Violation: member personalities written out, or a part missing.
-- Place pressure and cultural shorthand placement (this document, Origin & Structure). Violation: a reference the Specification records appears only in Design Notes.
+- Place pressure (this document, Origin & Structure — Where the faction operates). Violation: a place-pressure answer recorded in the Specification is missing from Origin & Structure, or is not written as a [place fact] → [consequence] pair.
+- Cultural shorthand placement (this document, Origin & Structure — Cultural shorthand). Violation: a reference recorded in the Specification is missing from Origin & Structure, including one that appears only in Design Notes.
 
 **Collective Behavior:**
 - Shared tendencies format (this document, Collective Behavior — Shared behavioral tendencies). Violation: a count outside 3-5, or an entry missing its When, Behavior or Because part.

@@ -34,8 +34,8 @@ The definer draws on this section and follows `../creative-step.md`, Interview. 
 2. How did it come to exist, and what was its original purpose?
 3. What does it control now? Name specific resources, territory, monopolies, information, relationships, or obligations owed to it.
 4. What is it trying to achieve right now? The goal must be specific and active.
-5. Location as pressure: "What about where this faction operates creates pressure on its members? Territory, climate, geography, neighbors, proximity to danger? State the connection as a pair: [place fact] → [what it made true about the faction]." The answer lands in Origin & Structure.
-6. Cultural shorthand: "For a faction modeled on real-world or historically grounded groups: what real organizations, movements, or subcultures does it resemble, and what does each contribute? These references activate existing model associations cheaply. Skip for original-fantasy factions where the model has no real-world associations to draw on." The answer lands in Origin & Structure.
+5. What about where this faction operates creates pressure on its members? See `note-format.md`, Origin & Structure.
+6. Which real organizations, movements or subcultures does it resemble? See `note-format.md`, Origin & Structure.
 7. How does one become a member, how does membership end, and which ranks or tiers exist?
 8. Which cases are ambiguous: former members, dual loyalties, contested membership, outsiders who function as members?
 

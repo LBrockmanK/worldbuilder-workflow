@@ -86,13 +86,13 @@ Rules the critic enforces, organized by scope. Each check names the rule and its
 - Writing doctrine compliance (`skills/writing-style.md`). Violation: any failure mode listed there.
 
 **Frontmatter:**
-- `aliases` covers realistic phrasings (this document, Note structure — Frontmatter). Violation: empty `aliases`, or aliases that are single generic words.
+- `aliases` covers every realistic phrasing (this document, Note structure — Frontmatter). Violation: a realistic way the event is mentioned in dialogue is missing.
 - Layer classification (this document, Note structure — Frontmatter). Violation: Scene Effects touches the hidden layer and no `layer:` is set.
 
 **What Happens:**
 - Timing stated, approximately (this document, What Happens). Violation: no timing, or a specific day number.
 - Who participates and what physically occurs are stated (this document, What Happens). Violation: either missing.
-- Cultural shorthand placement (this document, What Happens). Violation: a reference the Specification records appears only in Design Notes.
+- Cultural shorthand placement (this document, What Happens). Violation: a reference recorded in the Specification is missing from What Happens, including one that appears only in Design Notes.
 
 **Scene Effects:**
 - At least one social dynamic specified (this document, Scene Effects). Violation: no statement of what relaxes or tightens.
@@ -114,5 +114,5 @@ Classify as `skills/worldbuilder-review/SKILL.md`, Phase 3, sets out. Event-spec
 
 - A Scene Effects entry that could describe any day ("People are happy and gather in the town square"): escalate. The scene logic must be invented.
 - A specific day number in Timing ("day 8"): auto-fix to the approximate season when the same section states the season. Escalate when it does not.
-- `aliases` missing a plural or possessive form of an alias already present: auto-fix. Missing realistic phrasings: escalate.
+- `aliases` missing a realistic phrasing: escalate. The phrasing must be sourced.
 - Narrative intent written into a body section: auto-fix by moving it to Builder Context when the sentence stands alone. Escalate when the section depends on it.

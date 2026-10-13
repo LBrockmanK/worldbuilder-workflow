@@ -23,7 +23,7 @@
 
 ### Frontmatter
 
-`aliases` is the most important field of a concept note: the export skill derives keyword triggers from it. See Alias writing below.
+`layer` takes `surface` (freely shareable), `mid` (contextual) or `deep` (revealed late). `aliases` is the most important field of a concept note: the export skill derives keyword triggers from it, and aliases become lorebook keyword candidates at export. See Alias writing below.
 
 ---
 

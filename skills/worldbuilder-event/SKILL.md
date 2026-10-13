@@ -33,7 +33,7 @@ The definer draws on this section and follows `../creative-step.md`, Interview. 
 3. Who participates: everyone, volunteers, a community role, or invited guests?
 4. What physically occurs: activities, rituals, traditions?
 5. What does it commemorate, or why does it exist?
-6. Cultural shorthand: "For an event modeled on real festivals, observances, or historically grounded customs: which real events does it resemble, and what does each contribute? These references activate existing model associations cheaply. Skip for original-fantasy events where the model has no real-world associations to draw on." The answer lands in What Happens.
+6. Which real festivals, observances or customs does it resemble? See `note-format.md`, What Happens.
 
 **Scene Effects.**
 7. What social distances relax and what tensions tighten? Who talks to whom that normally would not?

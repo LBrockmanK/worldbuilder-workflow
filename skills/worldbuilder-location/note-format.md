@@ -102,7 +102,7 @@ Rules the critic enforces, organized by scope. Each check names the rule and its
 **Form & History:**
 - Physical Form entry format (this document, Form & History — Physical Form). Violation: more than 3 sentences, no concrete detail, or a floor plan.
 - History & Meaning entry format (this document, Form & History — History & Meaning). Violation: no statement of why the place exists or what it implies.
-- Cultural shorthand placement (this document, Form & History — Cultural shorthand). Violation: a real-world reference that the Specification records appears only in Design Notes.
+- Cultural shorthand placement (this document, Form & History — Cultural shorthand). Violation: a reference recorded in the Specification is missing from Form & History, including one that appears only in Design Notes.
 
 **Presence:**
 - Who-does-what form (this document, Presence — Who Comes Here). Violation: an entry names who is present without saying what they do or want.

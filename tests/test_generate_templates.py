@@ -278,8 +278,9 @@ class TemplateStructureTests(unittest.TestCase):
         slot the character template uses;
       * a table row (the empty coverage-ledger table: header and
         separator, no data rows);
-      * the opening `> For future agents:` line, which names the note
-        type and its skill and is stamped at creation;
+      * the opening `> For future agents:` line, which may only name the
+        note type, the filename convention and the skill to use (the
+        PREAMBLE pattern); it carries no rule;
       * in the character template only, a pointer line: an italic line
         (`_..._`) naming the governing document that holds the rule
         (`card-format.md`, or `source-extraction-standard.md` for the
@@ -289,6 +290,14 @@ class TemplateStructureTests(unittest.TestCase):
     IN_SCOPE = ['character', 'location', 'faction', 'event', 'concept']
     POINTER = re.compile(
         r'^_[^_].*`[^`]*(card-format|source-extraction-standard)\.md`.*_$')
+
+    # The opening line names the note type and the skill to use, and
+    # nothing else (no rules).
+    PREAMBLE = re.compile(
+        r'^> For future agents: this is an? [a-z]+ note\. '
+        r"The filename is the [a-z]+'s name\. "
+        r'Use `worldbuilder-[a-z]+` to build it out\.'
+        r'( Card format defined in `skills/worldbuilder-character/card-format\.md`\.)?$')
 
     def read_template(self, name):
         path = os.path.join(TEMPLATE_DIR, f'{name}.md')
@@ -305,7 +314,7 @@ class TemplateStructureTests(unittest.TestCase):
                 text = line.strip()
                 if (not text or text.startswith('#') or text == '-'
                         or text.startswith('|')
-                        or text.startswith('> For future agents:')):
+                        or self.PREAMBLE.match(text)):
                     continue
                 if name == 'character' and self.POINTER.match(text):
                     continue
