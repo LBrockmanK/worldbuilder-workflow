@@ -295,8 +295,12 @@ class TemplateStructureTests(unittest.TestCase):
     # the character template one pointer to card-format.md. Nothing else.
     PREAMBLE = re.compile(
         r'^> For future agents: this is an? [a-z]+ note\. '
-        r'Use `worldbuilder-[a-z]+` to build it out\.'
-        r'( Card format defined in `skills/worldbuilder-character/card-format\.md`\.)?$')
+        r'Use `worldbuilder-[a-z]+` to build it out\.$')
+    CHARACTER_PREAMBLE = re.compile(
+        r'^> For future agents: this is an? [a-z]+ note\. '
+        r'Use `worldbuilder-[a-z]+` to build it out\. '
+        r'Card format defined in '
+        r'`skills/worldbuilder-character/card-format\.md`\.$')
 
     def read_template(self, name):
         path = os.path.join(TEMPLATE_DIR, f'{name}.md')
@@ -313,7 +317,8 @@ class TemplateStructureTests(unittest.TestCase):
                 text = line.strip()
                 if (not text or text.startswith('#') or text == '-'
                         or text.startswith('|')
-                        or self.PREAMBLE.match(text)):
+                        or (self.CHARACTER_PREAMBLE if name == 'character'
+                            else self.PREAMBLE).match(text)):
                     continue
                 if name == 'character' and self.POINTER.match(text):
                     continue
