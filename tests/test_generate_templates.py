@@ -287,7 +287,8 @@ class TemplateStructureTests(unittest.TestCase):
         coverage ledger).
     """
 
-    IN_SCOPE = ['character', 'location', 'faction', 'event', 'concept']
+    IN_SCOPE = ['character', 'location', 'faction', 'event', 'concept',
+                'story']
     POINTER = re.compile(
         r'^_[^_].*`[^`]*(card-format|source-extraction-standard)\.md`.*_$')
 
