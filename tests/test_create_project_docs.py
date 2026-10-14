@@ -67,10 +67,10 @@ class ProjectRootTests(unittest.TestCase):
 
 
 class ExportDiffLookupTests(unittest.TestCase):
-    """export_diff.py needs a .sbworld to get any further, so these tests
+    """export_diff.py needs a world.json to get any further, so these tests
     check the foundation lookup, the narrowest point a small fixture
     reaches: with project/foundation.md the run gets past it and stops at
-    the missing .sbworld; with only project/seed.md it stops at the
+    the missing world.json; with only project/seed.md it stops at the
     lookup and names foundation.md."""
 
     EXPORT_DIFF = os.path.join(ROOT, 'scripts', 'export_diff.py')
@@ -91,7 +91,7 @@ class ExportDiffLookupTests(unittest.TestCase):
         r = self.run_diff('foundation.md')
         self.assertNotEqual(r.returncode, 0)
         self.assertNotIn('foundation.md not found', r.stderr)
-        self.assertIn('.sbworld', r.stderr)
+        self.assertIn('world.json', r.stderr)
 
     def test_only_seed_md_fails_naming_foundation_md(self):
         r = self.run_diff('seed.md')

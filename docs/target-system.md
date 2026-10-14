@@ -171,13 +171,13 @@ The character note also carries a `sex` field. It is internal worldbuilder schem
 
 ### `baseProfile` — structure
 
-The `baseProfile` field is a single text block: unstructured flowing prose. No JSON sub-fields, no rigid internal format. The card body (personality, background, behavior, relationships, influence thresholds) is written as connected prose followed by a **Future Storylines** section. No internal headers in the card body.
+The `baseProfile` field is a single text block with no JSON sub-fields. The character note's sections ship into it in order: an unheaded preamble, then Background, Body, Soul, Relationships, Voice / Dialogue and Future Storylines. Each section after the preamble opens with a plain-text heading line: the heading words on a line of their own, with no markdown heading marks and no `---` dividers. The **Future Storylines** section is required for every character.
 
 See `worldbuilder-ainime-export/card-assembly.md` for the full assembly guide, register rules, and token targets.
 
 ### `appearance` — structure
 
-Physical description for image generation and LLM reference. Cover: species/type and sex (if relevant), age presentation and body type, notable features, clothing style. Should be consistent with `baseProfile`.
+Physical description for image generation and LLM reference. Cover: species/type and sex (if relevant), apparent age and body type, notable features, clothing style. Should be consistent with `baseProfile`.
 
 ### `spriteSets` schema
 
@@ -229,7 +229,7 @@ Worlds may define a custom set with more or fewer entries. Define `availableExpr
 
 For monolithic AI-generated sprites (one image per expression), three tiers balance cost and coverage: **Essential**, **Standard** (the recommended default) and **Expansive**, each a strict superset of the one before. The names carry no counts, so a change in membership never renames a tier.
 
-This document does not define the tiers. Membership, counts, narrative roles and the cost table live in the Image Gen expression standard, the shared Ainime reference for sprite expressions: `Projects/Ainime/Image Gen/Expression standard.md` in the Anima vault. Until that note is written, the same standard is at `Projects/Ainime/Fields of Mistria/repo/Fields-of-Mistria/Sprite Expression Workflow/Expression Standard.md`.
+This document does not define the tiers. Membership, counts, narrative roles and the cost table are in `worldbuilder-ainime-export/expression-standard.md`, which is also the one statement of the sprite background rule.
 
 ---
 
@@ -428,6 +428,8 @@ All JSON fields are produced by `worldbuilder-ainime-export` reading from Wide-p
 
 ### Wide-phase sources → ainime export input
 
+All entity notes (character, location, faction, event, concept, story) sit in the project's flat `notes/` folder, told apart by their `type` property. The two named documents are `project/foundation.md` and `project/direction.md`.
+
 ```
 project/foundation.md  → settingSummary, genre, inspirations, tonalInspirations,
                          keyTropesAndThemes, communityDescription, introText,
@@ -472,7 +474,7 @@ These fields are auto-generated or configured by the platform — do not produce
 - `generateSideCharacterOnNewGame` — builder's platform toggle; preserved on re-export, never derived from notes (see the Adventure tab)
 - `characters[].image` — generated artwork
 - `activePromptSet` — prompt-set reference; prompt sets are builder customization
-- `locations[].url` — when platform-generated; bundled location images use `asset://sandboxWorldAssets/<uuid>` and are export-produced
+- `locations.<segment>[].url` — when platform-generated; bundled location images use `asset://sandboxWorldAssets/<uuid>` and are export-produced
 - `artStyle.sprite.same_character_consistency` — platform setting
 - `artStyle.sprite.use_tag_style_prompts` — platform setting
 - `uiTheme.*` — UI configuration, set after content

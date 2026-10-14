@@ -2,9 +2,10 @@
 """Diff-based update for ainime .sbworld exports.
 
 Reads the project's source documents (foundation.md, direction.md), generates
-candidate field values, and diffs them against the world.json inside the
-existing .sbworld archive.  The .sbworld is the only true export output;
-no standalone world.json is required.
+candidate field values, and diffs them against the project's versioned
+exports/ainime/world.json.  That file is the source of truth; the .sbworld
+archive is built from it (with sbworld_tool.py) and is never edited here.
+This script writes world.json only and never reads or writes an archive.
 
 Changes are never applied silently -- the diff is shown first, and only
 named fields are updated.
@@ -14,10 +15,10 @@ Usage:
     python export_diff.py <project-root> --apply field ...   # apply named fields
     python export_diff.py <project-root> --apply-all         # apply everything
 
-<project-root> is the repo directory containing the worldvault project
-(e.g. .../Fields of Mistria/repo).  The script locates project/foundation.md
-and project/direction.md inside the first subdirectory that has a
-project/ folder, and the .sbworld file inside exports/ainime/.
+<project-root> is the project root that setup created: project/ sits directly
+under it.  If it does not, the script falls back to the first subdirectory
+that has a project/ folder.  It reads project/foundation.md and
+project/direction.md there, and world.json inside <project-root>/exports/ainime/.
 """
 
 import argparse
@@ -26,9 +27,8 @@ import json
 import os
 import re
 import sys
+import tempfile
 import textwrap
-import zipfile
-from datetime import datetime, timezone
 
 # -- field map (source document -> world.json) -------------------------
 
@@ -49,18 +49,35 @@ FOUNDATION_LIST_FIELDS = [
 
 # -- helpers -----------------------------------------------------------
 
-def find_sbworld(exports_dir):
-    """Return the path to the first .sbworld file in exports_dir."""
-    for f in os.listdir(exports_dir):
-        if f.endswith(".sbworld"):
-            return os.path.join(exports_dir, f)
-    return None
+def load_world(world_path):
+    """Read the versioned world.json.  Returns (world, eol, trailing_newline)
+    so a write can keep the file's line endings and final newline."""
+    with open(world_path, "rb") as f:
+        raw = f.read()
+    eol = "\r\n" if b"\r\n" in raw else "\n"
+    trailing = raw.endswith(b"\n")
+    return json.loads(raw.decode("utf-8")), eol, trailing
 
 
-def load_world_from_sbworld(sbworld_path):
-    """Extract and parse world.json from inside the .sbworld archive."""
-    with zipfile.ZipFile(sbworld_path, "r") as zf:
-        return json.loads(zf.read("world.json"))
+def save_world(world_path, world, eol, trailing):
+    """Write world.json with the layout the file had (2-space indent)."""
+    text = json.dumps(world, indent=2, ensure_ascii=False)
+    if trailing:
+        text += "\n"
+    data = text.replace("\n", eol).encode("utf-8")
+    # a unique temp file created exclusively by this call; only it is removed
+    fd, tmp = tempfile.mkstemp(dir=os.path.dirname(os.path.abspath(world_path)),
+                               prefix="world.json.", suffix=".tmp")
+    try:
+        with os.fdopen(fd, "wb") as f:
+            f.write(data)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp, world_path)
+    except BaseException:
+        if os.path.exists(tmp):
+            os.remove(tmp)
+        raise
 
 
 def extract_section(content, heading):
@@ -117,50 +134,20 @@ def field_diff(name, old, new):
         diff = list(difflib.unified_diff(
             old.splitlines(keepends=True),
             new.splitlines(keepends=True),
-            fromfile=f"{name} (.sbworld)",
+            fromfile=f"{name} (world.json)",
             tofile=f"{name} (source doc)",
             lineterm="",
         ))
         return "\n".join(diff) if diff else None
 
-    return f"  .sbworld: {repr(old)[:200]}\n  source:   {repr(new)[:200]}"
-
-
-def repack_sbworld(sbworld_path, world):
-    """Replace world.json inside the .sbworld archive, preserving assets."""
-    with zipfile.ZipFile(sbworld_path, "r") as old_zip:
-        manifest = json.loads(old_zip.read("manifest.json"))
-        manifest["exportedAt"] = (
-            datetime.now(timezone.utc)
-            .strftime("%Y-%m-%dT%H:%M:%S.%f")[:-3] + "Z"
-        )
-        other_entries = [
-            n for n in old_zip.namelist()
-            if n not in ("manifest.json", "world.json")
-        ]
-
-        tmp = sbworld_path + ".tmp"
-        with zipfile.ZipFile(tmp, "w", zipfile.ZIP_STORED) as new_zip:
-            new_zip.writestr(
-                "manifest.json",
-                json.dumps(manifest, indent=2, ensure_ascii=False),
-            )
-            new_zip.writestr(
-                "world.json",
-                json.dumps(world, indent=2, ensure_ascii=False) + "\n",
-            )
-            for name in other_entries:
-                new_zip.writestr(name, old_zip.read(name))
-
-    os.replace(tmp, sbworld_path)
-    return os.path.getsize(sbworld_path)
+    return f"  world.json: {repr(old)[:200]}\n  source:     {repr(new)[:200]}"
 
 
 # -- main --------------------------------------------------------------
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Diff source documents against the .sbworld export",
+        description="Diff source documents against the versioned world.json",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=textwrap.dedent("""\
             examples:
@@ -183,14 +170,18 @@ def main():
 
     root = args.project_root
 
-    # locate project subdirectory
+    # locate the project: project/ directly under the root (the setup
+    # skill's layout), else inside the first subdirectory that has one
     project_dir = None
-    for d in os.listdir(root):
-        if os.path.isdir(os.path.join(root, d, "project")):
-            project_dir = os.path.join(root, d)
-            break
+    if os.path.isdir(os.path.join(root, "project")):
+        project_dir = root
+    else:
+        for d in sorted(os.listdir(root)):
+            if os.path.isdir(os.path.join(root, d, "project")):
+                project_dir = os.path.join(root, d)
+                break
     if not project_dir:
-        sys.exit("No subdirectory with a project/ folder found.")
+        sys.exit("No project/ folder found under the project root.")
 
     foundation_path = os.path.join(project_dir, "project", "foundation.md")
     direction_path = os.path.join(project_dir, "project", "direction.md")
@@ -199,9 +190,9 @@ def main():
     if not os.path.exists(foundation_path):
         sys.exit(f"foundation.md not found at {foundation_path}")
 
-    sbworld_path = find_sbworld(exports_dir)
-    if not sbworld_path:
-        sys.exit(f"No .sbworld file found in {exports_dir}")
+    world_path = os.path.join(exports_dir, "world.json")
+    if not os.path.exists(world_path):
+        sys.exit(f"world.json not found at {world_path}")
 
     # read sources
     with open(foundation_path, encoding="utf-8") as f:
@@ -227,8 +218,8 @@ def main():
     if direction:
         candidates["arcManagerGuidance"] = direction
 
-    # load existing from .sbworld
-    world = load_world_from_sbworld(sbworld_path)
+    # load the versioned world.json
+    world, eol, trailing = load_world(world_path)
 
     # diff
     diffs = {}
@@ -239,7 +230,7 @@ def main():
             diffs[field] = (old_val, new_val, diff_text)
 
     if not diffs:
-        print("No differences between source documents and .sbworld.")
+        print("No differences between source documents and world.json.")
         return
 
     # display
@@ -271,14 +262,15 @@ def main():
             print("  Run with --apply <field> ... or --apply-all to update.")
         return
 
-    # apply to the in-memory world, then repack
+    # apply to the in-memory world, then write world.json only
     for field in fields_to_apply:
         _, new_val, _ = diffs[field]
         set_nested(world, field, new_val)
         print(f"  Updated: {field}")
 
-    size = repack_sbworld(sbworld_path, world)
-    print(f"  Repacked {os.path.basename(sbworld_path)} ({size:,} bytes)")
+    save_world(world_path, world, eol, trailing)
+    print(f"  Wrote {world_path}")
+    print("  Build the archive with sbworld_tool.py when the edits are done.")
     print("Done.")
 
 

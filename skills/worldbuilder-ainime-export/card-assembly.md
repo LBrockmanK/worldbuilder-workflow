@@ -6,7 +6,9 @@
 
 ## Overview
 
-The `baseProfile` field carries the character's complete profile — everything the engine reads as "who this character is." The character note's sections ship directly into the `baseProfile`, separated by `---` dividers: the preamble, Background, Body, Soul, Relationships, Voice / Dialogue, then Future Storylines. Everything from the character note ships except Design Notes.
+The `baseProfile` field carries the character's complete profile — everything the engine reads as "who this character is." The character note's sections ship directly into the `baseProfile`: the preamble, Background, Body, Soul, Relationships, Voice / Dialogue, then Future Storylines. Intimate Dynamics and Design Notes do not ship.
+
+Every section after the preamble opens with a plain-text heading line: the heading words alone on a line, with no markdown heading marks (no `#`) and no `---` dividers between sections. Future Storylines is required for every character.
 
 Do not rewrite, paraphrase, weave into prose, or otherwise transform the source content. The character note is the card.
 
@@ -16,7 +18,7 @@ Source material: the character note in `notes/`.
 
 ## Sections
 
-Each section from the character note ships as-is with its heading. Preserve the content — every fact, every behavioral detail, every "because" clause, every archetype label, every dialogue line. Do not summarize, merge, drop entries, or reword.
+Each section from the character note ships as-is, opening with its plain-text heading line. Preserve the content — every fact, every behavioral detail, every "because" clause, every archetype label, every dialogue line. Do not summarize, merge, drop entries, or reword.
 
 **Preamble** — the opening text before the first heading. Ships without a heading.
 
@@ -31,6 +33,8 @@ Each section from the character note ships as-is with its heading. Preserve the 
 **Voice / Dialogue** — ships with heading. Every dialogue situation with its label, scene context, and full dialogue lines. Engine format applies to dialogue and narration within scenes.
 
 **Story Seeds → Future Storylines** — the one transformation. Story Seeds are reframed as Future Storylines: the title becomes the storyline label, and the scenario prose is reframed from definite to possibility-style ("may", "could", "might"). Do not script outcomes — give the engine material to work from. Do not drop lines or sentences from source seeds.
+
+**Intimate Dynamics** — excluded. Does not ship.
 
 **Design Notes** — excluded. Does not ship.
 
@@ -68,7 +72,8 @@ These apply to the one section that is rewritten (Future Storylines) and to any 
 - [ ] Voice / Dialogue section present — every dialogue situation with all lines
 - [ ] Future Storylines present — every Story Seed accounted for, phrased as possibility, no lines dropped
 - [ ] Introduction storyline present
-- [ ] Design Notes excluded
+- [ ] Intimate Dynamics and Design Notes excluded
+- [ ] Each section opens with a plain-text heading line; no markdown heading marks, no `---` dividers
 - [ ] No content rewritten, paraphrased, or summarized beyond the Story Seeds → Future Storylines reframing
 - [ ] Factual accuracy — no reversed attributions, no invented details
 - [ ] Pronouns agree with the character note's `sex` field

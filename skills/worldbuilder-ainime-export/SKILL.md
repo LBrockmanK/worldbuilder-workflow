@@ -30,6 +30,8 @@ If any prerequisite is incomplete, return to the relevant Wide-phase skill rathe
 
 Fields are marked **required** or **optional**. Required fields must be present in every export; optional fields are included when the world needs them.
 
+**Where the sources live.** All entity notes (character, location, faction, event, concept and story) sit in the project's flat `notes/` folder, and each note's `type` property says which kind it is. The two named documents are `project/foundation.md` and `project/direction.md`. Extracted source material is in `reference/` and is not export input.
+
 | Source | ainime JSON field(s) | Req? |
 |---|---|---|
 | `project/foundation.md` — Setting Summary | `settingSummary` | **req** |
@@ -55,10 +57,11 @@ Fields are marked **required** or **optional**. Required fields must be present 
 | concept notes in `notes/` | `loreEntries[]` | opt |
 | character notes in `notes/` | `characters[]` | **req** |
 | `project/foundation.md` — Art style | `artStyle.background.*`, `artStyle.sprite.*` | opt |
-| `project/foundation.md` — Art style | `artStyle.timeOfDayLighting.*` | opt |
+| `project/foundation.md` — Art style | `artStyle.background.time_contexts` (keyed by day segment) | opt |
 | character notes (Body sections) | `artStyle.sprite.clothingRules[]` | opt |
 | `project/foundation.md` — expression tier | `availableExpressions[]` | opt |
-| builder-specified | `locations[]` | opt |
+| location notes in `notes/` (image prompts), builder-specified (names) | `locations` | opt |
+| `project/foundation.md` — music reference | `musicStyle.prefix`, `musicStyle.suffix` | opt |
 | builder-specified | `moods` | opt |
 | builder-specified | `theme` | opt |
 | builder-specified | `customPrompts` | opt |
@@ -67,26 +70,28 @@ Fields are marked **required** or **optional**. Required fields must be present 
 
 ## Updating an Existing Export
 
-The .sbworld file is the only true export output — it is what the ainime platform consumes. There is no authoritative standalone world.json; the world.json lives inside the .sbworld archive.
+Every Ainime project exports by one method. The project keeps `exports/ainime/world.json` and `exports/ainime/manifest.json` under version control, beside an `assets/` folder. The `assets/` folder and the `.sbworld` archive are git-ignored. The versioned `world.json` is the source of truth: every edit is made to it, and the archive is built from the three, never edited in place. The archive is what the ainime platform consumes.
 
-An exported .sbworld accumulates manual tweaks — expanded opening arcs, rewritten lore entries, adjusted character cards. A re-export must never overwrite those changes silently.
+An exported world accumulates manual tweaks: expanded opening arcs, rewritten lore entries, adjusted character cards. A re-export must never overwrite those changes silently.
 
-**Always use the diff workflow.** `scripts/export_diff.py` extracts world.json from the existing .sbworld, generates candidate field values from the source documents (foundation.md, direction.md), and diffs them. Only the fields you name are updated, and the .sbworld is repacked in place.
+**Start from an existing archive.** To adopt an archive made elsewhere, unpack it once into `exports/ainime/`: `python "<worldbuilder>/scripts/sbworld_tool.py" extract <archive> --into <new-folder>`, then copy out `world.json` and `manifest.json` and keep `assets/`.
+
+**Use the diff workflow.** `export_diff.py` (in the plugin's `scripts/`; `export-procedure.md` says how to resolve `<worldbuilder>`) generates candidate field values from the source documents (foundation.md, direction.md) and diffs them against the versioned `world.json`. Only the fields you name are updated. It never reads or writes an archive.
 
 ```bash
-# show what differs between source docs and the current .sbworld
-python scripts/export_diff.py <project-root>
+# show what differs between source docs and the current world.json
+python "<worldbuilder>/scripts/export_diff.py" "<project-root>"
 
 # apply specific fields
-python scripts/export_diff.py <project-root> --apply communityDescription arcManagerGuidance
+python "<worldbuilder>/scripts/export_diff.py" "<project-root>" --apply communityDescription arcManagerGuidance
 
 # apply everything (use only when the diff has been reviewed)
-python scripts/export_diff.py <project-root> --apply-all
+python "<worldbuilder>/scripts/export_diff.py" "<project-root>" --apply-all
 ```
 
-Fields not covered by the script (characters, lore entries, calendar events) are updated by extracting world.json from the .sbworld, editing it, and repacking — never by regenerating the whole file.
+Fields the script does not cover (characters, lore entries, calendar events) are edited in `world.json` directly, never by regenerating the whole file.
 
-**Every edit session must end with repacking.** The standalone world.json is a working copy, not the export. After any manual edits to world.json, repack it into the .sbworld before reporting the work as done. An edit that touches world.json but not the .sbworld has changed nothing the platform will see.
+**Build the archive last.** After the checks in `export-procedure.md` pass, build as `export-procedure.md` section 7 gives. The tool refuses to overwrite an existing archive, so a build always lands under a new name. An edit that stops at `world.json` has changed nothing the platform will see until the archive is rebuilt.
 
 ---
 
@@ -173,7 +178,7 @@ Note: if the project uses 4 day segments (the platform default), add a `"Night"`
 }
 ```
 
-`triggerOnDay` is the absolute calendar day (1–112 for the 4×28 default). `promptInjection` is active direction to the story engine, not a neutral description of the event.
+`triggerOnDay` is the absolute calendar day (1 to seasons × `daysPerSeason`; see `export-procedure.md` for the year-length rule). `promptInjection` is active direction to the story engine, not a neutral description of the event.
 
 **`hiddenFromPlayer`** (optional, boolean) — Marks a trigger as hidden from the player. The intended reading is that the trigger still fires and injects its `promptInjection` while the player is not shown it in advance; that runtime behavior is inferred from the field name and from how existing exports use it, not confirmed against the platform. Set it on scripted story beats and introductions the player should meet in play rather than see announced (an arrival sequence, a character's first appearance, a story gate). Leave it `false` or absent on public festivals and observances the townsfolk would know about.
 
@@ -255,9 +260,9 @@ For each character note in `notes/`, produce a character record. Process one cha
 
 **`role`** (optional) — Not stored in the character note. Derive from the character's function as established by the character note content (their position in the world, their relationship to the player, their narrative role). Write as plain text. Examples: "The player's mysterious neighbor; a hacker with a heart of gold."
 
-**`baseProfile`** (optional) — The character card prose. Include personality, psychology, backstory, motivations, quirks, speech patterns. Optionally add a "Future Storylines" section at the end to guide what happens after the character's initial story arcs conclude. See `card-assembly.md` for full assembly guidance. This is the most complex field; do not attempt it without reading that file.
+**`baseProfile`** (optional) — The character card prose. Include personality, psychology, backstory, motivations, quirks, speech patterns. Each section opens with a plain-text heading line (no markdown heading marks, no dividers). The "Future Storylines" section is required: it ends the profile and guides what happens after the character's initial story arcs conclude. See `card-assembly.md` for full assembly guidance. This is the most complex field; do not attempt it without reading that file.
 
-**`appearance`** (optional) — Used for sprite generation and as context for all in-game AIs. Use the Body section's appearance preamble of the character note verbatim or lightly condensed. Cover species/type and sex if relevant, age presentation and body type, notable features, clothing style.
+**`appearance`** (optional) — Used for sprite generation and as context for all in-game AIs. Use the Body section's appearance preamble of the character note verbatim or lightly condensed. Cover species/type and sex if relevant, apparent age and body type, notable features, clothing style. For a long-lived character state the age they appear to be, never their real age (rule in `../worldbuilder-character/card-format.md`).
 
 **`startingInfluence`** (optional, integer) — Initial relationship value for this character, which may be negative (`-10` for a character who starts out hostile to the player). Omit the key to let the platform assign its default; the UI shows the omitted state as "Auto". Never write the string `"Auto"`.
 
@@ -327,7 +332,7 @@ The `description` drives art generation context; keep it concrete and consistent
 
 The number of expressions per sprite set depends on the project's chosen expression tier: **Essential**, **Standard** or **Expansive**, each a strict superset of the one before. Standard is the recommended default; Essential suits large casts or tight generation budgets; Expansive gives the full emotional range. The tier names carry no counts on purpose, so a change in membership never renames a tier.
 
-This skill does not hold the tier definitions. Tier membership, expression counts, narrative roles and the cost table live in the Image Gen expression standard, the shared Ainime reference for sprite expressions: `Projects/Ainime/Image Gen/Expression standard.md` in the Anima vault. Until that note is written, the same standard is at `Projects/Ainime/Fields of Mistria/repo/Fields-of-Mistria/Sprite Expression Workflow/Expression Standard.md`. Read it when choosing the tier, then write the chosen tier's expressions to `availableExpressions` (snake_case, as the platform requires).
+The tier membership, narrative roles, cost table and the hyphen-case to snake_case mapping are in `expression-standard.md` (this skill's reference file). Read it when choosing the tier, then write the chosen tier's expressions to `availableExpressions` (snake_case, as the platform requires).
 
 ---
 
@@ -337,7 +342,7 @@ Read the Art style section of `project/foundation.md`. Translate the plain-langu
 
 ### Time-of-Day Lighting (optional)
 
-Per-segment lighting descriptions injected into every background prompt between the scene description and the style suffix. The final prompt is: `prefix + scene + lighting + suffix`. One field per day segment (Morning, Afternoon, Evening, and Night if using 4 segments). Leave empty for segments that don't need specific lighting direction. The platform can AI-generate these from the world's setting.
+`artStyle.background.time_contexts` is an object keyed by day segment. Its per-segment lighting descriptions are injected into every background prompt between the scene description and the style suffix. The final prompt is: `prefix + scene + lighting + suffix`. One entry per day segment (Morning, Afternoon, Evening, and Night if using 4 segments). Leave empty for segments that don't need specific lighting direction. The platform can AI-generate these from the world's setting.
 
 ### Background Generation
 
@@ -349,11 +354,11 @@ Per-segment lighting descriptions injected into every background prompt between 
 
 ### Sprite Generation
 
-**`artStyle.sprite.style_prefix`** / **`style_suffix`** / **`negative_prompt`** (optional) — Same structure for character sprites. Sprite style should be consistent with background style but may have different technical requirements (transparent background, consistent character proportions). Negative prompt is SDXL only — ignored by Gemini/Imagen.
+**`artStyle.sprite.style_prefix`** / **`style_suffix`** / **`negative_prompt`** (optional) — Same structure for character sprites. Sprite style should be consistent with background style but may have different technical requirements (consistent character proportions). Write the `style_suffix` background text from the Background rule in `expression-standard.md`: one fixed two-colour gradient per sprite set, unchanged by emotion. The exported text is a derived copy of that rule. Negative prompt is SDXL only — ignored by Gemini/Imagen.
 
 **`artStyle.sprite.clothingRules`** (optional, string array) — Clothing directives for sprite generation, one rule per array entry (the UI shows one per line). Use them for world-wide costume rules: recognizable silhouettes and color motifs per character, a uniform element a faction always wears, a ban on copying costumes from existing franchises. Derive them from the character notes' Body sections and the foundation document's art style reference.
 
-**`artStyle.sprite.maintainConsistency`** (optional) — When enabled, appends "Same character, same background." during sprite generation to improve visual consistency across expressions.
+**`artStyle.sprite.maintainConsistency`** (optional) — When enabled, appends a same-character consistency line to each sprite prompt to improve visual consistency across expressions.
 
 Do not attempt to write `artStyle` content during Wide-phase work — this is a prompt-engineering output that belongs here.
 
@@ -365,7 +370,7 @@ Stock locations are optional — when image generation is enabled in-game, the A
 
 **Naming matters.** The location name is the **only thing the AI sees** when choosing a background — make it descriptive. Use underscores to separate words. Include the place, its vibe or details, and optionally a character owner. Examples: `cafe_cozy_morning`, `hidden_shrine_ruins_mistymorning`, `alex_apartment_livingroom_evening`, `rooftop_bar_cityview_evening`. The more descriptive the name, the better the AI matches scenes to locations.
 
-Locations are organized by day segment (one background image per segment per location). The AI Location Builder can generate location names and image prompts from the world's setting, arcs, characters, and lorebook. It runs iteratively — the first run creates the most essential locations, each subsequent run fills in more niche and atmospheric spots.
+`locations` is an object keyed by day segment; each segment holds a list of entries with `name`, `url` and `prompt` (one background image per segment per location). The AI Location Builder can generate location names and image prompts from the world's setting, arcs, characters, and lorebook. It runs iteratively — the first run creates the most essential locations, each subsequent run fills in more niche and atmospheric spots.
 
 ---
 
@@ -375,7 +380,7 @@ Audio tracks for the world. Two categories:
 
 ### System Moods (optional)
 
-Six fixed slots triggered by the game engine (not the AI). Author one audio track per slot — leave any slot empty for silence at that moment. Slots cannot be renamed or removed.
+Three fixed slots triggered by the game engine (not the AI). Author one audio track per slot — leave any slot empty for silence at that moment. Slots cannot be renamed or removed.
 
 - **Main Menu** (`main_menu`) — plays on the title screen, during new-game generation, and on the endgame/credits screen.
 - **Segment Transition** (`segment_transition`) — brief musical transition between day segments (Morning to Afternoon, Afternoon to Evening).
@@ -403,86 +408,19 @@ Per-AI-persona prompt overrides, on the platform's Prompts tab. Most worlds do n
 
 ## Self-Check Before Export Complete
 
-**Setting fields**
-- [ ] `settingSummary` present and detailed (required)
-- [ ] `communityDescription` is a player-facing blurb, not an in-game description
-- [ ] `introText` sets the scene for a new player
-- [ ] `inspirations` and `tonalInspirations` are arrays, one item per source
-- [ ] `keyTropesAndThemes` has 8–12 entries
-
-**Calendar**
-- [ ] `daySegments` match the project's intended day structure
-- [ ] `weatherPools` covers all seasons and all configured day segments
-- [ ] All festival and observance events have `storyTriggers` entries
-- [ ] Recurring events have `recurring: true`
-- [ ] `eventCalendarSummary` written
-- [ ] `dailyPlannerDirective` set if the world has standing daily-structure rules
-- [ ] No `triggerOnDay` exceeds calendar year length (112 for 4×28)
-- [ ] No duplicate non-recurring triggers on the same day
-- [ ] `hiddenFromPlayer: true` on scripted beats the player should not see announced; public festivals visible
-- [ ] `dailyInfluenceCapGain` / `dailyInfluenceCapLoss` written as split keys; `startingYear` and `baseYear` equal
-- [ ] `influenceMagnitudeTiers` rungs written in the world's own terms, if set
-
-**Lorebook**
-- [ ] Every major location has a concept note → lore entry
-- [ ] Background NPC guidelines entry present
-- [ ] `availableFromDay` set on all entries per layer
-- [ ] Keywords are specific; no partial-match traps
-- [ ] No lore entry has keywords that appear nowhere else in the world (dead content)
-- [ ] No multi-word compound keywords requiring unlikely exact matches
-
-**Story direction**
-- [ ] `arcManagerGuidance` is creative compass guidance, not a GM prompt
-- [ ] Story intention notes with concrete triggers have `storyTriggers` entries
-
-**Characters (per character)**
-- [ ] `name` present (required); other fields filled as applicable
-- [ ] `baseProfile` prose is complete and in target range (~900 supporting, ~1500 major tokens)
-- [ ] All six influence bands present in the card
-- [ ] Sprite sets include at minimum Casual and Working/Active
-- [ ] Introduction Story Seed present, introduction scenario plausible before `availableFromDay`
-- [ ] Expressions match the project's chosen tier (Essential / Standard / Expansive) as the Image Gen expression standard defines it
-- [ ] Every sprite set has its own `appearance`, starting with the character's unchanged physical-features preamble
-- [ ] `baseImage` matches the set's `expressions.neutral` where both exist
-- [ ] `color` is a Tailwind text class (`text-<hue>-<shade>`); `startingInfluence` is an integer or absent
-- [ ] Every pronoun in `appearance`, per-set `appearance` and Future Storylines agrees with the note's `sex` field
-
-**Art style**
-- [ ] Background and sprite prefix/suffix present if using AI generation
-- [ ] Negative prompts are for SDXL models only (Gemini/Imagen ignore them)
-- [ ] Time-of-day lighting set if the world needs per-segment atmosphere
+Before reporting the export done, run the pre-flight check in `export-procedure.md` (section 1). Every line is pass or fail, and a failure blocks the export. It carries the setting, calendar, lorebook, story, character and art-style checks.
 
 ---
 
 ## Can-This-Ever-Fire Detection
 
-Run after export assembly to identify content that will never reach the player.
-
-**Lore entry keyword analysis.** For each lore entry, check:
-- Keywords appearing nowhere else in the world (character cards, other lore, story triggers, setting fields) — the entry will never fire. **CRITICAL.**
-- Keywords appearing only in other lore entries — circular dependency, no player-facing trigger. **WARNING.**
-- Multi-word compound keywords requiring exact co-occurrence — may be too specific to fire naturally. **WARNING.**
-- `availableFromDay` set past when the topic would naturally surface — timing conflict. **WARNING.**
-
-**Story trigger analysis.** For each story trigger, check:
-- `triggerOnDay` exceeding calendar year length — will never fire. **CRITICAL.**
-- `promptInjection` referencing a character or lore concept not yet introduced by that day — sequencing concern. **WARNING.**
-- Two triggers on the same day with conflicting emotional tones — sequencing concern. **WARNING.**
+After the pre-flight check passes, run the detection in `export-procedure.md` (section 3). It finds lore entries and story triggers that will never reach the player.
 
 ---
 
 ## Adjustment Priority Order
 
-When an export needs condensing or reformatting, adjust in this order — lowest-risk first, highest-risk last:
-
-1. **Lore keywords** — tighten or broaden keyword targeting (low risk)
-2. **Lore content** — condense entry text (low risk)
-3. **Story trigger promptInjection** — condense injection text (medium risk)
-4. **Character baseProfile** — condense card prose (medium risk)
-5. **settingSummary** — condense setting context (medium risk)
-6. **arcManagerGuidance** — condense direction (medium-high risk — this is the primary creative guard)
-7. **eventCalendarSummary / weatherPools** — condense calendar prose (low risk, but late in priority because rarely needed)
-8. **Art style prompts** — never adjust for size (high risk — prompt changes alter visual output)
+When an export needs condensing or reformatting, follow the order in `export-procedure.md` (section 4): lowest-risk targets first, art style prompts never for size. The same file holds the `baseProfile` reconciliation (section 5), the derived-output check (section 6) and the build step (section 7).
 
 ---
 
@@ -490,10 +428,10 @@ When an export needs condensing or reformatting, adjust in this order — lowest
 
 The exported world file is a deliverable of the Export item. The scraibe adversarial-review skill defines this block's shape and runs the loop.
 
-- **Deliverable:** the exported `.sbworld` file, the export's only true output.
+- **Deliverable:** the exported `.sbworld` file, built from the versioned `world.json`.
 - **Shape:** document — the rounds are capped and the human's approval is the gate.
-- **Criteria:** the Self-Check Before Export Complete section and the Can-This-Ever-Fire Detection section of this skill.
-- **Scope:** named file — the exported `.sbworld`, reviewed through the `world.json` extracted from inside it.
+- **Criteria:** the pre-flight check and the can-this-ever-fire detection in `export-procedure.md`.
+- **Scope:** named file — the exported `.sbworld`, reviewed through the versioned `world.json` it was built from.
 - **Reference inputs:** the Wide-phase notes the export was built from; `../../docs/target-system.md`.
 - **Stakes default:** durable.
 - **Overrides:** none.
