@@ -328,7 +328,7 @@ The `description` drives art generation context; keep it concrete and consistent
 
 The number of expressions per sprite set depends on the project's chosen expression tier: **Essential**, **Standard** or **Expansive**, each a strict superset of the one before. Standard is the recommended default; Essential suits large casts or tight generation budgets; Expansive gives the full emotional range. The tier names carry no counts on purpose, so a change in membership never renames a tier.
 
-This skill does not hold the tier definitions. Tier membership, expression counts, narrative roles and the cost table live in the Image Gen expression standard, the shared Ainime reference for sprite expressions: `Projects/Ainime/Image Gen/Expression standard.md` in the Anima vault. Until that note is written, the same standard is at `Projects/Ainime/Fields of Mistria/repo/Fields-of-Mistria/Sprite Expression Workflow/Expression Standard.md`. Read it when choosing the tier, then write the chosen tier's expressions to `availableExpressions` (snake_case, as the platform requires).
+The tier membership, narrative roles, cost table and the hyphen-case to snake_case mapping are in `expression-standard.md` (this skill's reference file). Read it when choosing the tier, then write the chosen tier's expressions to `availableExpressions` (snake_case, as the platform requires).
 
 ---
 
@@ -350,11 +350,11 @@ Per-segment lighting descriptions injected into every background prompt between 
 
 ### Sprite Generation
 
-**`artStyle.sprite.style_prefix`** / **`style_suffix`** / **`negative_prompt`** (optional) — Same structure for character sprites. Sprite style should be consistent with background style but may have different technical requirements (transparent background, consistent character proportions). Negative prompt is SDXL only — ignored by Gemini/Imagen.
+**`artStyle.sprite.style_prefix`** / **`style_suffix`** / **`negative_prompt`** (optional) — Same structure for character sprites. Sprite style should be consistent with background style but may have different technical requirements (consistent character proportions). Write the `style_suffix` background text from the Background rule in `expression-standard.md`: one fixed two-colour gradient per sprite set, unchanged by emotion. The exported text is a derived copy of that rule. Negative prompt is SDXL only — ignored by Gemini/Imagen.
 
 **`artStyle.sprite.clothingRules`** (optional, string array) — Clothing directives for sprite generation, one rule per array entry (the UI shows one per line). Use them for world-wide costume rules: recognizable silhouettes and color motifs per character, a uniform element a faction always wears, a ban on copying costumes from existing franchises. Derive them from the character notes' Body sections and the foundation document's art style reference.
 
-**`artStyle.sprite.maintainConsistency`** (optional) — When enabled, appends "Same character, same background." during sprite generation to improve visual consistency across expressions.
+**`artStyle.sprite.maintainConsistency`** (optional) — When enabled, appends a same-character consistency line to each sprite prompt to improve visual consistency across expressions.
 
 Do not attempt to write `artStyle` content during Wide-phase work — this is a prompt-engineering output that belongs here.
 

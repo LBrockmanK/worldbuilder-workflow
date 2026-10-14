@@ -229,7 +229,7 @@ Worlds may define a custom set with more or fewer entries. Define `availableExpr
 
 For monolithic AI-generated sprites (one image per expression), three tiers balance cost and coverage: **Essential**, **Standard** (the recommended default) and **Expansive**, each a strict superset of the one before. The names carry no counts, so a change in membership never renames a tier.
 
-This document does not define the tiers. Membership, counts, narrative roles and the cost table live in the Image Gen expression standard, the shared Ainime reference for sprite expressions: `Projects/Ainime/Image Gen/Expression standard.md` in the Anima vault. Until that note is written, the same standard is at `Projects/Ainime/Fields of Mistria/repo/Fields-of-Mistria/Sprite Expression Workflow/Expression Standard.md`.
+This document does not define the tiers. Membership, counts, narrative roles and the cost table are in `worldbuilder-ainime-export/expression-standard.md`, which is also the one statement of the sprite background rule.
 
 ---
 
