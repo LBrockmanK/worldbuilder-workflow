@@ -70,14 +70,16 @@ Fields are marked **required** or **optional**. Required fields must be present 
 
 ## Updating an Existing Export
 
-The .sbworld file is the only true export output — it is what the ainime platform consumes. There is no authoritative standalone world.json; the world.json lives inside the .sbworld archive.
+Every Ainime project exports by one method. The project keeps `exports/ainime/world.json` and `exports/ainime/manifest.json` under version control, beside an `assets/` folder. The `assets/` folder and the `.sbworld` archive are git-ignored. The versioned `world.json` is the source of truth: every edit is made to it, and the archive is built from the three, never edited in place. The archive is what the ainime platform consumes.
 
-An exported .sbworld accumulates manual tweaks — expanded opening arcs, rewritten lore entries, adjusted character cards. A re-export must never overwrite those changes silently.
+An exported world accumulates manual tweaks: expanded opening arcs, rewritten lore entries, adjusted character cards. A re-export must never overwrite those changes silently.
 
-**Always use the diff workflow.** `scripts/export_diff.py` extracts world.json from the existing .sbworld, generates candidate field values from the source documents (foundation.md, direction.md), and diffs them. Only the fields you name are updated, and the .sbworld is repacked in place.
+**Start from an existing archive.** To adopt an archive made elsewhere, unpack it once into `exports/ainime/`: `python scripts/sbworld_tool.py extract <archive> --into <new-folder>`, then copy out `world.json` and `manifest.json` and keep `assets/`.
+
+**Use the diff workflow.** `scripts/export_diff.py` generates candidate field values from the source documents (foundation.md, direction.md) and diffs them against the versioned `world.json`. Only the fields you name are updated. It never reads or writes an archive.
 
 ```bash
-# show what differs between source docs and the current .sbworld
+# show what differs between source docs and the current world.json
 python scripts/export_diff.py <project-root>
 
 # apply specific fields
@@ -87,9 +89,9 @@ python scripts/export_diff.py <project-root> --apply communityDescription arcMan
 python scripts/export_diff.py <project-root> --apply-all
 ```
 
-Fields not covered by the script (characters, lore entries, calendar events) are updated by extracting world.json from the .sbworld, editing it, and repacking — never by regenerating the whole file.
+Fields the script does not cover (characters, lore entries, calendar events) are edited in `world.json` directly, never by regenerating the whole file.
 
-**Every edit session must end with repacking.** The standalone world.json is a working copy, not the export. After any manual edits to world.json, repack it into the .sbworld before reporting the work as done. An edit that touches world.json but not the .sbworld has changed nothing the platform will see.
+**Build the archive last.** After the checks in `export-procedure.md` pass, build with `python scripts/sbworld_tool.py build --world exports/ainime/world.json --manifest exports/ainime/manifest.json --assets exports/ainime/assets`. The tool refuses to overwrite an existing archive, so a build always lands under a new name. An edit that stops at `world.json` has changed nothing the platform will see until the archive is rebuilt.
 
 ---
 
@@ -426,10 +428,10 @@ When an export needs condensing or reformatting, follow the order in `export-pro
 
 The exported world file is a deliverable of the Export item. The scraibe adversarial-review skill defines this block's shape and runs the loop.
 
-- **Deliverable:** the exported `.sbworld` file, the export's only true output.
+- **Deliverable:** the exported `.sbworld` file, built from the versioned `world.json`.
 - **Shape:** document — the rounds are capped and the human's approval is the gate.
 - **Criteria:** the pre-flight check and the can-this-ever-fire detection in `export-procedure.md`.
-- **Scope:** named file — the exported `.sbworld`, reviewed through the `world.json` extracted from inside it.
+- **Scope:** named file — the exported `.sbworld`, reviewed through the versioned `world.json` it was built from.
 - **Reference inputs:** the Wide-phase notes the export was built from; `../../docs/target-system.md`.
 - **Stakes default:** durable.
 - **Overrides:** none.
