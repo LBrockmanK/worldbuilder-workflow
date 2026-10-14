@@ -30,6 +30,8 @@ If any prerequisite is incomplete, return to the relevant Wide-phase skill rathe
 
 Fields are marked **required** or **optional**. Required fields must be present in every export; optional fields are included when the world needs them.
 
+**Where the sources live.** All entity notes (character, location, faction, event, concept and story) sit in the project's flat `notes/` folder, and each note's `type` property says which kind it is. The two named documents are `project/foundation.md` and `project/direction.md`. Extracted source material is in `reference/` and is not export input.
+
 | Source | ainime JSON field(s) | Req? |
 |---|---|---|
 | `project/foundation.md` — Setting Summary | `settingSummary` | **req** |
@@ -55,7 +57,7 @@ Fields are marked **required** or **optional**. Required fields must be present 
 | concept notes in `notes/` | `loreEntries[]` | opt |
 | character notes in `notes/` | `characters[]` | **req** |
 | `project/foundation.md` — Art style | `artStyle.background.*`, `artStyle.sprite.*` | opt |
-| `project/foundation.md` — Art style | `artStyle.timeOfDayLighting.*` | opt |
+| `project/foundation.md` — Art style | `artStyle.background.time_contexts` (keyed by day segment) | opt |
 | character notes (Body sections) | `artStyle.sprite.clothingRules[]` | opt |
 | `project/foundation.md` — expression tier | `availableExpressions[]` | opt |
 | location notes in `notes/` (image prompts), builder-specified (names) | `locations` | opt |
@@ -256,7 +258,7 @@ For each character note in `notes/`, produce a character record. Process one cha
 
 **`role`** (optional) — Not stored in the character note. Derive from the character's function as established by the character note content (their position in the world, their relationship to the player, their narrative role). Write as plain text. Examples: "The player's mysterious neighbor; a hacker with a heart of gold."
 
-**`baseProfile`** (optional) — The character card prose. Include personality, psychology, backstory, motivations, quirks, speech patterns. Optionally add a "Future Storylines" section at the end to guide what happens after the character's initial story arcs conclude. See `card-assembly.md` for full assembly guidance. This is the most complex field; do not attempt it without reading that file.
+**`baseProfile`** (optional) — The character card prose. Include personality, psychology, backstory, motivations, quirks, speech patterns. Each section opens with a plain-text heading line (no markdown heading marks, no dividers). The "Future Storylines" section is required: it ends the profile and guides what happens after the character's initial story arcs conclude. See `card-assembly.md` for full assembly guidance. This is the most complex field; do not attempt it without reading that file.
 
 **`appearance`** (optional) — Used for sprite generation and as context for all in-game AIs. Use the Body section's appearance preamble of the character note verbatim or lightly condensed. Cover species/type and sex if relevant, age presentation and body type, notable features, clothing style.
 
@@ -338,7 +340,7 @@ Read the Art style section of `project/foundation.md`. Translate the plain-langu
 
 ### Time-of-Day Lighting (optional)
 
-Per-segment lighting descriptions injected into every background prompt between the scene description and the style suffix. The final prompt is: `prefix + scene + lighting + suffix`. One field per day segment (Morning, Afternoon, Evening, and Night if using 4 segments). Leave empty for segments that don't need specific lighting direction. The platform can AI-generate these from the world's setting.
+`artStyle.background.time_contexts` is an object keyed by day segment. Its per-segment lighting descriptions are injected into every background prompt between the scene description and the style suffix. The final prompt is: `prefix + scene + lighting + suffix`. One entry per day segment (Morning, Afternoon, Evening, and Night if using 4 segments). Leave empty for segments that don't need specific lighting direction. The platform can AI-generate these from the world's setting.
 
 ### Background Generation
 
@@ -366,7 +368,7 @@ Stock locations are optional — when image generation is enabled in-game, the A
 
 **Naming matters.** The location name is the **only thing the AI sees** when choosing a background — make it descriptive. Use underscores to separate words. Include the place, its vibe or details, and optionally a character owner. Examples: `cafe_cozy_morning`, `hidden_shrine_ruins_mistymorning`, `alex_apartment_livingroom_evening`, `rooftop_bar_cityview_evening`. The more descriptive the name, the better the AI matches scenes to locations.
 
-Locations are organized by day segment (one background image per segment per location). The AI Location Builder can generate location names and image prompts from the world's setting, arcs, characters, and lorebook. It runs iteratively — the first run creates the most essential locations, each subsequent run fills in more niche and atmospheric spots.
+`locations` is an object keyed by day segment; each segment holds a list of entries with `name`, `url` and `prompt` (one background image per segment per location). The AI Location Builder can generate location names and image prompts from the world's setting, arcs, characters, and lorebook. It runs iteratively — the first run creates the most essential locations, each subsequent run fills in more niche and atmospheric spots.
 
 ---
 
@@ -376,7 +378,7 @@ Audio tracks for the world. Two categories:
 
 ### System Moods (optional)
 
-Six fixed slots triggered by the game engine (not the AI). Author one audio track per slot — leave any slot empty for silence at that moment. Slots cannot be renamed or removed.
+Three fixed slots triggered by the game engine (not the AI). Author one audio track per slot — leave any slot empty for silence at that moment. Slots cannot be renamed or removed.
 
 - **Main Menu** (`main_menu`) — plays on the title screen, during new-game generation, and on the endgame/credits screen.
 - **Segment Transition** (`segment_transition`) — brief musical transition between day segments (Morning to Afternoon, Afternoon to Evening).
