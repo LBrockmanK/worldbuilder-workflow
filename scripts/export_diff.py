@@ -27,6 +27,7 @@ import json
 import os
 import re
 import sys
+import tempfile
 import textwrap
 
 # -- field map (source document -> world.json) -------------------------
@@ -64,9 +65,11 @@ def save_world(world_path, world, eol, trailing):
     if trailing:
         text += "\n"
     data = text.replace("\n", eol).encode("utf-8")
-    tmp = world_path + ".tmp"
+    # a unique temp file created exclusively by this call; only it is removed
+    fd, tmp = tempfile.mkstemp(dir=os.path.dirname(os.path.abspath(world_path)),
+                               prefix="world.json.", suffix=".tmp")
     try:
-        with open(tmp, "wb") as f:
+        with os.fdopen(fd, "wb") as f:
             f.write(data)
             f.flush()
             os.fsync(f.fileno())

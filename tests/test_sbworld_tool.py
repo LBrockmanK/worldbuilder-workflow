@@ -319,7 +319,6 @@ def test_update_counts_persists_the_corrected_manifest(tmp_path):
     assert json.loads(packed)["counts"]["bundledAssets"] == 2
     out2 = tmp_path / "b.sbworld"
     assert tool.main(build_args(fx, out2)) == 0  # no flag needed any more
-    assert [p.name for p in fx.iterdir()] == sorted(p.name for p in fx.iterdir())
     assert not [p for p in fx.iterdir() if ".tmp" in p.name]
 
 
@@ -351,3 +350,14 @@ def test_absolute_world_name_cannot_redirect_the_output(tmp_path):
     assert tool.main(["build", "--world", str(fx / "world.json"), "--manifest", str(fx / "manifest.json"),
                       "--assets", str(fx / "assets")]) == 0
     assert len(list(fx.glob("*.sbworld"))) == 1
+
+
+def test_write_atomic_leaves_a_colliding_temp_name_alone(tmp_path):
+    target = tmp_path / "manifest.json"
+    target.write_bytes(b"old")
+    other = tmp_path / "manifest.json.tmp"
+    other.write_bytes(b"another run")
+    tool.write_atomic(target, b"new")
+    assert target.read_bytes() == b"new"
+    assert other.read_bytes() == b"another run"
+    assert sorted(p.name for p in tmp_path.iterdir()) == ["manifest.json", "manifest.json.tmp"]

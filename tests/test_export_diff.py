@@ -107,9 +107,6 @@ class ExportDiffApplyTests(unittest.TestCase):
             self.assertNotIn('import zipfile', f.read())
 
 
-if __name__ == '__main__':
-    unittest.main()
-
 
 class ExportDiffDurabilityAndLayoutTests(unittest.TestCase):
 
@@ -162,3 +159,27 @@ class ExportDiffDurabilityAndLayoutTests(unittest.TestCase):
         with open(path, 'rb') as f:
             self.assertEqual(f.read(), before)
         self.assertEqual(os.listdir(exports), ['world.json'])
+
+    def test_a_colliding_temp_name_is_left_alone(self):
+        import importlib.util
+        from unittest import mock
+        spec = importlib.util.spec_from_file_location('export_diff', SCRIPT)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        root, exports = self.make_root(nested=False)
+        path = os.path.join(exports, 'world.json')
+        other = os.path.join(exports, 'world.json.tmp')
+        with open(other, 'wb') as f:
+            f.write(b'another run')
+        with mock.patch.object(mod.os, 'replace', side_effect=OSError('disk')):
+            with self.assertRaises(OSError):
+                mod.save_world(path, {'a': 1}, chr(10), False)
+        with open(other, 'rb') as f:
+            self.assertEqual(f.read(), b'another run')
+        mod.save_world(path, {'a': 1}, chr(10), False)
+        with open(other, 'rb') as f:
+            self.assertEqual(f.read(), b'another run')
+
+
+if __name__ == '__main__':
+    unittest.main()

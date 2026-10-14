@@ -26,6 +26,7 @@ import os
 import re
 import shutil
 import sys
+import tempfile
 import zipfile
 from pathlib import Path
 
@@ -162,9 +163,10 @@ def safe_basename(name: object) -> str:
 def write_atomic(path: Path, data: bytes) -> None:
     """Write beside the target, then replace: an interrupted write never
     leaves a partial file in place of the original."""
-    tmp = path.with_name(path.name + f".tmp-{stamp()}")
+    fd, tmp_name = tempfile.mkstemp(dir=path.parent, prefix=path.name + ".", suffix=".tmp")
+    tmp = Path(tmp_name)  # created exclusively by this call; the only file it may remove
     try:
-        with open(tmp, "xb") as fh:
+        with os.fdopen(fd, "wb") as fh:
             fh.write(data)
             fh.flush()
             os.fsync(fh.fileno())
