@@ -42,7 +42,7 @@ When the export needs condensing, use the adjustment order in section 4, then re
 - [ ] Every sprite set carries a `neutral` expression, and every expression key in every sprite set is named in `availableExpressions`. A set need not carry all of them: the live Fields of Mistria export has no set with all 28 names, and the most any set carries is 18. The tier a project chooses at the start sets how many expressions to generate (`expression-standard.md`); it is not a pre-flight check, because an existing list may predate the tiers.
 - [ ] No character has `availableFromDay` greater than the calendar year length.
 - [ ] Each character's introduction scenario is plausible before that character's `availableFromDay`.
-- [ ] `appearance` contains physical description only, with no story content and no personality, and states the age the character appears to be (rule in `../worldbuilder-character/card-format.md`).
+- [ ] `appearance` contains physical description only, with no story content and no personality, and states the apparent age (the age they appear to be, never the real age; rule in `../worldbuilder-character/card-format.md`).
 - [ ] Every sprite set has its own `appearance`, starting with the character's unchanged physical-features preamble.
 - [ ] `baseImage` matches the set's `expressions.neutral` where both exist.
 - [ ] `color` is a Tailwind text class (`text-<hue>-<shade>`). `startingInfluence` is an integer or absent.

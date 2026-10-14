@@ -31,7 +31,11 @@ the other rules in Section-scoped writing rules apply to it. Content: hair, eyes
 distinguishing physical features, default or seasonal clothing, and
 hidden static features (scars, marks, tattoos) when relevant —
 everything about what this person looks like, regardless of
-depth-of-access.
+depth-of-access. A character who lives much longer than a human
+(a dragon, an elf, an immortal) has a preamble that states the age
+they appear to be, never their real age; the real age belongs in
+Background. The export copies the preamble into `appearance` and the
+sprite prompts, so a real age there would make the sprites look wrong.
 
 **Entry format:** One stageable sentence per entry. Describes
 physical behavior that can be observed.

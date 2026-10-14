@@ -260,7 +260,7 @@ For each character note in `notes/`, produce a character record. Process one cha
 
 **`baseProfile`** (optional) — The character card prose. Include personality, psychology, backstory, motivations, quirks, speech patterns. Each section opens with a plain-text heading line (no markdown heading marks, no dividers). The "Future Storylines" section is required: it ends the profile and guides what happens after the character's initial story arcs conclude. See `card-assembly.md` for full assembly guidance. This is the most complex field; do not attempt it without reading that file.
 
-**`appearance`** (optional) — Used for sprite generation and as context for all in-game AIs. Use the Body section's appearance preamble of the character note verbatim or lightly condensed. Cover species/type and sex if relevant, age presentation and body type, notable features, clothing style.
+**`appearance`** (optional) — Used for sprite generation and as context for all in-game AIs. Use the Body section's appearance preamble of the character note verbatim or lightly condensed. Cover species/type and sex if relevant, apparent age and body type, notable features, clothing style. For a long-lived character state the age they appear to be, never their real age (rule in `../worldbuilder-character/card-format.md`).
 
 **`startingInfluence`** (optional, integer) — Initial relationship value for this character, which may be negative (`-10` for a character who starts out hostile to the player). Omit the key to let the platform assign its default; the UI shows the omitted state as "Auto". Never write the string `"Auto"`.
 
