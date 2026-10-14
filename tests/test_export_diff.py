@@ -109,3 +109,56 @@ class ExportDiffApplyTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class ExportDiffDurabilityAndLayoutTests(unittest.TestCase):
+
+    def make_root(self, nested):
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        root = tmp.name
+        base = os.path.join(root, 'world') if nested else root
+        os.makedirs(os.path.join(base, 'project'))
+        with open(os.path.join(base, 'project', 'foundation.md'), 'w',
+                  encoding='utf-8', newline='\n') as f:
+            f.write(FOUNDATION)
+        exports = os.path.join(root, 'exports', 'ainime')
+        os.makedirs(exports)
+        with open(os.path.join(exports, 'world.json'), 'w',
+                  encoding='utf-8') as f:
+            json.dump({'settingSummary': 'old'}, f, indent=2)
+        return root, exports
+
+    def run_diff(self, root, *args):
+        return subprocess.run([sys.executable, SCRIPT, root, *args],
+                              capture_output=True, text=True)
+
+    def test_project_directly_under_the_root_is_found(self):
+        root, exports = self.make_root(nested=False)
+        r = self.run_diff(root, '--apply', 'settingSummary')
+        self.assertEqual(r.returncode, 0, r.stderr)
+        with open(os.path.join(exports, 'world.json'), encoding='utf-8') as f:
+            self.assertEqual(json.load(f)['settingSummary'],
+                             'A new summary of the world.')
+
+    def test_nested_project_is_the_fallback(self):
+        root, exports = self.make_root(nested=True)
+        r = self.run_diff(root, '--apply', 'settingSummary')
+        self.assertEqual(r.returncode, 0, r.stderr)
+
+    def test_a_failed_replace_leaves_the_original_and_no_temp_file(self):
+        import importlib.util
+        from unittest import mock
+        spec = importlib.util.spec_from_file_location('export_diff', SCRIPT)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        root, exports = self.make_root(nested=False)
+        path = os.path.join(exports, 'world.json')
+        with open(path, 'rb') as f:
+            before = f.read()
+        with mock.patch.object(mod.os, 'replace', side_effect=OSError('disk')):
+            with self.assertRaises(OSError):
+                mod.save_world(path, {'settingSummary': 'new'}, '\n', False)
+        with open(path, 'rb') as f:
+            self.assertEqual(f.read(), before)
+        self.assertEqual(os.listdir(exports), ['world.json'])

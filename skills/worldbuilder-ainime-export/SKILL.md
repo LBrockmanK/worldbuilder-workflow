@@ -74,24 +74,24 @@ Every Ainime project exports by one method. The project keeps `exports/ainime/wo
 
 An exported world accumulates manual tweaks: expanded opening arcs, rewritten lore entries, adjusted character cards. A re-export must never overwrite those changes silently.
 
-**Start from an existing archive.** To adopt an archive made elsewhere, unpack it once into `exports/ainime/`: `python scripts/sbworld_tool.py extract <archive> --into <new-folder>`, then copy out `world.json` and `manifest.json` and keep `assets/`.
+**Start from an existing archive.** To adopt an archive made elsewhere, unpack it once into `exports/ainime/`: `python "<worldbuilder>/scripts/sbworld_tool.py" extract <archive> --into <new-folder>`, then copy out `world.json` and `manifest.json` and keep `assets/`.
 
-**Use the diff workflow.** `scripts/export_diff.py` generates candidate field values from the source documents (foundation.md, direction.md) and diffs them against the versioned `world.json`. Only the fields you name are updated. It never reads or writes an archive.
+**Use the diff workflow.** `export_diff.py` (in the plugin's `scripts/`; `export-procedure.md` says how to resolve `<worldbuilder>`) generates candidate field values from the source documents (foundation.md, direction.md) and diffs them against the versioned `world.json`. Only the fields you name are updated. It never reads or writes an archive.
 
 ```bash
 # show what differs between source docs and the current world.json
-python scripts/export_diff.py <project-root>
+python "<worldbuilder>/scripts/export_diff.py" "<project-root>"
 
 # apply specific fields
-python scripts/export_diff.py <project-root> --apply communityDescription arcManagerGuidance
+python "<worldbuilder>/scripts/export_diff.py" "<project-root>" --apply communityDescription arcManagerGuidance
 
 # apply everything (use only when the diff has been reviewed)
-python scripts/export_diff.py <project-root> --apply-all
+python "<worldbuilder>/scripts/export_diff.py" "<project-root>" --apply-all
 ```
 
 Fields the script does not cover (characters, lore entries, calendar events) are edited in `world.json` directly, never by regenerating the whole file.
 
-**Build the archive last.** After the checks in `export-procedure.md` pass, build with `python scripts/sbworld_tool.py build --world exports/ainime/world.json --manifest exports/ainime/manifest.json --assets exports/ainime/assets`. The tool refuses to overwrite an existing archive, so a build always lands under a new name. An edit that stops at `world.json` has changed nothing the platform will see until the archive is rebuilt.
+**Build the archive last.** After the checks in `export-procedure.md` pass, build as `export-procedure.md` section 7 gives. The tool refuses to overwrite an existing archive, so a build always lands under a new name. An edit that stops at `world.json` has changed nothing the platform will see until the archive is rebuilt.
 
 ---
 

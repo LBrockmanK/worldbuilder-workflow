@@ -151,12 +151,37 @@ def zip_date(manifest: dict) -> tuple:
         return dt.datetime.now().timetuple()[:6]
 
 
+def safe_basename(name: object) -> str:
+    """A worldName reduced to a safe file name stem: no separators, no
+    Windows-invalid characters, never absolute, never empty."""
+    text = re.sub(r'[<>:"/\\|?*\x00-\x1f]', "_", str(name))
+    text = text.strip(" .") or "world"
+    return text.replace("..", "_")[:80]
+
+
+def write_atomic(path: Path, data: bytes) -> None:
+    """Write beside the target, then replace: an interrupted write never
+    leaves a partial file in place of the original."""
+    tmp = path.with_name(path.name + f".tmp-{stamp()}")
+    try:
+        with open(tmp, "xb") as fh:
+            fh.write(data)
+            fh.flush()
+            os.fsync(fh.fileno())
+        os.replace(tmp, path)
+    except BaseException:
+        tmp.unlink(missing_ok=True)
+        raise
+
+
 def cmd_build(world_path: Path, manifest_path: Path, assets: Path, out: Path | None,
               accept_missing: bool, update_counts: bool, refresh_exported_at: bool) -> Path:
     world, world_raw = load_json(world_path)
     manifest, manifest_raw = load_json(manifest_path)
     if out is None:
-        out = manifest_path.parent / f"{manifest.get('worldName', 'world')}-{stamp()}.sbworld"
+        out = manifest_path.parent / f"{safe_basename(manifest.get('worldName', 'world'))}-{stamp()}.sbworld"
+        if out.resolve().parent != manifest_path.resolve().parent:
+            raise ToolError(f"refusing to build: default output leaves the manifest folder: {out}")
     if out.exists():
         raise ToolError(f"refusing to build: output exists: {out}")
 
@@ -186,6 +211,10 @@ def cmd_build(world_path: Path, manifest_path: Path, assets: Path, out: Path | N
         manifest_bytes = serialize_manifest(new_manifest, manifest_raw.endswith(b"\n"))
     else:
         manifest_bytes = manifest_raw  # unchanged: copy the bytes as given
+
+    if new_manifest != manifest:
+        # the versioned manifest must match what is packed, or the next build fails again
+        write_atomic(manifest_path, manifest_bytes)
 
     date = zip_date(new_manifest)
 

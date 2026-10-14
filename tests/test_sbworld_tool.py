@@ -307,3 +307,47 @@ def test_real_archive_round_trip(tmp_path):
         orig = sorted((i.filename, i.CRC, i.file_size) for i in a.infolist())
         new = sorted((i.filename, i.CRC, i.file_size) for i in b.infolist())
         assert orig == new
+
+
+def test_update_counts_persists_the_corrected_manifest(tmp_path):
+    fx = make_fixture(tmp_path / "fx", counts_assets=99)
+    out = tmp_path / "a.sbworld"
+    assert tool.main(build_args(fx, out, "--update-counts")) == 0
+    with zipfile.ZipFile(out) as z:
+        packed = z.read("manifest.json")
+    assert (fx / "manifest.json").read_bytes() == packed
+    assert json.loads(packed)["counts"]["bundledAssets"] == 2
+    out2 = tmp_path / "b.sbworld"
+    assert tool.main(build_args(fx, out2)) == 0  # no flag needed any more
+    assert [p.name for p in fx.iterdir()] == sorted(p.name for p in fx.iterdir())
+    assert not [p for p in fx.iterdir() if ".tmp" in p.name]
+
+
+def test_accept_missing_persists_the_corrected_manifest(tmp_path):
+    fx = make_fixture(tmp_path / "fx", missing=5)
+    assert tool.main(build_args(fx, tmp_path / "a.sbworld", "--accept-missing")) == 0
+    assert json.loads((fx / "manifest.json").read_text(encoding="utf-8"))["missingAssets"] == 1
+
+
+def test_default_output_name_is_sanitized_and_stays_beside_the_manifest(tmp_path):
+    fx = make_fixture(tmp_path / "fx")
+    m = json.loads((fx / "manifest.json").read_text(encoding="utf-8"))
+    BS = chr(92)
+    m["worldName"] = ".." + BS + ".." + BS + "evil/Who: me?"
+    (fx / "manifest.json").write_text(json.dumps(m, indent=2), encoding="utf-8", newline="\n")
+    assert tool.main(["build", "--world", str(fx / "world.json"), "--manifest", str(fx / "manifest.json"),
+                      "--assets", str(fx / "assets")]) == 0
+    built = [p for p in fx.glob("*.sbworld")]
+    assert len(built) == 1
+    assert not any(c in built[0].name for c in '/:*?"<>|' + BS)
+    assert not list(tmp_path.glob("*.sbworld"))
+
+
+def test_absolute_world_name_cannot_redirect_the_output(tmp_path):
+    fx = make_fixture(tmp_path / "fx")
+    m = json.loads((fx / "manifest.json").read_text(encoding="utf-8"))
+    m["worldName"] = str(tmp_path / "elsewhere")
+    (fx / "manifest.json").write_text(json.dumps(m, indent=2), encoding="utf-8", newline="\n")
+    assert tool.main(["build", "--world", str(fx / "world.json"), "--manifest", str(fx / "manifest.json"),
+                      "--assets", str(fx / "assets")]) == 0
+    assert len(list(fx.glob("*.sbworld"))) == 1

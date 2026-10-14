@@ -15,10 +15,10 @@ Usage:
     python export_diff.py <project-root> --apply field ...   # apply named fields
     python export_diff.py <project-root> --apply-all         # apply everything
 
-<project-root> is the repo directory containing the worldvault project
-(e.g. .../Fields of Mistria/repo).  The script locates project/foundation.md
-and project/direction.md inside the first subdirectory that has a
-project/ folder, and world.json inside exports/ainime/.
+<project-root> is the project root that setup created: project/ sits directly
+under it.  If it does not, the script falls back to the first subdirectory
+that has a project/ folder.  It reads project/foundation.md and
+project/direction.md there, and world.json inside <project-root>/exports/ainime/.
 """
 
 import argparse
@@ -63,8 +63,18 @@ def save_world(world_path, world, eol, trailing):
     text = json.dumps(world, indent=2, ensure_ascii=False)
     if trailing:
         text += "\n"
-    with open(world_path, "wb") as f:
-        f.write(text.replace("\n", eol).encode("utf-8"))
+    data = text.replace("\n", eol).encode("utf-8")
+    tmp = world_path + ".tmp"
+    try:
+        with open(tmp, "wb") as f:
+            f.write(data)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp, world_path)
+    except BaseException:
+        if os.path.exists(tmp):
+            os.remove(tmp)
+        raise
 
 
 def extract_section(content, heading):
@@ -157,14 +167,18 @@ def main():
 
     root = args.project_root
 
-    # locate project subdirectory
+    # locate the project: project/ directly under the root (the setup
+    # skill's layout), else inside the first subdirectory that has one
     project_dir = None
-    for d in os.listdir(root):
-        if os.path.isdir(os.path.join(root, d, "project")):
-            project_dir = os.path.join(root, d)
-            break
+    if os.path.isdir(os.path.join(root, "project")):
+        project_dir = root
+    else:
+        for d in sorted(os.listdir(root)):
+            if os.path.isdir(os.path.join(root, d, "project")):
+                project_dir = os.path.join(root, d)
+                break
     if not project_dir:
-        sys.exit("No subdirectory with a project/ folder found.")
+        sys.exit("No project/ folder found under the project root.")
 
     foundation_path = os.path.join(project_dir, "project", "foundation.md")
     direction_path = os.path.join(project_dir, "project", "direction.md")

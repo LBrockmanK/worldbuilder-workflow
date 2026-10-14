@@ -6,14 +6,17 @@
 
 ## Order of the steps
 
-1. Write or edit the project's versioned `exports/ainime/world.json` (see "Updating an Existing Export" in the skill).
-2. Reconcile each character's `baseProfile` with its card (section 5).
-3. Run the pre-flight check (section 1). Every line is pass or fail. A failure blocks the export until resolved.
-4. Run the can-this-ever-fire detection (section 3). It runs only after the pre-flight check passes.
-5. Run the derived-output check (section 6) when the world has a reference sheet.
-6. Build the archive (section 7).
+1. On a re-export, when an `.sbworld` already exists: do the asset preservation steps (section 2) first, so the existing assets are inventoried and carried into `assets/` before anything is built.
+2. Write or edit the project's versioned `exports/ainime/world.json` (see "Updating an Existing Export" in the skill).
+3. Reconcile each character's `baseProfile` with its card (section 5).
+4. Run the pre-flight check (section 1). Every line is pass or fail. A failure blocks the export until resolved.
+5. Run the can-this-ever-fire detection (section 3). It runs only after the pre-flight check passes.
+6. Run the derived-output check (section 6) when the world has a reference sheet.
+7. Build the archive (section 7).
 
-When the export needs condensing, use the adjustment order in section 4, then repeat from step 2.
+When the export needs condensing, use the adjustment order in section 4, then repeat from step 3.
+
+**Running the plugin's scripts.** The scripts belong to the plugin, not the project. Resolve the plugin root, called `<worldbuilder>`, the way the setup skill does (its Step 1 lists the routes): `${CLAUDE_PLUGIN_ROOT}` when set and it holds `scripts/sbworld_tool.py`; otherwise the `installPath` of the `worldbuilder-workflow@` entry in `~/.claude/plugins/installed_plugins.json`; otherwise the newest `~/.claude/plugins/cache/*/worldbuilder-workflow/*` install. Run every script as `python "<worldbuilder>/scripts/<name>.py"` and pass the project's paths explicitly, with `<project-root>` the directory that holds `project/`, `notes/` and `exports/`.
 
 **Calendar year length.** In every check below, the calendar year is `len(calendarConfig.seasons) × calendarConfig.daysPerSeason` for the world's own `calendarConfig`. Never assume a fixed number of days.
 
@@ -41,7 +44,7 @@ When the export needs condensing, use the adjustment order in section 4, then re
 - [ ] Sprite sets include at minimum Casual and Working/Active.
 - [ ] Every sprite set carries a `neutral` expression, and every expression key in every sprite set is named in `availableExpressions`. A set need not carry all of them: the live Fields of Mistria export has no set with all 28 names, and the most any set carries is 18. The tier a project chooses at the start sets how many expressions to generate (`expression-standard.md`); it is not a pre-flight check, because an existing list may predate the tiers.
 - [ ] No character has `availableFromDay` greater than the calendar year length.
-- [ ] Each character's introduction scenario is plausible before that character's `availableFromDay`.
+- [ ] Each character's introduction scenario is plausible on or after that character's `availableFromDay`, and no trigger introduces the character before that day.
 - [ ] `appearance` contains physical description only, with no story content and no personality, and states the apparent age (the age they appear to be, never the real age; rule in `../worldbuilder-character/card-format.md`).
 - [ ] Every sprite set has its own `appearance`, starting with the character's unchanged physical-features preamble.
 - [ ] `baseImage` matches the set's `expressions.neutral` where both exist.
@@ -89,7 +92,7 @@ When the export needs condensing, use the adjustment order in section 4, then re
 
 An existing `.sbworld` holds generated assets (location images, character sprites). A re-export must carry forward every existing asset that is not being deliberately replaced. The archive's `manifest.json` lists every bundled asset by `id`, `path`, `mime` and `kind`.
 
-- [ ] Inventory the existing assets before rebuilding: `python scripts/sbworld_tool.py extract <archive>` unpacks `world.json`, `manifest.json` and `assets/` into a new folder.
+- [ ] Inventory the existing assets before rebuilding: `python "<worldbuilder>/scripts/sbworld_tool.py" extract <archive> --into <new-folder>` unpacks `world.json`, `manifest.json` and `assets/` into a new folder.
 - [ ] Carry forward all `location`-kind assets unless the location was removed or its image is being regenerated.
 - [ ] Carry forward all `character_sprite`-kind assets unless the sprite is being replaced.
 - [ ] Verify the asset count in the rebuilt `manifest.json`: old count, minus removals, plus additions.
@@ -179,7 +182,7 @@ The general principle: adjust metadata and supplementary content first (keywords
 When the world has `reference/Reference sheet.md`, run the checker after `world.json` is written and reconciled, and before the archive is built:
 
 ```bash
-python scripts/check_coverage.py export --world-root <project-root> --world-json <project-root>/exports/ainime/world.json
+python "<worldbuilder>/scripts/check_coverage.py" export --world-root "<project-root>" --world-json "<project-root>/exports/ainime/world.json"
 ```
 
 A FAIL line (or a non-zero exit) blocks the build. Fix the card or the export and run the check again. List any FLAGGED and PENDING lines in the Export item's record so the human sees them.
@@ -190,10 +193,10 @@ A world with no reference sheet skips this step. The step is not a pre-flight li
 
 ## 7. Build
 
-Build the archive from the three versioned inputs: `world.json`, `manifest.json` and the `assets/` folder.
+Build the archive from three inputs: `world.json`, `manifest.json` and the `assets/` folder. Only the two JSON files are versioned; `assets/` is git-ignored.
 
 ```bash
-python scripts/sbworld_tool.py build --world exports/ainime/world.json --manifest exports/ainime/manifest.json --assets exports/ainime/assets
+python "<worldbuilder>/scripts/sbworld_tool.py" build --world "<project-root>/exports/ainime/world.json" --manifest "<project-root>/exports/ainime/manifest.json" --assets "<project-root>/exports/ainime/assets"
 ```
 
-The tool refuses to overwrite an existing archive, writes the stored (uncompressed) form the platform requires, and checks the manifest against the asset files. Read `--help` for the flags that record recomputed counts.
+If a flag such as `--update-counts` or `--accept-missing` corrects the manifest, the tool also writes the corrected `manifest.json` back, so the versioned file matches the archive. The default archive name comes from a sanitized `worldName` and lands beside the manifest. The tool refuses to overwrite an existing archive, writes the stored (uncompressed) form the platform requires, and checks the manifest against the asset files. Read `--help` for the flags that record recomputed counts.
