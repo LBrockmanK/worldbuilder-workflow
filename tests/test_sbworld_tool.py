@@ -352,12 +352,14 @@ def test_absolute_world_name_cannot_redirect_the_output(tmp_path):
     assert len(list(fx.glob("*.sbworld"))) == 1
 
 
-def test_write_atomic_leaves_a_colliding_temp_name_alone(tmp_path):
+def test_write_atomic_leaves_a_colliding_temp_name_alone(tmp_path, monkeypatch):
+    monkeypatch.setattr(tool, "stamp", lambda: "FROZEN")
     target = tmp_path / "manifest.json"
     target.write_bytes(b"old")
-    other = tmp_path / "manifest.json.tmp"
+    # the name the earlier writer derived from stamp(); another run may own it
+    other = tmp_path / "manifest.json.tmp-FROZEN"
     other.write_bytes(b"another run")
     tool.write_atomic(target, b"new")
     assert target.read_bytes() == b"new"
     assert other.read_bytes() == b"another run"
-    assert sorted(p.name for p in tmp_path.iterdir()) == ["manifest.json", "manifest.json.tmp"]
+    assert sorted(p.name for p in tmp_path.iterdir()) == ["manifest.json", "manifest.json.tmp-FROZEN"]
