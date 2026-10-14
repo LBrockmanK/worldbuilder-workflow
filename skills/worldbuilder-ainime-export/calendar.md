@@ -12,7 +12,7 @@ ainime uses a structured calendar that feeds seasonal context and day-segment pa
 |---|---|---|
 | Seasons | 4 (Spring, Summer, Autumn, Winter) | Adjust labels to the world's actual cycle |
 | Days per season | 28 | Change only if world design requires it |
-| Total year | 112 days | 4 × 28 |
+| Total year | seasons × days per season | Compute it from the world's own values; never assume a fixed total |
 | Day segments | Morning, Afternoon, Evening, Night | Injected as scene context transitions |
 
 Set these in `calendarConfig.seasons`, `calendarConfig.daysPerSeason`, `calendarConfig.daySegments`.

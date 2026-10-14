@@ -58,7 +58,8 @@ Fields are marked **required** or **optional**. Required fields must be present 
 | `project/foundation.md` — Art style | `artStyle.timeOfDayLighting.*` | opt |
 | character notes (Body sections) | `artStyle.sprite.clothingRules[]` | opt |
 | `project/foundation.md` — expression tier | `availableExpressions[]` | opt |
-| builder-specified | `locations[]` | opt |
+| location notes in `notes/` (image prompts), builder-specified (names) | `locations` | opt |
+| `project/foundation.md` — music reference | `musicStyle.prefix`, `musicStyle.suffix` | opt |
 | builder-specified | `moods` | opt |
 | builder-specified | `theme` | opt |
 | builder-specified | `customPrompts` | opt |
@@ -173,7 +174,7 @@ Note: if the project uses 4 day segments (the platform default), add a `"Night"`
 }
 ```
 
-`triggerOnDay` is the absolute calendar day (1–112 for the 4×28 default). `promptInjection` is active direction to the story engine, not a neutral description of the event.
+`triggerOnDay` is the absolute calendar day (1 to seasons × `daysPerSeason`; see `export-procedure.md` for the year-length rule). `promptInjection` is active direction to the story engine, not a neutral description of the event.
 
 **`hiddenFromPlayer`** (optional, boolean) — Marks a trigger as hidden from the player. The intended reading is that the trigger still fires and injects its `promptInjection` while the player is not shown it in advance; that runtime behavior is inferred from the field name and from how existing exports use it, not confirmed against the platform. Set it on scripted story beats and introductions the player should meet in play rather than see announced (an arrival sequence, a character's first appearance, a story gate). Leave it `false` or absent on public festivals and observances the townsfolk would know about.
 
@@ -403,86 +404,19 @@ Per-AI-persona prompt overrides, on the platform's Prompts tab. Most worlds do n
 
 ## Self-Check Before Export Complete
 
-**Setting fields**
-- [ ] `settingSummary` present and detailed (required)
-- [ ] `communityDescription` is a player-facing blurb, not an in-game description
-- [ ] `introText` sets the scene for a new player
-- [ ] `inspirations` and `tonalInspirations` are arrays, one item per source
-- [ ] `keyTropesAndThemes` has 8–12 entries
-
-**Calendar**
-- [ ] `daySegments` match the project's intended day structure
-- [ ] `weatherPools` covers all seasons and all configured day segments
-- [ ] All festival and observance events have `storyTriggers` entries
-- [ ] Recurring events have `recurring: true`
-- [ ] `eventCalendarSummary` written
-- [ ] `dailyPlannerDirective` set if the world has standing daily-structure rules
-- [ ] No `triggerOnDay` exceeds calendar year length (112 for 4×28)
-- [ ] No duplicate non-recurring triggers on the same day
-- [ ] `hiddenFromPlayer: true` on scripted beats the player should not see announced; public festivals visible
-- [ ] `dailyInfluenceCapGain` / `dailyInfluenceCapLoss` written as split keys; `startingYear` and `baseYear` equal
-- [ ] `influenceMagnitudeTiers` rungs written in the world's own terms, if set
-
-**Lorebook**
-- [ ] Every major location has a concept note → lore entry
-- [ ] Background NPC guidelines entry present
-- [ ] `availableFromDay` set on all entries per layer
-- [ ] Keywords are specific; no partial-match traps
-- [ ] No lore entry has keywords that appear nowhere else in the world (dead content)
-- [ ] No multi-word compound keywords requiring unlikely exact matches
-
-**Story direction**
-- [ ] `arcManagerGuidance` is creative compass guidance, not a GM prompt
-- [ ] Story intention notes with concrete triggers have `storyTriggers` entries
-
-**Characters (per character)**
-- [ ] `name` present (required); other fields filled as applicable
-- [ ] `baseProfile` prose is complete and in target range (~900 supporting, ~1500 major tokens)
-- [ ] All six influence bands present in the card
-- [ ] Sprite sets include at minimum Casual and Working/Active
-- [ ] Introduction Story Seed present, introduction scenario plausible before `availableFromDay`
-- [ ] Expressions match the project's chosen tier (Essential / Standard / Expansive) as the Image Gen expression standard defines it
-- [ ] Every sprite set has its own `appearance`, starting with the character's unchanged physical-features preamble
-- [ ] `baseImage` matches the set's `expressions.neutral` where both exist
-- [ ] `color` is a Tailwind text class (`text-<hue>-<shade>`); `startingInfluence` is an integer or absent
-- [ ] Every pronoun in `appearance`, per-set `appearance` and Future Storylines agrees with the note's `sex` field
-
-**Art style**
-- [ ] Background and sprite prefix/suffix present if using AI generation
-- [ ] Negative prompts are for SDXL models only (Gemini/Imagen ignore them)
-- [ ] Time-of-day lighting set if the world needs per-segment atmosphere
+Before reporting the export done, run the pre-flight check in `export-procedure.md` (section 1). Every line is pass or fail, and a failure blocks the export. It carries the setting, calendar, lorebook, story, character and art-style checks.
 
 ---
 
 ## Can-This-Ever-Fire Detection
 
-Run after export assembly to identify content that will never reach the player.
-
-**Lore entry keyword analysis.** For each lore entry, check:
-- Keywords appearing nowhere else in the world (character cards, other lore, story triggers, setting fields) — the entry will never fire. **CRITICAL.**
-- Keywords appearing only in other lore entries — circular dependency, no player-facing trigger. **WARNING.**
-- Multi-word compound keywords requiring exact co-occurrence — may be too specific to fire naturally. **WARNING.**
-- `availableFromDay` set past when the topic would naturally surface — timing conflict. **WARNING.**
-
-**Story trigger analysis.** For each story trigger, check:
-- `triggerOnDay` exceeding calendar year length — will never fire. **CRITICAL.**
-- `promptInjection` referencing a character or lore concept not yet introduced by that day — sequencing concern. **WARNING.**
-- Two triggers on the same day with conflicting emotional tones — sequencing concern. **WARNING.**
+After the pre-flight check passes, run the detection in `export-procedure.md` (section 3). It finds lore entries and story triggers that will never reach the player.
 
 ---
 
 ## Adjustment Priority Order
 
-When an export needs condensing or reformatting, adjust in this order — lowest-risk first, highest-risk last:
-
-1. **Lore keywords** — tighten or broaden keyword targeting (low risk)
-2. **Lore content** — condense entry text (low risk)
-3. **Story trigger promptInjection** — condense injection text (medium risk)
-4. **Character baseProfile** — condense card prose (medium risk)
-5. **settingSummary** — condense setting context (medium risk)
-6. **arcManagerGuidance** — condense direction (medium-high risk — this is the primary creative guard)
-7. **eventCalendarSummary / weatherPools** — condense calendar prose (low risk, but late in priority because rarely needed)
-8. **Art style prompts** — never adjust for size (high risk — prompt changes alter visual output)
+When an export needs condensing or reformatting, follow the order in `export-procedure.md` (section 4): lowest-risk targets first, art style prompts never for size. The same file holds the `baseProfile` reconciliation (section 5), the derived-output check (section 6) and the build step (section 7).
 
 ---
 
@@ -492,7 +426,7 @@ The exported world file is a deliverable of the Export item. The scraibe adversa
 
 - **Deliverable:** the exported `.sbworld` file, the export's only true output.
 - **Shape:** document — the rounds are capped and the human's approval is the gate.
-- **Criteria:** the Self-Check Before Export Complete section and the Can-This-Ever-Fire Detection section of this skill.
+- **Criteria:** the pre-flight check and the can-this-ever-fire detection in `export-procedure.md`.
 - **Scope:** named file — the exported `.sbworld`, reviewed through the `world.json` extracted from inside it.
 - **Reference inputs:** the Wide-phase notes the export was built from; `../../docs/target-system.md`.
 - **Stakes default:** durable.
