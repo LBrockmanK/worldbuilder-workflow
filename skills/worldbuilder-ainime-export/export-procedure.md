@@ -161,7 +161,7 @@ The general principle: adjust metadata and supplementary content first (keywords
 
 **The contract** is `card-assembly.md`:
 
-- Verbatim from the character note: the preamble (no heading), Background, Body, Soul, Relationships and Voice / Dialogue.
+- Verbatim from the character note: the preamble (no heading), Background, Body, Soul, Relationships and Voice / Dialogue. The one change is that Relationships ships without its archetype labels (`card-assembly.md`, Relationships).
 - Transformed: Future Storylines, rewritten from Story Seeds. Rewrite it when Story Seeds changed since the last export. Keep the exported section otherwise.
 - Never shipped: Intimate Dynamics and Design Notes.
 
@@ -169,7 +169,7 @@ The general principle: adjust metadata and supplementary content first (keywords
 
 1. Re-assemble each character's `baseProfile` from the current card under the contract.
 2. Diff the result against the exported `baseProfile` and apply the differences to the versioned `world.json`.
-3. Pre-flight comparison: for each profile, compare the preamble and each of the five verbatim sections with the card's, after whitespace normalisation. Require a Future Storylines section.
+3. Pre-flight comparison: for each profile, compare the preamble and each of the five verbatim sections with the card's, after whitespace normalisation and, for Relationships, after removing the card's archetype labels. A label left in a profile's Relationships section fails the check. Require a Future Storylines section.
 
 **Condensing is made in the card.** If a profile must be shorter (adjustment order, item 4), shorten the character note and re-export. The next export then reproduces the change. A profile edited alone is overwritten by the next export.
 

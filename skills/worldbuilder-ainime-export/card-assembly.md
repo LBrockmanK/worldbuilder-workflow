@@ -18,7 +18,7 @@ Source material: the character note in `notes/`.
 
 ## Sections
 
-Each section from the character note ships as-is, opening with its plain-text heading line. Preserve the content — every fact, every behavioral detail, every "because" clause, every archetype label, every dialogue line. Do not summarize, merge, drop entries, or reword.
+Each section from the character note ships as-is, opening with its plain-text heading line. Preserve the content — every fact, every behavioral detail, every "because" clause, every dialogue line. The one removal is the relationship archetype labels (see Relationships). Do not summarize, merge, drop entries, or reword.
 
 **Preamble** — the opening text before the first heading. Ships without a heading.
 
@@ -28,7 +28,7 @@ Each section from the character note ships as-is, opening with its plain-text he
 
 **Soul** — ships with heading. Every psychological driver and its internal logic must survive intact.
 
-**Relationships** — ships with heading. Every named relationship with its archetype label and full behavioral description.
+**Relationships** — ships with heading. Every named relationship with its full behavioral description, without its archetype label. Exports carry no relationship archetype labels. Remove both card forms: a trailing italic label such as `*(Kin)*`, and a label in the entry's lead-in such as `Adeline — Kin:`, which ships as `Adeline:`. Labels in other sections, such as the Soul section's parenthetical labels, ship unchanged.
 
 **Voice / Dialogue** — ships with heading. Every dialogue situation with its label, scene context, and full dialogue lines. Engine format applies to dialogue and narration within scenes.
 
@@ -68,7 +68,7 @@ These apply to the one section that is rewritten (Future Storylines) and to any 
 - [ ] Background section present — every fact from source
 - [ ] Body section present — physical description and every behavioral tic from source
 - [ ] Soul section present — every psychological driver with its full internal logic
-- [ ] Relationships section present — every named entry with archetype label and full description
+- [ ] Relationships section present — every named entry with its full description, and no archetype labels
 - [ ] Voice / Dialogue section present — every dialogue situation with all lines
 - [ ] Future Storylines present — every Story Seed accounted for, phrased as possibility, no lines dropped
 - [ ] Introduction storyline present
