@@ -193,7 +193,7 @@ A world with no reference sheet skips this step. The step is not a pre-flight li
 
 ## 7. Build
 
-Build the archive from three inputs: `world.json`, `manifest.json` and the `assets/` folder. Only the two JSON files are versioned; `assets/` is git-ignored.
+Build the archive from three inputs: `world.json`, `manifest.json` and the `assets/` folder. All three are versioned. The built `.sbworld` archive is the one build output that stays out of git.
 
 ```bash
 python "<worldbuilder>/scripts/sbworld_tool.py" build --world "<project-root>/exports/ainime/world.json" --manifest "<project-root>/exports/ainime/manifest.json" --assets "<project-root>/exports/ainime/assets"

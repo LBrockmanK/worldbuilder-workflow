@@ -11,7 +11,7 @@ This skill turns a directory into a worldbuilding project: an Obsidian vault wit
 
 Scraibe owns file management from here on — document creation, frontmatter enforcement, status lifecycle, inbox, audit. This skill only installs the chrome and templates, then gets out of the way. It asks no creative questions; genre, tone, cast, and setting belong to `worldbuilder-world-foundation`.
 
-**This skill writes no configuration into the project.** The worldbuilder type roster lives in this plugin, at `defaults/types.json`, and is read from there whenever it is needed. A project does not get a copy. What makes worldbuilder available is that scraibe and this plugin are *enabled for the session* — in the working tree the session runs in or in the user-level settings (`~/.claude/settings.json`); see Step 2.
+**This skill writes no plugin configuration into the project.** (Step 4 adds git ignore lines, which are not plugin configuration.) The worldbuilder type roster lives in this plugin, at `defaults/types.json`, and is read from there whenever it is needed. A project does not get a copy. What makes worldbuilder available is that scraibe and this plugin are *enabled for the session* — in the working tree the session runs in or in the user-level settings (`~/.claude/settings.json`); see Step 2.
 
 Two directories matter and they are usually different. The **project root** is where the vault content goes: the directory the user names for their world. The **session root** is the working tree the session is running in, whose `.claude/settings.json` carries the project-level plugin enablement (user-level settings can add to it); for a project that lives inside a larger vault, that is the vault root, not the project folder. Step 3 looks at the world's domain folder, Steps 4 through 7 operate on the project root, and only Step 2 looks at the session root.
 
@@ -75,6 +75,14 @@ If the domain folder does not exist, stop with this message: "The world's domain
 - Copy this skill's `worldvault/Home.md` to the project root, replacing `{{PROJECT_NAME}}` with the project name.
 - Copy this skill's `worldvault/_bases/` directory to `<project>/_bases/`.
 - Create empty directories: `notes/`, `project/`, `reference/`, `_attachments/`.
+- Write these four lines into `<project>/.gitignore`, appending to the file when it exists and creating it otherwise. Skip any line the file already holds, so a second run adds no duplicate. They keep the built archive and the tool's scratch folders out of git; `exports/ainime/assets/` stays tracked.
+
+  ```
+  exports/ainime/*.sbworld
+  exports/ainime/extract-*/
+  exports/ainime/manifest-pruned-*.json
+  exports/ainime/assets-pruned-*/
+  ```
 
 Chrome lives at the vault root — `Home.md` and the Bases carry no vault frontmatter, and that is correct. Scraibe's corpus rule excludes reserved spaces (`+/`, `repo/`, `.claude/`, `Imports/`), so nothing there is validated as a vault document.
 
