@@ -70,11 +70,11 @@ Fields are marked **required** or **optional**. Required fields must be present 
 
 ## Updating an Existing Export
 
-Every Ainime project exports by one method. The project keeps `exports/ainime/world.json` and `exports/ainime/manifest.json` under version control, beside an `assets/` folder. The `assets/` folder and the `.sbworld` archive are git-ignored. The versioned `world.json` is the source of truth: every edit is made to it, and the archive is built from the three, never edited in place. The archive is what the ainime platform consumes.
+Every Ainime project exports by one method. The project keeps `exports/ainime/world.json` and `exports/ainime/manifest.json` under version control, beside an `assets/` folder, also under version control. The `.sbworld` archive and the scratch folders of the extract and prune commands are git-ignored. The versioned `world.json` is the source of truth: every edit is made to it, and the archive is built from the three, never edited in place. The archive is what the ainime platform consumes.
 
 An exported world accumulates manual tweaks: expanded opening arcs, rewritten lore entries, adjusted character cards. A re-export must never overwrite those changes silently.
 
-**Start from an existing archive.** To adopt an archive made elsewhere, unpack it once into `exports/ainime/`: `python "<worldbuilder>/scripts/sbworld_tool.py" extract <archive> --into <new-folder>`, then copy out `world.json` and `manifest.json` and keep `assets/`.
+**Start from an existing archive.** To adopt an archive made elsewhere, unpack it once into `exports/ainime/`: `python "<worldbuilder>/scripts/sbworld_tool.py" extract <archive> --into exports/ainime/extract-<name>/`, then copy out `world.json` and `manifest.json`, move `assets/` to `exports/ainime/assets/`, and commit `assets/` with the two JSON files. Keep the `extract-` prefix on the folder, because the project's `.gitignore` ignores only `exports/ainime/extract-*/`.
 
 **Use the diff workflow.** `export_diff.py` (in the plugin's `scripts/`; `export-procedure.md` says how to resolve `<worldbuilder>`) generates candidate field values from the source documents (foundation.md, direction.md) and diffs them against the versioned `world.json`. Only the fields you name are updated. It never reads or writes an archive.
 

@@ -92,7 +92,7 @@ When the export needs condensing, use the adjustment order in section 4, then re
 
 An existing `.sbworld` holds generated assets (location images, character sprites). A re-export must carry forward every existing asset that is not being deliberately replaced. The archive's `manifest.json` lists every bundled asset by `id`, `path`, `mime` and `kind`.
 
-- [ ] Inventory the existing assets before rebuilding: `python "<worldbuilder>/scripts/sbworld_tool.py" extract <archive> --into <new-folder>` unpacks `world.json`, `manifest.json` and `assets/` into a new folder.
+- [ ] Inventory the existing assets before rebuilding: `python "<worldbuilder>/scripts/sbworld_tool.py" extract <archive> --into exports/ainime/extract-<name>/` unpacks `world.json`, `manifest.json` and `assets/` into a new folder. Keep the `extract-` prefix: the project's `.gitignore` ignores only folders named `exports/ainime/extract-*/`, so a folder named otherwise would show up to git.
 - [ ] Carry forward all `location`-kind assets unless the location was removed or its image is being regenerated.
 - [ ] Carry forward all `character_sprite`-kind assets unless the sprite is being replaced.
 - [ ] Verify the asset count in the rebuilt `manifest.json`: old count, minus removals, plus additions.
@@ -193,7 +193,7 @@ A world with no reference sheet skips this step. The step is not a pre-flight li
 
 ## 7. Build
 
-Build the archive from three inputs: `world.json`, `manifest.json` and the `assets/` folder. Only the two JSON files are versioned; `assets/` is git-ignored.
+Build the archive from three inputs: `world.json`, `manifest.json` and the `assets/` folder. All three are versioned. The built `.sbworld` archive is the one build output that stays out of git.
 
 ```bash
 python "<worldbuilder>/scripts/sbworld_tool.py" build --world "<project-root>/exports/ainime/world.json" --manifest "<project-root>/exports/ainime/manifest.json" --assets "<project-root>/exports/ainime/assets"
