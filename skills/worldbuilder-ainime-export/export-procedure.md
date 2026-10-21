@@ -41,7 +41,7 @@ When the export needs condensing, use the adjustment order in section 4, then re
 
 - [ ] Every character has a non-empty `name`. `lastName` is optional: the live Fields of Mistria export leaves it empty for all 38 characters, and the platform does not need it.
 - [ ] Every character has `role`, `baseProfile`, `appearance`, `type` and `availableFromDay`.
-- [ ] Sprite sets include at minimum Casual and Working/Active.
+- [ ] Every character has at least one sprite set, and its Casual set is named `default`. Fewer than the two standardized sets (Casual and Working/Active) is allowed.
 - [ ] Every sprite set carries a `neutral` expression, and every expression key in every sprite set is named in `availableExpressions`. A set need not carry all of them: the live Fields of Mistria export has no set with all 28 names, and the most any set carries is 18. The tier a project chooses at the start sets how many expressions to generate (`expression-standard.md`); it is not a pre-flight check, because an existing list may predate the tiers.
 - [ ] No character has `availableFromDay` greater than the calendar year length.
 - [ ] Each character's introduction scenario is plausible on or after that character's `availableFromDay`, and no trigger introduces the character before that day.
@@ -161,7 +161,7 @@ The general principle: adjust metadata and supplementary content first (keywords
 
 **The contract** is `card-assembly.md`:
 
-- Verbatim from the character note: the preamble (no heading), Background, Body, Soul, Relationships and Voice / Dialogue. The one change is that Relationships ships without its archetype labels (`card-assembly.md`, Relationships).
+- Verbatim from the character note, apart from the markdown emphasis markers the export strips (shipped profile sections are plain text, so `**Eiland:**` ships as `Eiland:`): the preamble (no heading), Background, Body, Soul, Relationships and Voice / Dialogue. The one change of content is that Relationships ships without its archetype labels (`card-assembly.md`, Relationships).
 - Transformed: Future Storylines, rewritten from Story Seeds. Rewrite it when Story Seeds changed since the last export. Keep the exported section otherwise.
 - Never shipped: Intimate Dynamics and Design Notes.
 
@@ -169,7 +169,7 @@ The general principle: adjust metadata and supplementary content first (keywords
 
 1. Re-assemble each character's `baseProfile` from the current card under the contract.
 2. Diff the result against the exported `baseProfile` and apply the differences to the versioned `world.json`.
-3. Pre-flight comparison: for each profile, compare the preamble and each of the five verbatim sections with the card's, after whitespace normalisation and, for Relationships, after removing the card's archetype labels. A label left in a profile's Relationships section fails the check. Require a Future Storylines section.
+3. Pre-flight comparison: for each profile, compare the preamble and each of the five verbatim sections with the card's, after whitespace normalisation, after removing markdown emphasis markers (`**` and `*`) from the card's text, and, for Relationships, after removing the card's archetype labels. A marker or label left in a profile's Relationships section fails the check. Require a Future Storylines section.
 
 **Condensing is made in the card.** If a profile must be shorter (adjustment order, item 4), shorten the character note and re-export. The next export then reproduces the change. A profile edited alone is overwritten by the next export.
 

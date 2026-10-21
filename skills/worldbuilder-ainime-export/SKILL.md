@@ -260,7 +260,7 @@ For each character note in `notes/`, produce a character record. Process one cha
 
 **`role`** (optional) — Not stored in the character note. Derive from the character's function as established by the character note content (their position in the world, their relationship to the player, their narrative role). Write as plain text. Examples: "The player's mysterious neighbor; a hacker with a heart of gold."
 
-**`baseProfile`** (optional) — The character card prose. Include personality, psychology, backstory, motivations, quirks, speech patterns. Each section opens with a plain-text heading line (no markdown heading marks, no dividers). The "Future Storylines" section is required: it ends the profile and guides what happens after the character's initial story arcs conclude. See `card-assembly.md` for full assembly guidance. This is the most complex field; do not attempt it without reading that file.
+**`baseProfile`** (optional) — The character card prose. Include personality, psychology, backstory, motivations, quirks, speech patterns. Each section opens with a plain-text heading line (no markdown heading marks, no dividers). Shipped profile sections are plain text: the export strips markdown emphasis markers from them, so a relationship name written as `**Eiland:**` on the card ships as `Eiland:`. The "Future Storylines" section is required: it ends the profile and guides what happens after the character's initial story arcs conclude. See `card-assembly.md` for full assembly guidance. This is the most complex field; do not attempt it without reading that file.
 
 **`appearance`** (optional) — Used for sprite generation and as context for all in-game AIs. Use the Body section's appearance preamble of the character note verbatim or lightly condensed. Cover species/type and sex if relevant, apparent age and body type, notable features, clothing style. For a long-lived character state the age they appear to be, never their real age (rule in `../worldbuilder-character/card-format.md`).
 
@@ -320,11 +320,13 @@ Each sprite set carries three fields beyond `name`, `description` and `expressio
 - **`baseImage`** (optional, string) — The set's reference image: an `asset://sandboxWorldAssets/<uuid>` reference. Set it to the same asset as the set's `expressions.neutral` when that image exists, so the platform generates the other expressions from the same base.
 - **`basePrompt`** (optional, string) — The image-generation prompt for the set's base image. Not yet seen in an inspected export: the purpose here is read from the field name and its pairing with `baseImage`, and is unverified. Until it is confirmed, write it from the set's `appearance` only when the platform is to generate the base image, and leave it out when `baseImage` points to a bundled asset.
 
-Every character needs at minimum:
+Two sets are standardized for convenience:
 - **Casual** (`name: "default"`) — at rest, natural state
 - **Working/Active** — doing their primary activity
 
-Add additional states only where they're meaningfully distinct from the above (Formal for a character who attends ceremonial occasions; Combat for a fighter, etc.). Do not create states for transient emotional conditions.
+A character may ship with fewer, down to one `default` set. A single-set character, such as an animal, needs no second set.
+
+Add additional states only where they're meaningfully distinct from these (Formal for a character who attends ceremonial occasions; Combat for a fighter, etc.). Do not create states for transient emotional conditions.
 
 The `description` drives art generation context; keep it concrete and consistent with the character's Body preamble. The `expressions.neutral` prompt is the base image generation prompt for that state.
 
@@ -376,7 +378,7 @@ Stock locations are optional — when image generation is enabled in-game, the A
 
 ## Moods
 
-Audio tracks for the world. Two categories:
+Audio tracks for the world. The `moods` array holds the three system moods and the gameplay moods. Each gameplay mood carries a `category`: `standard`, `ambient` or `character_theme`.
 
 ### System Moods (optional)
 
@@ -388,7 +390,11 @@ Three fixed slots triggered by the game engine (not the AI). Author one audio tr
 
 ### Gameplay Moods (optional)
 
-AI-picked moods. The AI chooses the best-fitting mood name each turn from this list. Add as many as you want — more specific moods (signature character themes, locale-specific tracks) give the AI richer choices.
+AI-picked moods. The AI chooses the best-fitting mood name each turn from this list. Add as many as you want — more specific moods give the AI richer choices. Each entry has a `category` with one of three values:
+
+- **`standard`**: Scene music the AI picks by season, time of day, weather, event or story beat. The `description` says when it fits, for example "Outdoor daytime during Spring. Fresh, optimistic."
+- **`ambient`**: Music tied to a place. The `name` starts with `location_` and the `description` names the place and what happens there.
+- **`character_theme`**: One character's signature theme. The `description` names the character and the track. The entry also sets `characterRef` to the character's name and `referenceImage` to `character:<Name>`.
 
 ---
 

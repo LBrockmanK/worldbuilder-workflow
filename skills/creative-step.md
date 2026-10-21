@@ -57,7 +57,7 @@ An interview opens with the question that decides which optional parts of the no
 
 ### Frontmatter and filename
 
-The plugin's type roster defines the frontmatter and the generated templates stamp it at creation (scraibe's `new_doc.py` creates the note). The script produces a date-prefixed filename. Rename the fresh note to the entity's own name before adding content: that is the filename convention the templates state, and it is safe while nothing links to the note yet.
+The plugin's type roster defines the frontmatter. Write the note directly with the roster's frontmatter for its type, and name the file for the entity from the start. The generated Templater templates stamp the same frontmatter when a note is created in Obsidian.
 
 ### Design Notes
 

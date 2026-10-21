@@ -19,7 +19,7 @@ A character for an LLM-powered game is not a description. It is a behavioral spe
 
 A character is written inside a worldbuilder entity item. The definer interviews the human before the item's Specification is approved, using the questions in `## Interview`. The creative step then writes the character note from the Specification, and the critic checks it (see `../creative-step.md`).
 
-**Batch mode** (`automated-workflow.md`): The human sets the goal and the agents execute to completion from source material. Use when backfilling a section across multiple characters, or any workflow without an interview. The quality standard is the same; the process that reaches it is different.
+**Batch mode** (`automated-workflow.md`): The human sets the goal and the agents execute to completion from source material. Use when backfilling a section across multiple characters, or any workflow without an interview. The quality standard and the steps are the same as for any entity item.
 
 Source material substitutes for human answers. When the Specification names source material (existing character sheets, fiction excerpts, reference images), extract the behavioral content and translate it into card-format entries the same way you would translate a spoken answer.
 

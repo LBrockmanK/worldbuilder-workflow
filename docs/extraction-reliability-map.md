@@ -1,8 +1,9 @@
 # Extraction Reliability Map
 
 Reference classifying every ainime export field by extraction method.
-Maintained alongside the export skill. See spec:
-[Export-Standards Review](../.claude/specs/2026-08-10-export-standards-review-keywords-field-and-extraction-reliability-map.md).
+Maintained alongside the export skill. See the note
+"2026-08-10-export-standards-review-keywords-field-and-extraction-reliability-map"
+in the Anima vault's worldbuilder-workflow domain.
 
 ## Categories
 

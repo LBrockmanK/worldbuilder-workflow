@@ -188,9 +188,9 @@ Coverage check before declaring the cast plan complete — verify against the fo
 
 Per-phase "done" definitions. If any item is unresolved, surface it to the user before closing the phase's work item.
 
-**Foundation complete** — `project/foundation.md` contains: all six foundational questions answered; Setting Summary; Genre & Tone; Inspirations and Tonal Inspirations with specifics; 8–12 Key Tropes & Themes; Community (social and emotional identity, not physical); World Introduction; Opening Situation; a locations list of 10–14 named locations, one sentence each; art style reference; musical theme; all 6–8 household clusters with function, internal tension, inter-household connections, trajectory, and narrative hook; no individual character names — household types and counts only; every household has at least one named connection to another household.
+**Foundation complete** — `project/foundation.md` contains: all six foundational questions answered; Setting Summary; Genre & Tone; Inspirations and Tonal Inspirations with specifics; 8–12 Key Tropes & Themes; Community (social and emotional identity, not physical); World Introduction; Opening Situation; a locations list of 10–14 named locations, one sentence each; art style reference; musical theme; all 6–8 household clusters with function, internal tension, inter-household connections, trajectory, and narrative hook; every household has at least one named connection to another household.
 
-**Direction complete** — `project/direction.md` has all required sections (romance pacing, hidden layer handling) and the opening arc sketched at a broad level. A brief but complete document beats a detailed stub.
+**Direction complete** — `project/direction.md` has the sections the story skill's Ongoing Story Direction names, each present when it applies to the world (romance pacing only when the world weighs in on romance; the hidden layer only when the world has one), and the opening arc sketched at a broad level. A brief but complete document beats a detailed stub.
 
 **Concept and event notes complete** — all three layers present (surface, mid, deep); background NPC guidelines concept note written; event notes written for all named recurring events; each note passes its skill's self-check.
 

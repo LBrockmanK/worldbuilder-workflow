@@ -2,10 +2,8 @@
 
 > **Provenance:** Written by Kevin (cpnbetty) as a neurodivergent-friendly
 > SillyTavern character-building worksheet. This is the document that
-> informed the worldbuilder-character framework (see
-> `.claude/specs/2026-06-03-blueprint-rework-design.md` for the rework
-> that adapted it for AI agent use). Saved locally 2026-07-30 from
-> `Copy of The_Character_Foundry.docx.md`.
+> informed the worldbuilder-character framework. Saved locally
+> 2026-07-30 from `Copy of The_Character_Foundry.docx.md`.
 
 ---
 

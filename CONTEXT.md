@@ -1,6 +1,6 @@
 # RPG World Builder Skills
 
-Craft skills plus a type roster, running on the scraibe base plugin. This plugin defines the worldbuilding types and deliverables for the ainime-games.com world builder platform; scraibe owns all file management — document creation (`new_doc.py`), frontmatter enforcement, status lifecycle, inbox, triage, audit. No skill in this plugin creates files by hand or specifies frontmatter; the roster and the generated Templater templates do that.
+Craft skills plus a type roster, running on the scraibe base plugin. This plugin defines the worldbuilding types and deliverables for the ainime-games.com world builder platform; scraibe owns all file management — frontmatter enforcement, status lifecycle, inbox, triage, audit. Skills in this plugin write notes directly, with the frontmatter the roster defines; the generated Templater templates stamp the same frontmatter.
 
 Phases 1 and 2 are platform-agnostic. Only the Export phase produces ainime-specific output.
 
