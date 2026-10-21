@@ -61,8 +61,8 @@ When the export needs condensing, use the adjustment order in section 4, then re
 - [ ] Every recurring trigger is one entry per occurrence, with an absolute `triggerOnDay` inside the calendar year. A weekly market gets one entry per week, each with its own day.
 - [ ] Every trigger has a non-empty `promptInjection`.
 - [ ] All festival and observance events have `storyTriggers` entries. Recurring events have `recurring: true`.
-- [ ] Every character event on the calendar carries its written justification, and nothing but world events sits on the calendar otherwise (standard 2 in `standards.md`).
-- [ ] `hiddenFromPlayer: true` is used only as standard 2 in `standards.md` allows. Public festivals are visible.
+- [ ] The calendar holds only what standard 2 in `standards.md` allows. Every returned character event and every other exception carries a written justification, and each justification names one of the reasons standard 2 lists.
+- [ ] `hiddenFromPlayer: true` is used only as standard 2 in `standards.md` allows.
 - [ ] Story intention notes with concrete triggers have `storyTriggers` entries, or stay in the character's Future Storylines under standard 2 in `standards.md`.
 - [ ] `arcManagerGuidance` is creative compass guidance, not a game-master prompt.
 
@@ -86,7 +86,7 @@ When the export needs condensing, use the adjustment order in section 4, then re
 - [ ] `artStyle.sprite` has `style_prefix`, `style_suffix` and `negative_prompt`, tuned for emergent characters (standard 9 in `standards.md`).
 - [ ] `artStyle.vnScene` is set and approved (standard 10 in `standards.md`).
 - [ ] `artStyle.sprite.clothingRules`, when the world has world-wide costume rules, is a string array with one rule per entry.
-- [ ] Negative prompts are for SDXL models only (Gemini and Imagen ignore them).
+- [ ] Negative prompts are written knowing that image models without negative-prompt support ignore them.
 - [ ] Sprite prompts do not reference other characters, and location prompts do not reference other locations.
 
 ---
@@ -198,7 +198,7 @@ A world with no reference sheet skips this step. The step is not a pre-flight li
 
 Every export, for a full world as for a quick world, passes the audit in standard 11 in `standards.md` before the archive is built. Run it on the final `world.json`, after the pre-flight check, the can-this-ever-fire detection and the derived-output check. A world edit made to fix a finding makes earlier reports stale, so run both parts again after it.
 
-- **Part 1, script check.** A script reads `world.json` and reports pass or fail for each check in standard 11, naming the field and the offending text. The Quick Worlds tooling (`tools/audit_world.py`) runs it on a quick world. A full world runs the same checks with that tool's `--file` option, or by reading the world file against the list in standard 11.
+- **Part 1, script check.** A script reads `world.json` and reports pass or fail for each check in standard 11, naming the field and the offending text. The Quick Worlds tooling (`tools/audit_world.py`) runs it on a quick world. A full world runs the same checks with that tool's `--file` option, giving the world file's `calendarConfig.daySegments` names to `--segments`.
 - **Part 2, model read.** A model reads the whole world file and reports contradictions and references to information the file does not hold. It edits nothing.
 
 The audit passes when the script report shows no failure and the model report is current for the file's digest, with every finding fixed or carrying a recorded disposition. Record both reports and the dispositions in the Export item. A failure in either part blocks the build.
@@ -213,4 +213,4 @@ Build the archive from three inputs: `world.json`, `manifest.json` and the `asse
 python "<worldbuilder>/scripts/sbworld_tool.py" build --world "<project-root>/exports/ainime/world.json" --manifest "<project-root>/exports/ainime/manifest.json" --assets "<project-root>/exports/ainime/assets"
 ```
 
-If a flag such as `--update-counts` or `--accept-missing` corrects the manifest, the tool also writes the corrected `manifest.json` back, so the versioned file matches the archive. The default archive name comes from a sanitized `worldName` and lands beside the manifest. The tool refuses to overwrite an existing archive, writes the stored (uncompressed) form the platform requires, and checks the manifest against the asset files. Read `--help` for the flags that record recomputed counts.
+If a flag such as `--update-counts` or `--accept-missing` corrects the manifest, the tool also writes the corrected `manifest.json` back, so the versioned file matches the archive. The build strips the audit-only `kind` and `justification` keys from each `storyTriggers` entry it packs (standard 2 in `standards.md`), so the shipped `world.json` differs from the audited file only by those keys; the versioned file keeps them. The default archive name comes from a sanitized `worldName` and lands beside the manifest. The tool refuses to overwrite an existing archive, writes the stored (uncompressed) form the platform requires, and checks the manifest against the asset files. Read `--help` for the flags that record recomputed counts.

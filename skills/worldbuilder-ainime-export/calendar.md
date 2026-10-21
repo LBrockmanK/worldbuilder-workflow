@@ -30,9 +30,9 @@ Each string is a one-line weather description injected when that season and segm
 ```json
 {
   "Spring": {
-    "Morning": ["Light fog lifting off the fields as the sun climbs...", "..."],
-    "Afternoon": ["..."],
-    "Evening": ["..."]
+    "<segment 1>": ["Light fog lifting off the fields as the sun climbs...", "..."],
+    "<segment 2>": ["..."],
+    "<segment 3>": ["..."]
   }
 }
 ```
@@ -62,11 +62,14 @@ Event notes in `notes/` become `storyTriggers` entries; events whose timing repe
 {
   "id": "uuid",
   "name": "Spring Harvest Festival",
+  "kind": "world",
   "triggerOnDay": 8,
   "promptInjection": "...",
   "recurring": true
 }
 ```
+
+A character event that standard 2 in `standards.md` lets back onto the calendar carries `"kind": "character"` and a `"justification"` sentence beside the other keys. Both keys are audit-only and the build strips them.
 
 **Writing `promptInjection`:** Convert the event note's Scene Effects into active direction to the story engine — not a neutral description, but an instruction for how the engine should behave today:
 

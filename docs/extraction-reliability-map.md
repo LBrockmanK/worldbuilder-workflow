@@ -61,7 +61,7 @@ in the Anima vault's worldbuilder-workflow domain.
 | `calendarConfig.seasons` | Structural | `project/foundation.md` — calendar structure (default: Spring, Summer, Autumn, Winter) |
 | `calendarConfig.daysPerSeason` | Structural | `project/foundation.md` — calendar structure (default: 28) |
 | `calendarConfig.daysOfWeek` | Structural | `project/foundation.md` — calendar structure (default: standard day names) |
-| `calendarConfig.daySegments` | Structural | `project/foundation.md` — calendar structure (default: Morning, Afternoon, Evening, Night) |
+| `calendarConfig.daySegments` | Structural | `project/foundation.md` — calendar structure (segment names per standard 1 in `skills/worldbuilder-ainime-export/standards.md`) |
 | `calendarConfig.eraReminder` | Structural | `project/foundation.md` — era description (one phrase) |
 | `calendarConfig.weatherPools[season][segment][]` | Derived | Agent creates weather descriptions from world seasonal tone and `project/foundation.md` |
 | `eventCalendarSummary` | Derived | Agent writes prose summary of the full event calendar |

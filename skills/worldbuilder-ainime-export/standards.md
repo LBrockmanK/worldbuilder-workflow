@@ -10,15 +10,15 @@ Each standard has a short rule, then the reasons and details. Standard 11 descri
 
 - A season has **14 days**.
 - A day has **three segments**. The default names are **Morning, Afternoon and Evening**.
-- A world may rename its segments to fit its game. A world about nightlife can use Day, Evening and Night. A world with two light cycles can name its segments after those cycles.
+- A world may rename its segments to fit its game. A world about nightlife can use Day, Evening and Night. The count stays at three.
 - Every world declares its segment names. The declaration is the single list that the calendar, the weather pools, the background time contexts and the location images all key on.
 
 Where the declaration lives:
 
-- **Full world:** the calendar section of `project/foundation.md` names the three segments.
+- **Full world:** the exported world file's `calendarConfig.daySegments` is the declaration. The audit is given those names with `--segments`.
 - **Quick world:** `config.json` holds a `segments` list of the three names.
 
-Every field that names a segment uses exactly the declared names: `calendarConfig.daySegments`, each season in `calendarConfig.weatherPools`, `artStyle.background.time_contexts`, and the `locations` object. A world that declares a different count or different names keeps all of these in step with the declaration.
+Every field that names a segment uses exactly the declared names: `calendarConfig.daySegments`, each season in `calendarConfig.weatherPools`, `artStyle.background.time_contexts`, and the `locations` object. A world that renames its segments keeps all of these in step with the declaration.
 
 Compute the year from the world's own values: seasons × 14. With four seasons the year is 56 days. Trigger days, lore days and `availableFromDay` values are written for that year.
 
@@ -68,7 +68,7 @@ A character event returns to the calendar only with a written justification. The
 - the event involves several characters, so it belongs to no single storyline;
 - the day is part of the world's schedule, such as a ceremony that fixes when two characters must meet.
 
-A justification that says only that the scene is important fails. Write the justification beside the event: in a quick world as a `justification` note on the trigger, in a full world in the event's note and in the export item's record.
+A justification that says only that the scene is important fails. Write the justification beside the event: in a quick world as a `justification` note on the trigger, in a full world in the event's note and in the export item's record. The script check cannot judge a reason. It enforces only a valid `kind` and, on a character event, a non-empty `justification`. The reader of the pre-flight check confirms that each justification names one of the reasons above and that any other exception carries one.
 
 ### Declaring each event
 
@@ -149,7 +149,7 @@ Every character `color` is a Tailwind text class `text-<hue>-<shade>` with a **m
 
 - Take the hue from the character's own palette.
 - Every colour is unique within its world. Two characters may share a hue only with different shades.
-- In a world shared by two games, uniqueness holds across the whole cast.
+- In a world shared by two games, uniqueness holds across the whole cast. The quick-world audit reads the world's configuration, which holds the cast of every game, so its colour check covers both games. A full world is one game.
 - Every colour is a class the platform's stylesheet defines. A class the stylesheet lacks (for example `text-blue-500` or `text-yellow-500`) renders black. The defined set, with its source and read date, is kept in one data file the audit reads.
 
 ---
@@ -179,18 +179,18 @@ The guide passes when the world's owner approves a comparison sheet: four invent
 
 Ainime has a separate art-style field for visual-novel scenes, apart from the background and sprite guidance. Scenes show characters inside a location, so this style describes the look of a composed scene.
 
-Every world sets this field. The value is written from the world's sprite style guide and its canon sprites: the same line weight, rendering, palette and backdrop treatment, written for a full scene with figures instead of a lone sprite.
+Every world sets this field; the field map marks it required. The value is written from the world's sprite style guide and its canon sprites: the same line weight, rendering, palette and backdrop treatment, written for a full scene with figures instead of a lone sprite.
 
 The field is `artStyle.vnScene`:
 
 | Key | Shape | Meaning |
 |---|---|---|
-| `enabled` | boolean | Turns the scene style on. Set `true` when the other keys hold a value. |
+| `enabled` | boolean | The "VN Scene Generation" switch in the world editor, which shows the other keys only while it is `true`. Set `true` whenever the other keys hold a value. |
 | `style_prefix` | string | The look the scene director uses for the scene. |
 | `style_suffix` | string | Rendering notes the scene director uses for the scene. |
-| `negative_prompt` | string | Used by ComfyUI and SDXL-style graphs. Gemini and Imagen ignore it. |
+| `negative_prompt` | string | Only image models that take a negative prompt use it; the others ignore it. |
 
-While `style_prefix` and `style_suffix` are both empty, the scene director uses the background and sprite styles. Once either holds text, the director uses `vnScene` instead.
+The world editor's help text says that while `style_prefix` and `style_suffix` are both empty, the scene director uses the background and sprite styles, and once either holds text it uses `vnScene` instead. The platform's script does not show what a filled prefix does when `enabled` is `false`, so that case is not relied on.
 
 The value passes when the owner sees one generated scene beside two canon sprites and approves that the scene matches the sprites. It follows the same two-revision limit as standard 9.
 

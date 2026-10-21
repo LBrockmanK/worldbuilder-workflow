@@ -70,7 +70,7 @@ StoryTrigger schema:
 }
 ```
 
-`hiddenFromPlayer` (boolean, optional) marks a trigger as hidden from the player. Standard 2 in `skills/worldbuilder-ainime-export/standards.md` says which events may use it; public festivals stay visible; the runtime behavior (the trigger still fires, the player is not shown it in advance) is inferred, not confirmed against the platform.
+`hiddenFromPlayer` (boolean, optional) marks a trigger as hidden from the player. Standard 2 in `skills/worldbuilder-ainime-export/standards.md` says which events may use it; the runtime behavior (the trigger still fires, the player is not shown it in advance) is inferred, not confirmed against the platform.
 
 **`generateSideCharacterOnNewGame`** — When `true`, the platform has the AI generate a side character at New Game (count and basis not yet verified). A builder choice set in the platform; the export preserves the existing value and never derives it from notes. The Adventure tab's other New Game toggles (randomize the opening arc, ignore the opening arc, random NPC romance pair) are app-level settings and never appear in the `.sbworld`.
 
@@ -107,9 +107,9 @@ Set `recurring: true` for annual events (festivals, observances). One-time event
 ```json
 {
   "Spring": {
-    "Morning": ["Light fog lifting...", "Crisp clean air..."],
-    "Afternoon": ["..."],
-    "Evening": ["..."]
+    "<segment 1>": ["Light fog lifting...", "Crisp clean air..."],
+    "<segment 2>": ["..."],
+    "<segment 3>": ["..."]
   }
 }
 ```
@@ -242,15 +242,15 @@ The Locations tab manages image pools — sets of location images by time of day
 
 ```json
 {
-  "Morning": [{"name": "location_slug_morning", "url": "asset://sandboxWorldAssets/<uuid>", "prompt": "image gen prompt"}],
-  "Afternoon": [...],
-  "Evening": [...]
+  "<segment 1>": [{"name": "location_slug_<segment 1>", "url": "asset://sandboxWorldAssets/<uuid>", "prompt": "image gen prompt"}],
+  "<segment 2>": [...],
+  "<segment 3>": [...]
 }
 ```
 
 Each entry has three fields:
 
-- **`name`** — Snake-case identifier. Convention for time-variant locations: `{location_slug}_{time_segment}` (e.g., `blacksmith_forge_morning`).
+- **`name`** — Snake-case identifier. Convention for time-variant locations: `{location_slug}_{time_segment}` (e.g., `blacksmith_forge_<segment>`).
 - **`url`** — Either an asset reference (`asset://sandboxWorldAssets/<uuid>`) for a bundled image registered in `manifest.json` with `kind: "location"`, or empty string `""` when no image is provided (the platform can generate one from `prompt`).
 - **`prompt`** — Optional. A text description of the location used by the platform's built-in AI image generator. Omit when a bundled image is provided. Prompts describe the empty scene only — no people, characters, or figures unless a specific location is deliberately designed to include them. Each prompt is self-contained: describe the location on its own terms without referencing other locations (no "near the blacksmith" or "across from the inn").
 
@@ -325,7 +325,7 @@ Three fixed-slot entries the engine requires. Use `system:{slot}` as the `id` an
 | slot | Purpose |
 |------|---------|
 | `main_menu` | Title screen, new-game generation, and endgame / credits |
-| `segment_transition` | Brief musical bridge between day segments (Morning → Afternoon, etc.) |
+| `segment_transition` | Brief musical bridge between day segments (one declared segment to the next) |
 | `day_transition` | End-of-day / going to sleep |
 
 ### Standard moods (`category: "standard"`)

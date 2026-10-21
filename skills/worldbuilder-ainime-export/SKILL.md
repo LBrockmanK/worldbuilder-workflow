@@ -60,7 +60,7 @@ Fields are marked **required** or **optional**. Required fields must be present 
 | character notes in `notes/` | `characters[]` | **req** |
 | `project/foundation.md` — Art style | `artStyle.background.*`, `artStyle.sprite.*` | opt |
 | `project/foundation.md` — Art style | `artStyle.background.time_contexts` (keyed by day segment) | opt |
-| `project/foundation.md` — Art style, character sprites | `artStyle.vnScene` | opt |
+| `project/foundation.md` — Art style, character sprites | `artStyle.vnScene` | **req** |
 | character notes (Body sections) | `artStyle.sprite.clothingRules[]` | opt |
 | `project/foundation.md` — expression tier | `availableExpressions[]` | opt |
 | location notes in `notes/` (image prompts), builder-specified (names) | `locations` | opt |
@@ -157,9 +157,9 @@ Older exports carry a single `calendarConfig.dailyInfluenceCap` field. Where an 
 ```json
 {
   "Spring": {
-    "Morning": ["Light fog lifting...", "Crisp clean air..."],
-    "Afternoon": ["..."],
-    "Evening": ["..."]
+    "<segment 1>": ["Light fog lifting...", "Crisp clean air..."],
+    "<segment 2>": ["..."],
+    "<segment 3>": ["..."]
   }
 }
 ```
@@ -174,6 +174,7 @@ Every season carries one key per declared segment name (standard 1 in `standards
 {
   "id": "uuid",
   "name": "Event name",
+  "kind": "world",
   "triggerOnDay": 8,
   "promptInjection": "Active creative direction injected on this day.",
   "recurring": true,
@@ -181,9 +182,11 @@ Every season carries one key per declared segment name (standard 1 in `standards
 }
 ```
 
+Every trigger declares a `kind`, and a `character` trigger also carries a `justification`. Both are audit-only keys that the build strips (standard 2 in `standards.md`).
+
 `triggerOnDay` is the absolute calendar day (1 to seasons × `daysPerSeason`; see `export-procedure.md` for the year-length rule). `promptInjection` is active direction to the story engine, not a neutral description of the event.
 
-**`hiddenFromPlayer`** (optional, boolean) — Marks a trigger as hidden from the player. The intended reading is that the trigger still fires and injects its `promptInjection` while the player is not shown it in advance; that runtime behavior is inferred from the field name and from how existing exports use it, not confirmed against the platform. Which events may use it, and which character events stay off the calendar, is set by standard 2 in `standards.md`. Leave it `false` or absent on public festivals and observances the townsfolk would know about.
+**`hiddenFromPlayer`** (optional, boolean) — Marks a trigger as hidden from the player. The intended reading is that the trigger still fires and injects its `promptInjection` while the player is not shown it in advance; that runtime behavior is inferred from the field name and from how existing exports use it, not confirmed against the platform. Which events may use it, and which character events stay off the calendar, is set by standard 2 in `standards.md`.
 
 ### Life Stages (`yearContexts`, optional)
 
@@ -201,7 +204,7 @@ Life stages describe how the world changes from one in-game year to the next, as
 - After major arcs, give characters breathing room with slice-of-life moments.
 - Lean into moral ambiguity. No clear villains — everyone has reasons.
 
-**`storyTriggers[]` (story events)** — One entry per intention story note where a trigger condition can be expressed as a calendar day or a story moment. Intentions without a concrete trigger day do not produce `storyTriggers` entries; they remain in the `arcManagerGuidance` as ongoing direction instead.
+**`storyTriggers[]` (story events)** — One entry per intention story note where a trigger condition can be expressed as a calendar day or a story moment, subject to standard 2 in `standards.md`: an intention that moves one character's story stays in that character's Future Storylines unless it returns with a written justification. Intentions without a concrete trigger day do not produce `storyTriggers` entries; they remain in the `arcManagerGuidance` as ongoing direction instead.
 
 ---
 
@@ -355,11 +358,11 @@ Read the Art style section of `project/foundation.md`. Translate the plain-langu
 
 **`artStyle.background.style_suffix`** (optional) — Appended to background prompts. Typically quality modifiers and technical parameters. Reinforce perspective (ground-level shot) and emptiness (no people, uninhabited).
 
-**`artStyle.background.negative_prompt`** (optional) — Elements to suppress across all backgrounds. SDXL models only (e.g. Nova Anime XL) — ignored by Gemini/Imagen. Always include people/person/figure/crowd/character — location backgrounds are empty scenes with no people unless a specific location is deliberately designed to include them. Suppress aerial perspectives: overhead view, isometric, bird's eye view, top-down, aerial view.
+**`artStyle.background.negative_prompt`** (optional) — Elements to suppress across all backgrounds. Only image models that take a negative prompt use it. Always include people/person/figure/crowd/character — location backgrounds are empty scenes with no people unless a specific location is deliberately designed to include them. Suppress aerial perspectives: overhead view, isometric, bird's eye view, top-down, aerial view.
 
 ### Sprite Generation
 
-**`artStyle.sprite.style_prefix`** / **`style_suffix`** / **`negative_prompt`** (optional) — Same structure for character sprites. Sprite style should be consistent with background style but may have different technical requirements (consistent character proportions). Write the `style_suffix` background text from the Background rule in `expression-standard.md`: one fixed two-colour gradient per sprite set, unchanged by emotion. The exported text is a derived copy of that rule. Negative prompt is SDXL only — ignored by Gemini/Imagen.
+**`artStyle.sprite.style_prefix`** / **`style_suffix`** / **`negative_prompt`** (optional) — Same structure for character sprites. Sprite style should be consistent with background style but may have different technical requirements (consistent character proportions). Write the `style_suffix` background text from the Background rule in `expression-standard.md`: one fixed two-colour gradient per sprite set, unchanged by emotion. The exported text is a derived copy of that rule. Only image models that take a negative prompt use it; the others ignore it.
 
 **`artStyle.sprite.clothingRules`** (optional, string array) — Clothing directives for sprite generation, one rule per array entry (the UI shows one per line). Use them for world-wide costume rules: recognizable silhouettes and color motifs per character, a uniform element a faction always wears, a ban on copying costumes from existing franchises. Derive them from the character notes' Body sections and the foundation document's art style reference.
 
@@ -369,7 +372,7 @@ Read the Art style section of `project/foundation.md`. Translate the plain-langu
 
 ### Visual-Novel Scene Style
 
-**`artStyle.vnScene`** (object) — The separate art style for visual-novel scenes, where characters stand inside a location. It sits in `artStyle` beside `background` and `sprite`. Keys: `enabled` (boolean), `style_prefix` (string), `style_suffix` (string) and `negative_prompt` (string; ignored by Gemini/Imagen). Every world sets it, and standard 10 in `standards.md` says how to write the value and when it passes.
+**`artStyle.vnScene`** (object) — The separate art style for visual-novel scenes, where characters stand inside a location. It sits in `artStyle` beside `background` and `sprite`. Keys: `enabled` (boolean), `style_prefix` (string), `style_suffix` (string) and `negative_prompt` (string). Every world sets it, and standard 10 in `standards.md` says how to write the value and when it passes.
 
 Do not attempt to write `artStyle` content during Wide-phase work — this is a prompt-engineering output that belongs here.
 
@@ -394,7 +397,7 @@ Audio tracks for the world. The `moods` array holds the three system moods and t
 Three fixed slots triggered by the game engine (not the AI). Author one audio track per slot — leave any slot empty for silence at that moment. Slots cannot be renamed or removed.
 
 - **Main Menu** (`main_menu`) — plays on the title screen, during new-game generation, and on the endgame/credits screen.
-- **Segment Transition** (`segment_transition`) — brief musical transition between day segments (Morning to Afternoon, Afternoon to Evening).
+- **Segment Transition** (`segment_transition`) — brief musical transition between day segments (from one declared segment to the next).
 - **Day Transition** (`day_transition`) — plays when the day ends and transitions to the next day (going to sleep).
 
 ### Gameplay Moods (optional)

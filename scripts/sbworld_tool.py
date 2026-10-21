@@ -88,6 +88,23 @@ def load_json(path: Path) -> tuple[dict, bytes]:
     return json.loads(raw.decode("utf-8")), raw
 
 
+AUDIT_ONLY_TRIGGER_KEYS = ("kind", "justification")
+
+
+def strip_audit_keys(world: dict, world_raw: bytes) -> bytes:
+    """The world bytes to pack: each storyTriggers entry loses the audit-only keys. The versioned file keeps them.
+    A world with none of those keys is packed byte for byte as given."""
+    triggers = world.get("storyTriggers")
+    if not isinstance(triggers, list) or not any(
+            isinstance(t, dict) and any(k in t for k in AUDIT_ONLY_TRIGGER_KEYS) for t in triggers):
+        return world_raw
+    for t in triggers:
+        if isinstance(t, dict):
+            for k in AUDIT_ONLY_TRIGGER_KEYS:
+                t.pop(k, None)
+    return (json.dumps(world, indent=2, ensure_ascii=False) + chr(10)).encode("utf-8")
+
+
 def referenced_ids(world_raw: bytes) -> set[str]:
     return set(ASSET_URI.findall(world_raw.decode("utf-8")))
 
@@ -179,6 +196,7 @@ def write_atomic(path: Path, data: bytes) -> None:
 def cmd_build(world_path: Path, manifest_path: Path, assets: Path, out: Path | None,
               accept_missing: bool, update_counts: bool, refresh_exported_at: bool) -> Path:
     world, world_raw = load_json(world_path)
+    world_raw = strip_audit_keys(world, world_raw)
     manifest, manifest_raw = load_json(manifest_path)
     if out is None:
         out = manifest_path.parent / f"{safe_basename(manifest.get('worldName', 'world'))}-{stamp()}.sbworld"

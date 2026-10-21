@@ -363,3 +363,20 @@ def test_write_atomic_leaves_a_colliding_temp_name_alone(tmp_path, monkeypatch):
     assert target.read_bytes() == b"new"
     assert other.read_bytes() == b"another run"
     assert sorted(p.name for p in tmp_path.iterdir()) == ["manifest.json", "manifest.json.tmp-FROZEN"]
+
+
+def test_build_strips_the_audit_only_keys_from_story_triggers(tmp_path):
+    fx = make_fixture(tmp_path / "fx")
+    world = json.loads((fx / "world.json").read_text(encoding="utf-8"))
+    world["storyTriggers"] = [
+        {"id": "t1", "name": "Fair", "triggerOnDay": 3, "kind": "world"},
+        {"id": "t2", "name": "Visit", "triggerOnDay": 5, "kind": "character", "justification": "Paces the opening days."},
+    ]
+    (fx / "world.json").write_text(json.dumps(world, indent=2, ensure_ascii=False), encoding="utf-8", newline="\n")
+    out = tmp_path / "a.sbworld"
+    assert tool.main(build_args(fx, out)) == 0
+    with zipfile.ZipFile(out) as z:
+        shipped = json.loads(z.read("world.json").decode("utf-8"))
+    assert [set(t) for t in shipped["storyTriggers"]] == [{"id", "name", "triggerOnDay"}] * 2
+    # the tracked file keeps the keys
+    assert "kind" in json.loads((fx / "world.json").read_text(encoding="utf-8"))["storyTriggers"][0]
