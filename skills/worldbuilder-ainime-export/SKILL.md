@@ -392,9 +392,9 @@ Three fixed slots triggered by the game engine (not the AI). Author one audio tr
 
 AI-picked moods. The AI chooses the best-fitting mood name each turn from this list. Add as many as you want — more specific moods give the AI richer choices. Each entry has a `category` with one of three values:
 
-- **`standard`** — Scene music the AI picks by season, time of day, weather, event or story beat. The `description` says when it fits, for example "Outdoor daytime during Spring. Fresh, optimistic."
-- **`ambient`** — Music tied to a place. The `name` starts with `location_` and the `description` names the place and what happens there.
-- **`character_theme`** — One character's signature theme. The `description` names the character and the track. The entry also sets `characterRef` to the character's name and `referenceImage` to `character:<Name>`.
+- **`standard`**: Scene music the AI picks by season, time of day, weather, event or story beat. The `description` says when it fits, for example "Outdoor daytime during Spring. Fresh, optimistic."
+- **`ambient`**: Music tied to a place. The `name` starts with `location_` and the `description` names the place and what happens there.
+- **`character_theme`**: One character's signature theme. The `description` names the character and the track. The entry also sets `characterRef` to the character's name and `referenceImage` to `character:<Name>`.
 
 ---
 

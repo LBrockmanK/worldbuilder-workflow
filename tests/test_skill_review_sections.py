@@ -16,13 +16,21 @@ SKILLS = os.path.join(ROOT, 'skills')
 def count_review_headings(text):
     """Count the lines equal to `## Review` outside fenced code blocks."""
     count = 0
-    in_fence = False
+    fence = None  # (character, run length) of the open fence
     for line in text.splitlines():
         stripped = line.strip()
-        if stripped.startswith('```') or stripped.startswith('~~~'):
-            in_fence = not in_fence
-            continue
-        if in_fence:
+        if fence is None:
+            for char in '`~':
+                run = len(stripped) - len(stripped.lstrip(char))
+                if run >= 3:
+                    fence = (char, run)
+                    break
+            if fence is not None:
+                continue
+        else:
+            char, length = fence
+            if len(stripped) >= length and stripped == char * len(stripped):
+                fence = None
             continue
         if line.rstrip() == '## Review':
             count += 1
@@ -50,3 +58,5 @@ def test_count_ignores_fenced_and_prose_mentions():
     prose = 'Open the `## Review criteria` section.\n\n## Review criteria\n'
     assert count_review_headings(prose) == 0
     assert count_review_headings('## Review   \n') == 1
+    nested = '## Review\n\n````\n```\n## Review\n```\n````\n'
+    assert count_review_headings(nested) == 1
