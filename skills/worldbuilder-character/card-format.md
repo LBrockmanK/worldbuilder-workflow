@@ -285,9 +285,9 @@ violation pattern — it does not reproduce the full rule text.
   section). Violation: empty section.
 - Slop-phrase scan (`docs/slop-phrases.md`, full checklist).
   Violation: any listed phrase present in card prose.
-- Writing doctrine compliance (`skills/writing-style.md`;
-  `.claude/adr/0004-action-line-style-model.md`). Violation: any
-  failure mode listed in those documents.
+- Writing doctrine compliance (`skills/writing-style.md`, including its
+  Style Model section, which holds the action-line style decision).
+  Violation: any failure mode listed in that document.
 - Temporal scope (`skills/worldbuilder-review/SKILL.md`, Phase 2;
   this document, Starting world state section for the section
   mapping). Violation: as that rule states.
