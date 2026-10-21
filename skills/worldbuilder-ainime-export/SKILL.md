@@ -74,7 +74,7 @@ Every Ainime project exports by one method. The project keeps `exports/ainime/wo
 
 An exported world accumulates manual tweaks: expanded opening arcs, rewritten lore entries, adjusted character cards. A re-export must never overwrite those changes silently.
 
-**Start from an existing archive.** To adopt an archive made elsewhere, unpack it once into `exports/ainime/`: `python "<worldbuilder>/scripts/sbworld_tool.py" extract <archive> --into <new-folder>`, then copy out `world.json` and `manifest.json`, move `assets/` to `exports/ainime/assets/`, and commit `assets/` with the two JSON files.
+**Start from an existing archive.** To adopt an archive made elsewhere, unpack it once into `exports/ainime/`: `python "<worldbuilder>/scripts/sbworld_tool.py" extract <archive> --into exports/ainime/extract-<name>/`, then copy out `world.json` and `manifest.json`, move `assets/` to `exports/ainime/assets/`, and commit `assets/` with the two JSON files. Keep the `extract-` prefix on the folder, because the project's `.gitignore` ignores only `exports/ainime/extract-*/`.
 
 **Use the diff workflow.** `export_diff.py` (in the plugin's `scripts/`; `export-procedure.md` says how to resolve `<worldbuilder>`) generates candidate field values from the source documents (foundation.md, direction.md) and diffs them against the versioned `world.json`. Only the fields you name are updated. It never reads or writes an archive.
 
