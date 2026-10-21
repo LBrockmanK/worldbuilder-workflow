@@ -63,12 +63,30 @@ StoryTrigger schema:
 {
   "id": "uuid",
   "name": "Event name",
+  "kind": "world",
   "triggerOnDay": 8,
   "promptInjection": "Narrative direction text injected on this day.",
   "recurring": false,
   "hiddenFromPlayer": true
 }
 ```
+
+A character event returned to the calendar also carries a `justification`:
+
+```json
+{
+  "id": "uuid",
+  "name": "The harbour introduction",
+  "kind": "character",
+  "justification": "Introduces the harbour guild through this character on a fixed day, which paces the opening days.",
+  "triggerOnDay": 3,
+  "promptInjection": "Narrative direction text injected on this day.",
+  "recurring": false,
+  "hiddenFromPlayer": false
+}
+```
+
+`kind` and `justification` are audit-only keys (standard 2 in `skills/worldbuilder-ainime-export/standards.md`). They live in the tracked `world.json`, and packaging removes both from the shipped file.
 
 `hiddenFromPlayer` (boolean, optional) marks a trigger as hidden from the player. Standard 2 in `skills/worldbuilder-ainime-export/standards.md` says which events may use it; the runtime behavior (the trigger still fires, the player is not shown it in advance) is inferred, not confirmed against the platform.
 

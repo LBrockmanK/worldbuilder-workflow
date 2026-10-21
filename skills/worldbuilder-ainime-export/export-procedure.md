@@ -19,6 +19,8 @@ When the export needs condensing, use the adjustment order in section 4, then re
 
 **Running the plugin's scripts.** The scripts belong to the plugin, not the project. Resolve the plugin root, called `<worldbuilder>`, the way the setup skill's Step 2 does, by the first route that works. Call the working tree the session runs in `<session-root>`. (1) `${CLAUDE_PLUGIN_ROOT}`, when it is set and contains `scripts/sbworld_tool.py`. (2) Otherwise read `~/.claude/plugins/installed_plugins.json` and take the `installPath` of the entry whose key starts with `worldbuilder-workflow@`. That entry is a list of installs: when it holds more than one, take the install whose `projectPath` equals `<session-root>`, and the first otherwise. (3) Otherwise glob `~/.claude/plugins/cache/*/worldbuilder-workflow/*/scripts/sbworld_tool.py` and take the directory two levels above the newest match. If no route resolves, stop and tell the user: "The worldbuilder-workflow plugin is not installed where Claude Code can find it. Run `fleet:setup` at `<session-root>`." Run every script as `python "<worldbuilder>/scripts/<name>.py"` and pass the project's paths explicitly, with `<project-root>` the directory that holds `project/`, `notes/` and `exports/`.
 
+**Running the Quick Worlds audit tool.** The script check and the model read of the audit (section 6a) run from the Quick Worlds repository, not from this plugin. Call a local clone of https://github.com/LBrockmanK/Quick-Worlds `<quick-worlds>`; if the user has none, ask them for its path or to clone it. Call the fleet plugin folder that holds `scripts/role_runner.py` `<fleet>`, resolved the same way as `<worldbuilder>` with the `fleet@` entry of `installed_plugins.json`. Run the tool as `python -I "<quick-worlds>/tools/audit_world.py" ...`.
+
 **Calendar year length.** In every check below, the calendar year is `len(calendarConfig.seasons) × calendarConfig.daysPerSeason` for the world's own `calendarConfig`. Never assume a fixed number of days.
 
 ---
@@ -198,8 +200,20 @@ A world with no reference sheet skips this step. The step is not a pre-flight li
 
 Every export, for a full world as for a quick world, passes the audit in standard 11 in `standards.md` before the archive is built. Run it on the final `world.json`, after the pre-flight check, the can-this-ever-fire detection and the derived-output check. A world edit made to fix a finding makes earlier reports stale, so run both parts again after it.
 
-- **Part 1, script check.** A script reads `world.json` and reports pass or fail for each check in standard 11, naming the field and the offending text. The Quick Worlds tooling (`tools/audit_world.py`) runs it on a quick world. A full world runs the same checks with that tool's `--file` option, giving the world file's `calendarConfig.daySegments` names to `--segments`.
-- **Part 2, model read.** A model reads the whole world file and reports contradictions and references to information the file does not hold. It edits nothing.
+- **Part 1, script check.** A script reads `world.json` and reports pass or fail for each check in standard 11, naming the field and the offending text. The Quick Worlds tool runs it on every world; a quick world names its world and game, and a full world gives its world file. For a full world:
+  ```bash
+  python -I "<quick-worlds>/tools/audit_world.py" script --file "<project-root>/exports/ainime/world.json" --segments <the three names from calendarConfig.daySegments> [--patterns "<file of exact strings to flag, one per line>"]
+  ```
+
+  `--patterns` is optional; use it to name the card-text strings the world strips (standard 4), because a full world has no fix list. A full world normally has no `config.json` beside its world file, so the tool uses its defaults; the colour check then covers the world file's own cast. The tool exits with status 1 when a check fails and writes a new timestamped report to the `audit/` folder beside the world file.
+- **Part 2, model read.** A model reads the whole world file and reports contradictions and references to information the file does not hold. It edits nothing. The tool runs it, then checks the pass condition:
+
+  ```bash
+  python -I "<quick-worlds>/tools/audit_world.py" model-read --file "<project-root>/exports/ainime/world.json" --fleet "<fleet>"
+  python -I "<quick-worlds>/tools/audit_world.py" check-model --file "<project-root>/exports/ainime/world.json"
+  ```
+
+  The first command stores the report in the same `audit/` folder, opening with the digest of the file it read. `check-model` exits with status 1 and names each finding that has no disposition. Dispositions go in `audit/dispositions.json`, keyed by the finding's first quoted text, one full sentence each.
 
 The audit passes when the script report shows no failure and the model report is current for the file's digest, with every finding fixed or carrying a recorded disposition. Record both reports and the dispositions in the Export item. A failure in either part blocks the build.
 
