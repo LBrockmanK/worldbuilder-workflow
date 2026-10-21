@@ -70,6 +70,12 @@ A character event returns to the calendar only with a written justification. The
 
 A justification that says only that the scene is important fails. Write the justification beside the event: in a quick world as a `justification` note on the trigger, in a full world in the event's note and in the export item's record.
 
+### Declaring each event
+
+Every story trigger in the world file declares a `kind`: one of `opening`, `world`, `quest` or `character`. A trigger of kind `character` also carries a non-empty `justification`. The audit fails any trigger that lacks a valid `kind`, and any character trigger without a justification.
+
+`kind` and `justification` are audit-only keys. They live in the tracked world file, and packaging strips them from the shipped one.
+
 ### Hidden events
 
 `hiddenFromPlayer: true` is kept only for **player-independent surprises**: events that happen in the world whatever the player does, which the player should discover in play rather than see announced. A hidden event that exists to stage a character beat leaves the calendar under the character-event rule above, or returns with its written justification.
@@ -205,6 +211,7 @@ A script reads the world file and reports each of these as pass or fail, naming 
 3. **Names with no matching entry.** Capitalised names in any text field that match no character, no lore keyword and no name on the world's known-names list. This check reports for the operator to read. Exempt a name by adding it to the known-names list.
 4. **Colours** outside the 400 to 600 range, outside the classes the platform's stylesheet defines, or repeated across the world's whole cast (standard 7).
 5. **Calendar settings** that differ from 14-day seasons or from the three declared segment names, fields that name segments with any other keys, and trigger days beyond twice the year length (standards 1 and 2).
+   Also in this check: every story trigger declares a valid `kind`, and every `character` trigger carries a non-empty `justification` (standard 2).
 
 Pass condition: the script report shows every check passed, with no failure. The name check (check 3) is report-only: it never fails, and its report is read before packaging.
 
