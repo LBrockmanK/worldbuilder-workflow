@@ -96,7 +96,9 @@ Mark the note `complete` when every item passes (`../creative-step.md`, Closure)
 
 ### Romance pacing
 
-The engine by default moves too fast. This section is the primary guard rail.
+This section is optional. Include it only when the world weighs in on romance. A world that does not must not mention romance in `project/direction.md`.
+
+The engine by default moves too fast. When the section is present, it is the primary guard rail.
 
 Adapt this language:
 
