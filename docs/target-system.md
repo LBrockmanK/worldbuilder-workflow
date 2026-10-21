@@ -70,7 +70,7 @@ StoryTrigger schema:
 }
 ```
 
-`hiddenFromPlayer` (boolean, optional) marks a trigger as hidden from the player. Exports set it on scripted story beats and introductions and leave public festivals visible; the runtime behavior (the trigger still fires, the player is not shown it in advance) is inferred, not confirmed against the platform.
+`hiddenFromPlayer` (boolean, optional) marks a trigger as hidden from the player. Standard 2 in `skills/worldbuilder-ainime-export/standards.md` says which events may use it; public festivals stay visible; the runtime behavior (the trigger still fires, the player is not shown it in advance) is inferred, not confirmed against the platform.
 
 **`generateSideCharacterOnNewGame`** — When `true`, the platform has the AI generate a side character at New Game (count and basis not yet verified). A builder choice set in the platform; the export preserves the existing value and never derives it from notes. The Adventure tab's other New Game toggles (randomize the opening arc, ignore the opening arc, random NPC romance pair) are app-level settings and never appear in the `.sbworld`.
 
@@ -109,8 +109,7 @@ Set `recurring: true` for annual events (festivals, observances). One-time event
   "Spring": {
     "Morning": ["Light fog lifting...", "Crisp clean air..."],
     "Afternoon": ["..."],
-    "Evening": ["..."],
-    "Night": ["..."]
+    "Evening": ["..."]
   }
 }
 ```
@@ -119,7 +118,7 @@ Set `recurring: true` for annual events (festivals, observances). One-time event
 
 **`eventCalendarSummary`** — Narrative overview of the full event calendar for LLM reference. A prose summary of the festival calendar and its emotional rhythms — written for the AI, not the player. Produced after all events are written.
 
-**`calendarConfig.seasons`, `daysPerSeason`, `daysOfWeek`, `daySegments`** — Structural configuration. Defaults: 4 seasons, 28 days per season, standard day names, Morning/Afternoon/Evening/Night. Change only if the world needs a different time structure.
+**`calendarConfig.seasons`, `daysPerSeason`, `daysOfWeek`, `daySegments`** — Structural configuration. Season length and the day segments follow standard 1 in `skills/worldbuilder-ainime-export/standards.md`. Seasons and day names follow the world's own cycle.
 
 ---
 
@@ -165,7 +164,7 @@ One object per character in the `characters` array.
 | `availableFromDay` | Available Day | Earliest possible introduction day |
 | `spriteSets` | Sprite Sets | Visual states for artwork |
 | `startingInfluence` | Starting Influence | Integer, may be negative; omit for the platform default ("Auto" in the UI) |
-| `color` | Name Color | Tailwind CSS text-color class string, e.g. `"text-pink-400"` |
+| `color` | Name Color | Tailwind CSS text-color class string, e.g. `"text-<hue>-<shade>"` |
 
 The character note also carries a `sex` field. It is internal worldbuilder schema, never written to `world.json`: the export reads it to keep pronouns accurate in `appearance`, per-set `appearance` and the card's Future Storylines.
 
@@ -273,6 +272,7 @@ The Art Style tab configures image generation prompts for backgrounds and charac
 | `artStyle.sprite.style_suffix` | Suffix for all sprite prompts |
 | `artStyle.sprite.negative_prompt` | Negative prompt for sprites |
 | `artStyle.sprite.clothingRules` | String array of clothing directives for sprite generation, one rule per entry |
+| `artStyle.vnScene` | Object for visual-novel scenes: `enabled` (boolean) and the strings `style_prefix`, `style_suffix`, `negative_prompt`. Standard 10 in `skills/worldbuilder-ainime-export/standards.md` says how to write it |
 
 The Foundation phase produces a **plain-language art style reference** describing the desired visual style, color palette, and reference works. This is translated into prompt-engineering format during export.
 

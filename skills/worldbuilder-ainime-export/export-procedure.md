@@ -12,7 +12,8 @@
 4. Run the pre-flight check (section 1). Every line is pass or fail. A failure blocks the export until resolved.
 5. Run the can-this-ever-fire detection (section 3). It runs only after the pre-flight check passes.
 6. Run the derived-output check (section 6) when the world has a reference sheet.
-7. Build the archive (section 7).
+7. Run the two-part audit (section 6a) on the final `world.json`.
+8. Build the archive (section 7).
 
 When the export needs condensing, use the adjustment order in section 4, then repeat from step 3.
 
@@ -30,7 +31,7 @@ When the export needs condensing, use the adjustment order in section 4, then re
 - [ ] `settingSummary` is detailed. `communityDescription` is a player-facing blurb, not an in-game description. `introText` sets the scene for a new player.
 - [ ] `inspirations` and `tonalInspirations` are arrays, one item per source. `keyTropesAndThemes` has 8–12 entries.
 - [ ] `calendarConfig` has `seasons`, `daysPerSeason`, `daysOfWeek` and `daySegments`. `eraReminder` is populated, or blank on purpose for a world with no technology restriction.
-- [ ] `daySegments` match the project's intended day structure.
+- [ ] `daySegments` match the segment names the world declares (standard 1 in `standards.md`).
 - [ ] `weatherPools` covers every season × segment combination, with no missing cell.
 - [ ] `eventCalendarSummary` is populated and matches the story triggers and calendar events.
 - [ ] `dailyPlannerDirective` is set if the world has standing daily-structure rules.
@@ -48,7 +49,7 @@ When the export needs condensing, use the adjustment order in section 4, then re
 - [ ] `appearance` contains physical description only, with no story content and no personality, and states the apparent age (the age they appear to be, never the real age; rule in `../worldbuilder-character/card-format.md`).
 - [ ] Every sprite set has its own `appearance`, starting with the character's unchanged physical-features preamble.
 - [ ] `baseImage` matches the set's `expressions.neutral` where both exist.
-- [ ] `color` is a Tailwind text class (`text-<hue>-<shade>`). `startingInfluence` is an integer or absent.
+- [ ] `color` follows standard 7 in `standards.md`. `startingInfluence` is an integer or absent.
 - [ ] Every pronoun in `appearance`, per-set `appearance` and Future Storylines agrees with the note's `sex` field.
 - [ ] `baseProfile` prose is complete and in the target range (about 900 tokens supporting, about 1500 major), and all six influence bands are present in it.
 - [ ] Each `baseProfile` passes the reconciliation comparison in section 5.
@@ -60,8 +61,9 @@ When the export needs condensing, use the adjustment order in section 4, then re
 - [ ] Every recurring trigger is one entry per occurrence, with an absolute `triggerOnDay` inside the calendar year. A weekly market gets one entry per week, each with its own day.
 - [ ] Every trigger has a non-empty `promptInjection`.
 - [ ] All festival and observance events have `storyTriggers` entries. Recurring events have `recurring: true`.
-- [ ] `hiddenFromPlayer: true` is set on scripted beats the player should not see announced. Public festivals are visible.
-- [ ] Story intention notes with concrete triggers have `storyTriggers` entries.
+- [ ] Every character event on the calendar carries its written justification, and nothing but world events sits on the calendar otherwise (standard 2 in `standards.md`).
+- [ ] `hiddenFromPlayer: true` is used only as standard 2 in `standards.md` allows. Public festivals are visible.
+- [ ] Story intention notes with concrete triggers have `storyTriggers` entries, or stay in the character's Future Storylines under standard 2 in `standards.md`.
 - [ ] `arcManagerGuidance` is creative compass guidance, not a game-master prompt.
 
 ### Lore entries
@@ -81,7 +83,8 @@ When the export needs condensing, use the adjustment order in section 4, then re
 ### Art style
 
 - [ ] `artStyle.background` has `style_prefix`, `style_suffix`, `negative_prompt` and a `time_contexts` entry for every day segment.
-- [ ] `artStyle.sprite` has `style_prefix`, `style_suffix` and `negative_prompt`.
+- [ ] `artStyle.sprite` has `style_prefix`, `style_suffix` and `negative_prompt`, tuned for emergent characters (standard 9 in `standards.md`).
+- [ ] `artStyle.vnScene` is set and approved (standard 10 in `standards.md`).
 - [ ] `artStyle.sprite.clothingRules`, when the world has world-wide costume rules, is a string array with one rule per entry.
 - [ ] Negative prompts are for SDXL models only (Gemini and Imagen ignore them).
 - [ ] Sprite prompts do not reference other characters, and location prompts do not reference other locations.
@@ -188,6 +191,17 @@ python "<worldbuilder>/scripts/check_coverage.py" export --world-root "<project-
 A FAIL line (or a non-zero exit) blocks the build. Fix the card or the export and run the check again. List any FLAGGED and PENDING lines in the Export item's record so the human sees them.
 
 A world with no reference sheet skips this step. The step is not a pre-flight line, because the check needs the sheet and the checker stops at once without one.
+
+---
+
+## 6a. The two-part audit
+
+Every export, for a full world as for a quick world, passes the audit in standard 11 in `standards.md` before the archive is built. Run it on the final `world.json`, after the pre-flight check, the can-this-ever-fire detection and the derived-output check. A world edit made to fix a finding makes earlier reports stale, so run both parts again after it.
+
+- **Part 1, script check.** A script reads `world.json` and reports pass or fail for each check in standard 11, naming the field and the offending text. The Quick Worlds tooling (`tools/audit_world.py`) runs it on a quick world. A full world runs the same checks with that tool's `--file` option, or by reading the world file against the list in standard 11.
+- **Part 2, model read.** A model reads the whole world file and reports contradictions and references to information the file does not hold. It edits nothing.
+
+The audit passes when the script report shows no failure and the model report is current for the file's digest, with every finding fixed or carrying a recorded disposition. Record both reports and the dispositions in the Export item. A failure in either part blocks the build.
 
 ---
 
