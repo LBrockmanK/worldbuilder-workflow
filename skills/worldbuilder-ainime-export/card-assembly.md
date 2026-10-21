@@ -10,7 +10,9 @@ The `baseProfile` field carries the character's complete profile — everything 
 
 Every section after the preamble opens with a plain-text heading line: the heading words alone on a line, with no markdown heading marks (no `#`) and no `---` dividers between sections. Future Storylines is required for every character.
 
-Do not rewrite, paraphrase, weave into prose, or otherwise transform the source content. The character note is the card.
+Shipped profile sections are plain text. The export strips markdown emphasis markers (bold `**...**` and italic `*...*`) from them, so a relationship entry written as `**Eiland:**` on the card ships as `Eiland:`. List bullets (`- `) stay. The engine format below (`_asterisks_`, `(parentheses)`, backticks) is engine syntax, not markdown, and stays.
+
+Apart from those markers, do not rewrite, paraphrase, weave into prose, or otherwise transform the source content. The character note is the card.
 
 Source material: the character note in `notes/`.
 
@@ -18,7 +20,7 @@ Source material: the character note in `notes/`.
 
 ## Sections
 
-Each section from the character note ships as-is, opening with its plain-text heading line. Preserve the content — every fact, every behavioral detail, every "because" clause, every dialogue line. The one removal is the relationship archetype labels (see Relationships). Do not summarize, merge, drop entries, or reword.
+Each section from the character note ships as-is, apart from the markdown markers the export strips, opening with its plain-text heading line. Preserve the content — every fact, every behavioral detail, every "because" clause, every dialogue line. The one removal of content is the relationship archetype labels (see Relationships). Do not summarize, merge, drop entries, or reword.
 
 **Preamble** — the opening text before the first heading. Ships without a heading.
 
@@ -74,6 +76,7 @@ These apply to the one section that is rewritten (Future Storylines) and to any 
 - [ ] Introduction storyline present
 - [ ] Intimate Dynamics and Design Notes excluded
 - [ ] Each section opens with a plain-text heading line; no markdown heading marks, no `---` dividers
+- [ ] No markdown emphasis markers in any shipped section; relationship names plain (`Eiland:`, not `**Eiland:**`)
 - [ ] No content rewritten, paraphrased, or summarized beyond the Story Seeds → Future Storylines reframing
 - [ ] Factual accuracy — no reversed attributions, no invented details
 - [ ] Pronouns agree with the character note's `sex` field
