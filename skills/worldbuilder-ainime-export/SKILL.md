@@ -59,7 +59,7 @@ Fields are marked **required** or **optional**. Required fields must be present 
 | concept notes in `notes/` | `loreEntries[]` | opt |
 | character notes in `notes/` | `characters[]` | **req** |
 | `project/foundation.md` — Art style | `artStyle.background.*`, `artStyle.sprite.*` | opt |
-| `project/foundation.md` — Art style | `artStyle.background.time_contexts` (keyed by day segment, lowercased with underscores) | opt |
+| `project/foundation.md` — Art style | `artStyle.background.time_contexts` (keyed by day segment, as standard 1 says) | opt |
 | `project/foundation.md` — Art style, character sprites | `artStyle.vnScene` | **req** |
 | character notes (Body sections) | `artStyle.sprite.clothingRules[]` | opt |
 | `project/foundation.md` — expression tier | `availableExpressions[]` | opt |
@@ -350,7 +350,7 @@ Read the Art style section of `project/foundation.md`. Translate the plain-langu
 
 ### Time-of-Day Lighting (optional)
 
-`artStyle.background.time_contexts` is an object keyed by day segment, each key the segment name lowercased with spaces as underscores (`Blood Day` is `blood_day`; the platform reads no other form). Its per-segment lighting descriptions are injected into every background prompt between the scene description and the style suffix. The final prompt is: `prefix + scene + lighting + suffix`. One entry per declared day segment (standard 1 in `standards.md`). Leave empty for segments that don't need specific lighting direction. The platform can AI-generate these from the world's setting.
+`artStyle.background.time_contexts` is an object keyed by day segment, keyed as standard 1 in `standards.md` says. Its per-segment lighting descriptions are injected into every background prompt between the scene description and the style suffix. The final prompt is: `prefix + scene + lighting + suffix`. One entry per declared day segment (standard 1 in `standards.md`). Leave empty for segments that don't need specific lighting direction. The platform can AI-generate these from the world's setting.
 
 ### Background Generation
 

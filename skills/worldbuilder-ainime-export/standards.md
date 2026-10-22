@@ -18,7 +18,10 @@ Where the declaration lives:
 - **Full world:** the exported world file's `calendarConfig.daySegments` is the declaration. The audit is given those names with `--segments`.
 - **Quick world:** `config.json` holds a `segments` list of the three names; a game of the pair may declare its own `segments` under its `games` entry, which overrides the world's list for that game.
 
-Every field that names a segment uses exactly the declared names: `calendarConfig.daySegments`, each season in `calendarConfig.weatherPools`, `artStyle.background.time_contexts`, and the `locations` object. The one exception is the key form: the platform reads `time_contexts` keys as the segment name lowercased with spaces as underscores (`Blood Day` is `blood_day`). A world that renames its segments keeps all of these in step with the declaration.
+Every field that names a segment uses the declared names, in step with the declaration. The key form differs by field:
+
+- `artStyle.background.time_contexts` keys are the segment name lowercased with spaces as underscores (`Blood Day` is `blood_day`). The platform reads no other form.
+- `calendarConfig.daySegments`, each season in `calendarConfig.weatherPools`, and the `locations` object keep the display names exactly (`Blood Day` stays `Blood Day`).
 
 Compute the year from the world's own values: seasons × 14. With four seasons the year is 56 days. Trigger days, lore days and `availableFromDay` values are written for that year.
 
