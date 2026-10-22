@@ -16,7 +16,7 @@ Each standard has a short rule, then the reasons and details. Standard 12 descri
 Where the declaration lives:
 
 - **Full world:** the exported world file's `calendarConfig.daySegments` is the declaration. The audit is given those names with `--segments`.
-- **Quick world:** `config.json` holds a `segments` list of the three names; a game of the pair may declare its own `segments` under its `games` entry.
+- **Quick world:** `config.json` holds a `segments` list of the three names; a game of the pair may declare its own `segments` under its `games` entry, which overrides the world's list for that game.
 
 Every field that names a segment uses exactly the declared names: `calendarConfig.daySegments`, each season in `calendarConfig.weatherPools`, `artStyle.background.time_contexts`, and the `locations` object. A world that renames its segments keeps all of these in step with the declaration.
 
@@ -150,7 +150,7 @@ Every character `color` is a Tailwind text class `text-<hue>-<shade>` with a **l
 - Take the hue from the character's own palette.
 - Every colour is unique within its world. Two characters may share a hue only with different shades.
 - In a world shared by two games, uniqueness holds across the whole cast. The quick-world audit reads the world's configuration, which holds the cast of every game, so its colour check covers both games. A full world is one game.
-- Every colour is a class the platform's stylesheet defines. A class the stylesheet lacks (for example `text-blue-500` or `text-yellow-500`) renders black. The defined set, with its source and read date, is kept in one data file the audit reads.
+- Every colour is a class the platform's stylesheet defines. A class the stylesheet lacks (for example `text-zinc-300` or `text-neutral-300`) renders black. The defined set, with its source and read date, is kept in one data file the audit reads.
 
 ---
 
