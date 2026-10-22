@@ -232,6 +232,7 @@ A model reads the whole world file and reports, without editing anything:
 
 - every contradiction within the file
 - every reference to information the file does not hold
+- every word for a minor that describes the player, a standalone "little" included
 
 The report is a numbered list. Each item gives the field and the quoted text.
 
