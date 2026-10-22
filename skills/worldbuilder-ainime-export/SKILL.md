@@ -11,6 +11,8 @@ This skill is the only one in the worldbuilder workflow that knows ainime-games 
 
 Full JSON schema reference: `../../docs/target-system.md`.
 
+The export standards (calendar defaults, what may sit on a calendar, colours, emergent-character art, scene style and the two-part audit) are in `standards.md`, this skill's reference file. Every other file here points to it for those values and restates none.
+
 ---
 
 ## Prerequisites
@@ -57,7 +59,8 @@ Fields are marked **required** or **optional**. Required fields must be present 
 | concept notes in `notes/` | `loreEntries[]` | opt |
 | character notes in `notes/` | `characters[]` | **req** |
 | `project/foundation.md` — Art style | `artStyle.background.*`, `artStyle.sprite.*` | opt |
-| `project/foundation.md` — Art style | `artStyle.background.time_contexts` (keyed by day segment) | opt |
+| `project/foundation.md` — Art style | `artStyle.background.time_contexts` (keyed by day segment, as standard 1 says) | opt |
+| `project/foundation.md` — Art style, character sprites | `artStyle.vnScene` | **req** |
 | character notes (Body sections) | `artStyle.sprite.clothingRules[]` | opt |
 | `project/foundation.md` — expression tier | `availableExpressions[]` | opt |
 | location notes in `notes/` (image prompts), builder-specified (names) | `locations` | opt |
@@ -119,7 +122,7 @@ Read `project/foundation.md` and extract the following. The section names in the
 
 **`calendarConfig.eraReminder`** (optional) — Injected into AI context every day to keep the technology level consistent. Extract from the foundation document's era description. Leave blank for no restriction.
 
-**`calendarConfig.seasons`, `daysPerSeason`, `daysOfWeek`, `daySegments`** — Structural calendar configuration. Defaults: 4 seasons, 28 days/season, standard day names. Day segments default to Morning/Afternoon/Evening/Night — 4 segments is the recommended sweet spot (the engine is tuned for it), but 3 works fine. Change any of these to fit the world.
+**`calendarConfig.seasons`, `daysPerSeason`, `daysOfWeek`, `daySegments`** — Structural calendar configuration. Season length and day segments follow standard 1 in `standards.md`, which also says where the world declares its segment names. Seasons and day names follow the world's own cycle.
 
 **`calendarConfig.startingYear`** / **`calendarConfig.baseYear`** (optional, integer) — The calendar year Day 1 starts in. Use 1400 for medieval, 3025 for sci-fi, etc. Newer platform builds read `baseYear`; current exports carry both keys with the same value. Write both, and keep them equal.
 
@@ -154,23 +157,24 @@ Older exports carry a single `calendarConfig.dailyInfluenceCap` field. Where an 
 ```json
 {
   "Spring": {
-    "Morning": ["Light fog lifting...", "Crisp clean air..."],
-    "Afternoon": ["..."],
-    "Evening": ["..."]
+    "<segment 1>": ["Light fog lifting...", "Crisp clean air..."],
+    "<segment 2>": ["..."],
+    "<segment 3>": ["..."]
   }
 }
 ```
 
-Note: if the project uses 4 day segments (the platform default), add a `"Night"` key to each season as well.
+Every season carries one key per declared segment name (standard 1 in `standards.md`).
 
 **`eventCalendarSummary`** (optional) — Prose overview of the event calendar for LLM reference. Summarize the festival calendar and its emotional rhythms after all events are written.
 
-**`storyTriggers[]` (calendar events)** — One entry per event note. Recurring annual events use `recurring: true` in the output. See `calendar.md` for how to derive `triggerOnDay` from the timing language that opens each event note's What Happens section, and how to write effective `promptInjection` content.
+**`storyTriggers[]` (calendar events)** — Which events sit on the calendar, and which character events return with a written justification, is set by standard 2 in `standards.md`. Recurring annual events use `recurring: true` in the output. See `calendar.md` for how to derive `triggerOnDay` from the timing language that opens each event note's What Happens section, and how to write effective `promptInjection` content.
 
 ```json
 {
   "id": "uuid",
   "name": "Event name",
+  "kind": "world",
   "triggerOnDay": 8,
   "promptInjection": "Active creative direction injected on this day.",
   "recurring": true,
@@ -178,9 +182,11 @@ Note: if the project uses 4 day segments (the platform default), add a `"Night"`
 }
 ```
 
+Every trigger declares a `kind`, and a `character` trigger also carries a `justification`. Both are audit-only keys that the build strips (standard 2 in `standards.md`).
+
 `triggerOnDay` is the absolute calendar day (1 to seasons × `daysPerSeason`; see `export-procedure.md` for the year-length rule). `promptInjection` is active direction to the story engine, not a neutral description of the event.
 
-**`hiddenFromPlayer`** (optional, boolean) — Marks a trigger as hidden from the player. The intended reading is that the trigger still fires and injects its `promptInjection` while the player is not shown it in advance; that runtime behavior is inferred from the field name and from how existing exports use it, not confirmed against the platform. Set it on scripted story beats and introductions the player should meet in play rather than see announced (an arrival sequence, a character's first appearance, a story gate). Leave it `false` or absent on public festivals and observances the townsfolk would know about.
+**`hiddenFromPlayer`** (optional, boolean) — Marks a trigger as hidden from the player. The intended reading is that the trigger still fires and injects its `promptInjection` while the player is not shown it in advance; that runtime behavior is inferred from the field name and from how existing exports use it, not confirmed against the platform. Which events may use it, and which character events stay off the calendar, is set by standard 2 in `standards.md`.
 
 ### Life Stages (`yearContexts`, optional)
 
@@ -198,7 +204,7 @@ Life stages describe how the world changes from one in-game year to the next, as
 - After major arcs, give characters breathing room with slice-of-life moments.
 - Lean into moral ambiguity. No clear villains — everyone has reasons.
 
-**`storyTriggers[]` (story events)** — One entry per intention story note where a trigger condition can be expressed as a calendar day or a story moment. Intentions without a concrete trigger day do not produce `storyTriggers` entries; they remain in the `arcManagerGuidance` as ongoing direction instead.
+**`storyTriggers[]` (story events)** — One entry per intention story note where a trigger condition can be expressed as a calendar day or a story moment, subject to standard 2 in `standards.md`: an intention that moves one character's story stays in that character's Future Storylines unless it returns with a written justification. Intentions without a concrete trigger day do not produce `storyTriggers` entries; they remain in the `arcManagerGuidance` as ongoing direction instead.
 
 ---
 
@@ -229,8 +235,8 @@ fall back to the derivation rules below.
 
 **`availableFromDay`** — Set based on the note's `layer` frontmatter:
 - `surface` — active from day 1
-- `mid` — active from day 14 (one half-season in)
-- `deep` — active from day 56 (two seasons in)
+- `mid` — active from half a season in (compute the day from the world's season length)
+- `deep` — active from two seasons in (compute the day from the world's season length)
 Adjust thresholds based on world pacing if these defaults don't fit.
 
 **Enabled** — All entries default to `true`. Set `false` only for entries that should exist in the export but never activate.
@@ -266,7 +272,7 @@ For each character note in `notes/`, produce a character record. Process one cha
 
 **`startingInfluence`** (optional, integer) — Initial relationship value for this character, which may be negative (`-10` for a character who starts out hostile to the player). Omit the key to let the platform assign its default; the UI shows the omitted state as "Auto". Never write the string `"Auto"`.
 
-**`color`** (optional, string) — The character's name color in dialogue, as a Tailwind CSS text-color class: `"text-pink-400"`, `"text-emerald-400"`, `"text-rose-700"`. Pick a hue from the character's own palette (hair, signature garment) and keep colors distinct across the main cast so speakers are easy to tell apart. Do not write a hex value or a bare color name.
+**`color`** (optional, string) — The character's name color in dialogue, as a Tailwind CSS text-color class of the form `text-<hue>-<shade>`. Pick a hue from the character's own palette (hair, signature garment). The allowed shades, the uniqueness rule and the classes the platform defines are in standard 7 in `standards.md`. Do not write a hex value or a bare color name.
 
 **`sex`** (internal, character note only) — The character note's `sex` field records the character's sex so every generated text uses the right pronouns. It is worldbuilder schema, not ainime schema: the export never writes a `sex` key to `world.json`. Read it before writing `appearance`, per-set `appearance` and Future Storylines, and check that every pronoun in those fields agrees with it. Where the character's sex matters to how they look, state it in `appearance` in plain words.
 
@@ -288,8 +294,8 @@ narrative framing.
 Guidelines:
 - Day 1–3: characters the player would plausibly meet on arrival
 - Day 7–14: characters tied to weekly routines or early story beats
-- Day 15–28: characters the player needs to seek out or earn access to
-- Day 29+: characters behind story gates or late-world reveals
+- Day 15 to the end of the second season: characters the player needs to seek out or earn access to
+- From the third season on: characters behind story gates or late-world reveals
 
 Check all introduction notes to ensure each character's introduction scene can actually occur before their `availableFromDay`.
 
@@ -344,7 +350,7 @@ Read the Art style section of `project/foundation.md`. Translate the plain-langu
 
 ### Time-of-Day Lighting (optional)
 
-`artStyle.background.time_contexts` is an object keyed by day segment. Its per-segment lighting descriptions are injected into every background prompt between the scene description and the style suffix. The final prompt is: `prefix + scene + lighting + suffix`. One entry per day segment (Morning, Afternoon, Evening, and Night if using 4 segments). Leave empty for segments that don't need specific lighting direction. The platform can AI-generate these from the world's setting.
+`artStyle.background.time_contexts` is an object keyed by day segment, keyed as standard 1 in `standards.md` says. Its per-segment lighting descriptions are injected into every background prompt between the scene description and the style suffix. The final prompt is: `prefix + scene + lighting + suffix`. One entry per declared day segment (standard 1 in `standards.md`). Leave empty for segments that don't need specific lighting direction. The platform can AI-generate these from the world's setting.
 
 ### Background Generation
 
@@ -352,15 +358,23 @@ Read the Art style section of `project/foundation.md`. Translate the plain-langu
 
 **`artStyle.background.style_suffix`** (optional) — Appended to background prompts. Typically quality modifiers and technical parameters. Reinforce perspective (ground-level shot) and emptiness (no people, uninhabited).
 
-**`artStyle.background.negative_prompt`** (optional) — Elements to suppress across all backgrounds. SDXL models only (e.g. Nova Anime XL) — ignored by Gemini/Imagen. Always include people/person/figure/crowd/character — location backgrounds are empty scenes with no people unless a specific location is deliberately designed to include them. Suppress aerial perspectives: overhead view, isometric, bird's eye view, top-down, aerial view.
+**`artStyle.background.negative_prompt`** (optional) — Elements to suppress across all backgrounds. Only image models that take a negative prompt use it. Always include people/person/figure/crowd/character — location backgrounds are empty scenes with no people unless a specific location is deliberately designed to include them. Suppress aerial perspectives: overhead view, isometric, bird's eye view, top-down, aerial view.
 
 ### Sprite Generation
 
-**`artStyle.sprite.style_prefix`** / **`style_suffix`** / **`negative_prompt`** (optional) — Same structure for character sprites. Sprite style should be consistent with background style but may have different technical requirements (consistent character proportions). Write the `style_suffix` background text from the Background rule in `expression-standard.md`: one fixed two-colour gradient per sprite set, unchanged by emotion. The exported text is a derived copy of that rule. Negative prompt is SDXL only — ignored by Gemini/Imagen.
+**`artStyle.sprite.style_prefix`** / **`style_suffix`** / **`negative_prompt`** (optional) — Same structure for character sprites. Sprite style should be consistent with background style but may have different technical requirements (consistent character proportions). Write the `style_suffix` background text from the Background rule in `expression-standard.md`: one fixed two-colour gradient per sprite set, unchanged by emotion. The exported text is a derived copy of that rule. Only image models that take a negative prompt use it; the others ignore it.
 
 **`artStyle.sprite.clothingRules`** (optional, string array) — Clothing directives for sprite generation, one rule per array entry (the UI shows one per line). Use them for world-wide costume rules: recognizable silhouettes and color motifs per character, a uniform element a faction always wears, a ban on copying costumes from existing franchises. Derive them from the character notes' Body sections and the foundation document's art style reference.
 
 **`artStyle.sprite.maintainConsistency`** (optional) — When enabled, appends a same-character consistency line to each sprite prompt to improve visual consistency across expressions.
+
+**`artStyle.sprite` and emergent characters.** Ainime draws characters it invents during play from the sprite guidance alone. Tune `artStyle.sprite` for them under standard 9 in `standards.md`.
+
+**`artStyle.background` style text.** The background style text must pass the background check in standard 9 in `standards.md`.
+
+### Visual-Novel Scene Style
+
+**`artStyle.vnScene`** (object) — The separate art style for visual-novel scenes, where characters stand inside a location. It sits in `artStyle` beside `background` and `sprite`. Keys: `enabled` (boolean), `style_prefix` (string), `style_suffix` (string) and `negative_prompt` (string). Every world sets it, and standard 10 in `standards.md` says how to write the value and when it passes.
 
 Do not attempt to write `artStyle` content during Wide-phase work — this is a prompt-engineering output that belongs here.
 
@@ -385,7 +399,7 @@ Audio tracks for the world. The `moods` array holds the three system moods and t
 Three fixed slots triggered by the game engine (not the AI). Author one audio track per slot — leave any slot empty for silence at that moment. Slots cannot be renamed or removed.
 
 - **Main Menu** (`main_menu`) — plays on the title screen, during new-game generation, and on the endgame/credits screen.
-- **Segment Transition** (`segment_transition`) — brief musical transition between day segments (Morning to Afternoon, Afternoon to Evening).
+- **Segment Transition** (`segment_transition`) — brief musical transition between day segments (from one declared segment to the next).
 - **Day Transition** (`day_transition`) — plays when the day ends and transitions to the next day (going to sleep).
 
 ### Gameplay Moods (optional)

@@ -12,11 +12,14 @@
 4. Run the pre-flight check (section 1). Every line is pass or fail. A failure blocks the export until resolved.
 5. Run the can-this-ever-fire detection (section 3). It runs only after the pre-flight check passes.
 6. Run the derived-output check (section 6) when the world has a reference sheet.
-7. Build the archive (section 7).
+7. Run the two-part audit (section 6a) on the final `world.json`.
+8. Build the archive (section 7).
 
 When the export needs condensing, use the adjustment order in section 4, then repeat from step 3.
 
 **Running the plugin's scripts.** The scripts belong to the plugin, not the project. Resolve the plugin root, called `<worldbuilder>`, the way the setup skill's Step 2 does, by the first route that works. Call the working tree the session runs in `<session-root>`. (1) `${CLAUDE_PLUGIN_ROOT}`, when it is set and contains `scripts/sbworld_tool.py`. (2) Otherwise read `~/.claude/plugins/installed_plugins.json` and take the `installPath` of the entry whose key starts with `worldbuilder-workflow@`. That entry is a list of installs: when it holds more than one, take the install whose `projectPath` equals `<session-root>`, and the first otherwise. (3) Otherwise glob `~/.claude/plugins/cache/*/worldbuilder-workflow/*/scripts/sbworld_tool.py` and take the directory two levels above the newest match. If no route resolves, stop and tell the user: "The worldbuilder-workflow plugin is not installed where Claude Code can find it. Run `fleet:setup` at `<session-root>`." Run every script as `python "<worldbuilder>/scripts/<name>.py"` and pass the project's paths explicitly, with `<project-root>` the directory that holds `project/`, `notes/` and `exports/`.
+
+**Running the Quick Worlds audit tool.** The script check and the model read of the audit (section 6a) run from the Quick Worlds repository, not from this plugin. Call a local clone of https://github.com/LBrockmanK/Quick-Worlds `<quick-worlds>`; if the user has none, ask them for its path or to clone it. Call the fleet plugin folder that holds `scripts/role_runner.py` `<fleet>`, resolved the same way as `<worldbuilder>` with the `fleet@` entry of `installed_plugins.json`. Run the tool as `python -I "<quick-worlds>/tools/audit_world.py" ...`.
 
 **Calendar year length.** In every check below, the calendar year is `len(calendarConfig.seasons) × calendarConfig.daysPerSeason` for the world's own `calendarConfig`. Never assume a fixed number of days.
 
@@ -30,7 +33,7 @@ When the export needs condensing, use the adjustment order in section 4, then re
 - [ ] `settingSummary` is detailed. `communityDescription` is a player-facing blurb, not an in-game description. `introText` sets the scene for a new player.
 - [ ] `inspirations` and `tonalInspirations` are arrays, one item per source. `keyTropesAndThemes` has 8–12 entries.
 - [ ] `calendarConfig` has `seasons`, `daysPerSeason`, `daysOfWeek` and `daySegments`. `eraReminder` is populated, or blank on purpose for a world with no technology restriction.
-- [ ] `daySegments` match the project's intended day structure.
+- [ ] `daySegments` match the segment names the world declares (standard 1 in `standards.md`).
 - [ ] `weatherPools` covers every season × segment combination, with no missing cell.
 - [ ] `eventCalendarSummary` is populated and matches the story triggers and calendar events.
 - [ ] `dailyPlannerDirective` is set if the world has standing daily-structure rules.
@@ -48,7 +51,7 @@ When the export needs condensing, use the adjustment order in section 4, then re
 - [ ] `appearance` contains physical description only, with no story content and no personality, and states the apparent age (the age they appear to be, never the real age; rule in `../worldbuilder-character/card-format.md`).
 - [ ] Every sprite set has its own `appearance`, starting with the character's unchanged physical-features preamble.
 - [ ] `baseImage` matches the set's `expressions.neutral` where both exist.
-- [ ] `color` is a Tailwind text class (`text-<hue>-<shade>`). `startingInfluence` is an integer or absent.
+- [ ] `color` follows standard 7 in `standards.md`. `startingInfluence` is an integer or absent.
 - [ ] Every pronoun in `appearance`, per-set `appearance` and Future Storylines agrees with the note's `sex` field.
 - [ ] `baseProfile` prose is complete and in the target range (about 900 tokens supporting, about 1500 major), and all six influence bands are present in it.
 - [ ] Each `baseProfile` passes the reconciliation comparison in section 5.
@@ -60,8 +63,9 @@ When the export needs condensing, use the adjustment order in section 4, then re
 - [ ] Every recurring trigger is one entry per occurrence, with an absolute `triggerOnDay` inside the calendar year. A weekly market gets one entry per week, each with its own day.
 - [ ] Every trigger has a non-empty `promptInjection`.
 - [ ] All festival and observance events have `storyTriggers` entries. Recurring events have `recurring: true`.
-- [ ] `hiddenFromPlayer: true` is set on scripted beats the player should not see announced. Public festivals are visible.
-- [ ] Story intention notes with concrete triggers have `storyTriggers` entries.
+- [ ] The calendar holds only what standard 2 in `standards.md` allows. Every returned character event and every other exception carries a written justification, and each justification names one of the reasons standard 2 lists.
+- [ ] `hiddenFromPlayer: true` is used only as standard 2 in `standards.md` allows.
+- [ ] Story intention notes with concrete triggers have `storyTriggers` entries, or stay in the character's Future Storylines under standard 2 in `standards.md`.
 - [ ] `arcManagerGuidance` is creative compass guidance, not a game-master prompt.
 
 ### Lore entries
@@ -80,10 +84,12 @@ When the export needs condensing, use the adjustment order in section 4, then re
 
 ### Art style
 
-- [ ] `artStyle.background` has `style_prefix`, `style_suffix`, `negative_prompt` and a `time_contexts` entry for every day segment.
-- [ ] `artStyle.sprite` has `style_prefix`, `style_suffix` and `negative_prompt`.
+- [ ] `artStyle.background` has `style_prefix`, `style_suffix`, `negative_prompt` and a `time_contexts` entry for every day segment, keyed as standard 1 in `standards.md` says.
+- [ ] `artStyle.background` passes the background check in standard 9 in `standards.md`.
+- [ ] `artStyle.sprite` has `style_prefix`, `style_suffix` and `negative_prompt`, tuned for emergent characters (standard 9 in `standards.md`).
+- [ ] `artStyle.vnScene` is set and approved (standard 10 in `standards.md`).
 - [ ] `artStyle.sprite.clothingRules`, when the world has world-wide costume rules, is a string array with one rule per entry.
-- [ ] Negative prompts are for SDXL models only (Gemini and Imagen ignore them).
+- [ ] Negative prompts are written knowing that image models without negative-prompt support ignore them.
 - [ ] Sprite prompts do not reference other characters, and location prompts do not reference other locations.
 
 ---
@@ -191,6 +197,29 @@ A world with no reference sheet skips this step. The step is not a pre-flight li
 
 ---
 
+## 6a. The two-part audit
+
+Every export, for a full world as for a quick world, passes the audit in standard 12 in `standards.md` before the archive is built. Run it on the final `world.json`, after the pre-flight check, the can-this-ever-fire detection and the derived-output check. A world edit made to fix a finding makes earlier reports stale, so run both parts again after it.
+
+- **Part 1, script check.** A script reads `world.json` and reports pass or fail for each check in standard 12, naming the field and the offending text. The Quick Worlds tool runs it on every world; a quick world names its world and game, and a full world gives its world file. For a full world:
+  ```bash
+  python -I "<quick-worlds>/tools/audit_world.py" script --file "<project-root>/exports/ainime/world.json" --segments <the three names from calendarConfig.daySegments> [--patterns "<file of exact strings to flag, one per line>"]
+  ```
+
+  `--patterns` is optional; use it to name the card-text strings the world strips (standard 4), because a full world has no fix list. A full world normally has no `config.json` beside its world file, so the tool uses its defaults; the colour check then covers the world file's own cast. The tool exits with status 1 when a check fails and writes a new timestamped report to the `audit/` folder beside the world file.
+- **Part 2, model read.** A model reads the whole world file and reports contradictions and references to information the file does not hold. It edits nothing. The tool runs it, then checks the pass condition:
+
+  ```bash
+  python -I "<quick-worlds>/tools/audit_world.py" model-read --file "<project-root>/exports/ainime/world.json" --fleet "<fleet>"
+  python -I "<quick-worlds>/tools/audit_world.py" check-model --file "<project-root>/exports/ainime/world.json"
+  ```
+
+  The first command stores the report in the same `audit/` folder, opening with the digest of the file it read. `check-model` exits with status 1 and names each finding that has no disposition. Dispositions go in `audit/dispositions.json`, keyed by the finding's first quoted text, one full sentence each.
+
+The audit passes when the script report shows no failure and the model report is current for the file's digest, with every finding fixed or carrying a recorded disposition. Record both reports and the dispositions in the Export item. A failure in either part blocks the build.
+
+---
+
 ## 7. Build
 
 Build the archive from three inputs: `world.json`, `manifest.json` and the `assets/` folder. All three are versioned. The built `.sbworld` archive is the one build output that stays out of git.
@@ -199,4 +228,4 @@ Build the archive from three inputs: `world.json`, `manifest.json` and the `asse
 python "<worldbuilder>/scripts/sbworld_tool.py" build --world "<project-root>/exports/ainime/world.json" --manifest "<project-root>/exports/ainime/manifest.json" --assets "<project-root>/exports/ainime/assets"
 ```
 
-If a flag such as `--update-counts` or `--accept-missing` corrects the manifest, the tool also writes the corrected `manifest.json` back, so the versioned file matches the archive. The default archive name comes from a sanitized `worldName` and lands beside the manifest. The tool refuses to overwrite an existing archive, writes the stored (uncompressed) form the platform requires, and checks the manifest against the asset files. Read `--help` for the flags that record recomputed counts.
+If a flag such as `--update-counts` or `--accept-missing` corrects the manifest, the tool also writes the corrected `manifest.json` back, so the versioned file matches the archive. The build strips the audit-only `kind` and `justification` keys from each `storyTriggers` entry it packs (standard 2 in `standards.md`), so the shipped `world.json` differs from the audited file only by those keys; the versioned file keeps them. The default archive name comes from a sanitized `worldName` and lands beside the manifest. The tool refuses to overwrite an existing archive, writes the stored (uncompressed) form the platform requires, and checks the manifest against the asset files. Read `--help` for the flags that record recomputed counts.

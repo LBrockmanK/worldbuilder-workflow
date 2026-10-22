@@ -59,9 +59,9 @@ in the Anima vault's worldbuilder-workflow domain.
 | Field | Category | Source |
 |-------|----------|--------|
 | `calendarConfig.seasons` | Structural | `project/foundation.md` — calendar structure (default: Spring, Summer, Autumn, Winter) |
-| `calendarConfig.daysPerSeason` | Structural | `project/foundation.md` — calendar structure (default: 28) |
+| `calendarConfig.daysPerSeason` | Structural | `project/foundation.md` — calendar structure (season length per standard 1 in `skills/worldbuilder-ainime-export/standards.md`) |
 | `calendarConfig.daysOfWeek` | Structural | `project/foundation.md` — calendar structure (default: standard day names) |
-| `calendarConfig.daySegments` | Structural | `project/foundation.md` — calendar structure (default: Morning, Afternoon, Evening, Night) |
+| `calendarConfig.daySegments` | Structural | `project/foundation.md` — calendar structure (segment names per standard 1 in `skills/worldbuilder-ainime-export/standards.md`) |
 | `calendarConfig.eraReminder` | Structural | `project/foundation.md` — era description (one phrase) |
 | `calendarConfig.weatherPools[season][segment][]` | Derived | Agent creates weather descriptions from world seasonal tone and `project/foundation.md` |
 | `eventCalendarSummary` | Derived | Agent writes prose summary of the full event calendar |
@@ -74,7 +74,7 @@ in the Anima vault's worldbuilder-workflow domain.
 | `loreEntries[].keywords[]` | Structural | Concept note `keywords` frontmatter field (when present); fallback: Derived from `aliases` frontmatter + body terms |
 | `loreEntries[].content` | Derived | Agent summarizes concept note into dense lore injection |
 | `loreEntries[].enabled` | Constructed | Export-time default (`true`) |
-| `loreEntries[].availableFromDay` | Structural | Concept note `layer` frontmatter (surface=1, mid=14, deep=56) |
+| `loreEntries[].availableFromDay` | Structural | Concept note `layer` frontmatter (day per layer as `availableFromDay` in `skills/worldbuilder-ainime-export/SKILL.md` sets it) |
 
 ## Character fields
 

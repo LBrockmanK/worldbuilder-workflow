@@ -8,12 +8,7 @@
 
 ainime uses a structured calendar that feeds seasonal context and day-segment pacing to the engine.
 
-| Field | Default | Notes |
-|---|---|---|
-| Seasons | 4 (Spring, Summer, Autumn, Winter) | Adjust labels to the world's actual cycle |
-| Days per season | 28 | Change only if world design requires it |
-| Total year | seasons × days per season | Compute it from the world's own values; never assume a fixed total |
-| Day segments | Morning, Afternoon, Evening, Night | Injected as scene context transitions |
+Season length, the number of day segments, their default names and how a world declares its own are set by standard 1 in `standards.md`. Seasons default to four (Spring, Summer, Autumn, Winter); adjust the labels to the world's actual cycle. Compute the year from the world's own values; never assume a fixed total.
 
 Set these in `calendarConfig.seasons`, `calendarConfig.daysPerSeason`, `calendarConfig.daySegments`.
 
@@ -21,7 +16,7 @@ Set these in `calendarConfig.seasons`, `calendarConfig.daysPerSeason`, `calendar
 
 ## Weather Pools
 
-`calendarConfig.weatherPools` is a nested JSON object: `season → day_segment → string array`.
+`calendarConfig.weatherPools` is a nested JSON object: `season → day_segment → string array`, with one key per declared segment (standard 1 in `standards.md`).
 
 Each string is a one-line weather description injected when that season and segment are active.
 
@@ -35,10 +30,9 @@ Each string is a one-line weather description injected when that season and segm
 ```json
 {
   "Spring": {
-    "Morning": ["Light fog lifting off the fields as the sun climbs...", "..."],
-    "Afternoon": ["..."],
-    "Evening": ["..."],
-    "Night": ["..."]
+    "<segment 1>": ["Light fog lifting off the fields as the sun climbs...", "..."],
+    "<segment 2>": ["..."],
+    "<segment 3>": ["..."]
   }
 }
 ```
@@ -49,31 +43,11 @@ Derive weather descriptions from `project/foundation.md` and the world's setting
 
 ## Festival Calendar Layout
 
-One major festival per season; 4–5 minor observances across the year. Total: 8–9 events.
+The festival count, the layout and its one worked example are in standard 1 in `standards.md`. Which events may sit on the calendar is set by standard 2.
 
 **Major festivals** define a season's emotional peak. Each has a full atmospheric description and a specific calendar day.
 
 **Minor observances** add texture without requiring full scenes — practical, personal, or commemorative moments.
-
-Suggested layout (adapt to the world's actual calendar):
-
-```
-SEASON 1
-  Day 8:  Major — communal, renewal, natural introduction opportunity
-  Day 20: Minor — trade/market, outsiders in community
-
-SEASON 2
-  Day 7:  Minor — leisure, social, relaxed
-  Day 21: Major — the night where the hidden layer is most present
-
-SEASON 3
-  Day 18: Major — harvest equivalent; abundance + underlying melancholy
-  Day 26: Minor — day of remembrance; quiet, grief-adjacent
-
-SEASON 4
-  Day 10: Minor — practical market, before deep cold
-  Day 22: Major — solstice equivalent; intimate, stories, things said in darkness
-```
 
 ---
 
@@ -88,11 +62,14 @@ Event notes in `notes/` become `storyTriggers` entries; events whose timing repe
 {
   "id": "uuid",
   "name": "Spring Harvest Festival",
+  "kind": "world",
   "triggerOnDay": 8,
   "promptInjection": "...",
   "recurring": true
 }
 ```
+
+A character event that standard 2 in `standards.md` lets back onto the calendar carries `"kind": "character"` and a `"justification"` sentence beside the other keys. Both keys are audit-only and the build strips them.
 
 **Writing `promptInjection`:** Convert the event note's Scene Effects into active direction to the story engine — not a neutral description, but an instruction for how the engine should behave today:
 
@@ -109,6 +86,6 @@ The `arcManagerGuidance` field (derived from `project/direction.md`) contains th
 
 Key items to confirm are present in the direction note:
 - Escalation ceiling: at most one emotionally significant beat per day under normal circumstances
-- Transition handling: a short narrative acknowledgment between Morning / Afternoon / Evening / Night
+- Transition handling: a short narrative acknowledgment between the world's declared day segments
 - Explicit permission for quiet/atmospheric scenes (required; without it the engine treats every scene as an opportunity for significance)
 - Time-of-day social rhythms: who is naturally active and accessible at each segment

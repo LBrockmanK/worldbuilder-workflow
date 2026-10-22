@@ -63,6 +63,7 @@ StoryTrigger schema:
 {
   "id": "uuid",
   "name": "Event name",
+  "kind": "world",
   "triggerOnDay": 8,
   "promptInjection": "Narrative direction text injected on this day.",
   "recurring": false,
@@ -70,7 +71,24 @@ StoryTrigger schema:
 }
 ```
 
-`hiddenFromPlayer` (boolean, optional) marks a trigger as hidden from the player. Exports set it on scripted story beats and introductions and leave public festivals visible; the runtime behavior (the trigger still fires, the player is not shown it in advance) is inferred, not confirmed against the platform.
+A character event returned to the calendar also carries a `justification`:
+
+```json
+{
+  "id": "uuid",
+  "name": "The harbour introduction",
+  "kind": "character",
+  "justification": "Introduces the harbour guild through this character on a fixed day, which paces the opening days.",
+  "triggerOnDay": 3,
+  "promptInjection": "Narrative direction text injected on this day.",
+  "recurring": false,
+  "hiddenFromPlayer": false
+}
+```
+
+`kind` and `justification` are audit-only keys (standard 2 in `skills/worldbuilder-ainime-export/standards.md`). They live in the tracked `world.json`, and packaging removes both from the shipped file.
+
+`hiddenFromPlayer` (boolean, optional) marks a trigger as hidden from the player. Standard 2 in `skills/worldbuilder-ainime-export/standards.md` says which events may use it; the runtime behavior (the trigger still fires, the player is not shown it in advance) is inferred, not confirmed against the platform.
 
 **`generateSideCharacterOnNewGame`** — When `true`, the platform has the AI generate a side character at New Game (count and basis not yet verified). A builder choice set in the platform; the export preserves the existing value and never derives it from notes. The Adventure tab's other New Game toggles (randomize the opening arc, ignore the opening arc, random NPC romance pair) are app-level settings and never appear in the `.sbworld`.
 
@@ -107,10 +125,9 @@ Set `recurring: true` for annual events (festivals, observances). One-time event
 ```json
 {
   "Spring": {
-    "Morning": ["Light fog lifting...", "Crisp clean air..."],
-    "Afternoon": ["..."],
-    "Evening": ["..."],
-    "Night": ["..."]
+    "<segment 1>": ["Light fog lifting...", "Crisp clean air..."],
+    "<segment 2>": ["..."],
+    "<segment 3>": ["..."]
   }
 }
 ```
@@ -119,7 +136,7 @@ Set `recurring: true` for annual events (festivals, observances). One-time event
 
 **`eventCalendarSummary`** — Narrative overview of the full event calendar for LLM reference. A prose summary of the festival calendar and its emotional rhythms — written for the AI, not the player. Produced after all events are written.
 
-**`calendarConfig.seasons`, `daysPerSeason`, `daysOfWeek`, `daySegments`** — Structural configuration. Defaults: 4 seasons, 28 days per season, standard day names, Morning/Afternoon/Evening/Night. Change only if the world needs a different time structure.
+**`calendarConfig.seasons`, `daysPerSeason`, `daysOfWeek`, `daySegments`** — Structural configuration. Season length and the day segments follow standard 1 in `skills/worldbuilder-ainime-export/standards.md`. Seasons and day names follow the world's own cycle.
 
 ---
 
@@ -165,7 +182,7 @@ One object per character in the `characters` array.
 | `availableFromDay` | Available Day | Earliest possible introduction day |
 | `spriteSets` | Sprite Sets | Visual states for artwork |
 | `startingInfluence` | Starting Influence | Integer, may be negative; omit for the platform default ("Auto" in the UI) |
-| `color` | Name Color | Tailwind CSS text-color class string, e.g. `"text-pink-400"` |
+| `color` | Name Color | Tailwind CSS text-color class string, e.g. `"text-<hue>-<shade>"` |
 
 The character note also carries a `sex` field. It is internal worldbuilder schema, never written to `world.json`: the export reads it to keep pronouns accurate in `appearance`, per-set `appearance` and the card's Future Storylines.
 
@@ -243,15 +260,15 @@ The Locations tab manages image pools — sets of location images by time of day
 
 ```json
 {
-  "Morning": [{"name": "location_slug_morning", "url": "asset://sandboxWorldAssets/<uuid>", "prompt": "image gen prompt"}],
-  "Afternoon": [...],
-  "Evening": [...]
+  "<segment 1>": [{"name": "location_slug_<segment 1>", "url": "asset://sandboxWorldAssets/<uuid>", "prompt": "image gen prompt"}],
+  "<segment 2>": [...],
+  "<segment 3>": [...]
 }
 ```
 
 Each entry has three fields:
 
-- **`name`** — Snake-case identifier. Convention for time-variant locations: `{location_slug}_{time_segment}` (e.g., `blacksmith_forge_morning`).
+- **`name`** — Snake-case identifier. Convention for time-variant locations: `{location_slug}_{time_segment}` (e.g., `blacksmith_forge_<segment>`).
 - **`url`** — Either an asset reference (`asset://sandboxWorldAssets/<uuid>`) for a bundled image registered in `manifest.json` with `kind: "location"`, or empty string `""` when no image is provided (the platform can generate one from `prompt`).
 - **`prompt`** — Optional. A text description of the location used by the platform's built-in AI image generator. Omit when a bundled image is provided. Prompts describe the empty scene only — no people, characters, or figures unless a specific location is deliberately designed to include them. Each prompt is self-contained: describe the location on its own terms without referencing other locations (no "near the blacksmith" or "across from the inn").
 
@@ -273,6 +290,7 @@ The Art Style tab configures image generation prompts for backgrounds and charac
 | `artStyle.sprite.style_suffix` | Suffix for all sprite prompts |
 | `artStyle.sprite.negative_prompt` | Negative prompt for sprites |
 | `artStyle.sprite.clothingRules` | String array of clothing directives for sprite generation, one rule per entry |
+| `artStyle.vnScene` | Object for visual-novel scenes: `enabled` (boolean) and the strings `style_prefix`, `style_suffix`, `negative_prompt`. Standard 10 in `skills/worldbuilder-ainime-export/standards.md` says how to write it |
 
 The Foundation phase produces a **plain-language art style reference** describing the desired visual style, color palette, and reference works. This is translated into prompt-engineering format during export.
 
@@ -325,7 +343,7 @@ Three fixed-slot entries the engine requires. Use `system:{slot}` as the `id` an
 | slot | Purpose |
 |------|---------|
 | `main_menu` | Title screen, new-game generation, and endgame / credits |
-| `segment_transition` | Brief musical bridge between day segments (Morning → Afternoon, etc.) |
+| `segment_transition` | Brief musical bridge between day segments (one declared segment to the next) |
 | `day_transition` | End-of-day / going to sleep |
 
 ### Standard moods (`category: "standard"`)
