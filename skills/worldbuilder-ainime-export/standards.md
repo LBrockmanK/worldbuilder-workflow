@@ -202,7 +202,7 @@ No exported field describes the player (`{{user}}`, "the player", "you") with a 
 
 A background fact about the player's past is worded as an adult's history: what the player was or did, with no youth wording. Where a relationship began early in life, state the relationship (adopted, served, raised alongside) and leave out the age. Words for family roles that fit an adult stay (adopted son or daughter, scion, sibling). A minor word that describes a non-player character in the same sentence is not a breach, and neither is a phrase that does not describe the player.
 
-Check: search every exported text field for a minor word in the same sentence as `{{user}}` or "the player". Each hit either describes someone else or is reworded.
+Check: search every exported text field for a minor word in the same sentence as `{{user}}`, "the player" or a second-person form (you, your, yours, yourself). Each hit either describes someone else or is reworded.
 
 ---
 
@@ -222,7 +222,7 @@ A script reads the world file and reports each of these as pass or fail, naming 
 4. **Colours** outside the 400 to 600 range, outside the classes the platform's stylesheet defines, or repeated across the world's whole cast (standard 7).
 5. **Calendar settings** that differ from 14-day seasons or from the three declared segment names, fields that name segments with any other keys, and trigger days beyond twice the year length (standards 1 and 2).
    Also in this check: every story trigger declares a valid `kind`, and every `character` trigger carries a non-empty `justification` (standard 2).
-6. **Minor words about the player.** A minor word (child, children, kid, kids, little brother, little sister, young, minor, underage) as a whole word in the same sentence as `{{user}}` or "the player" in any exported text (standard 11), minus the sentences the world's own exemption list names for hits that are not about the player.
+6. **Minor words about the player.** A minor word (child, children, kid, kids, boy, boys, girl, girls, little one, little brother, little sister, young, minor, underage) as a whole word in the same sentence as `{{user}}`, "the player" or a second-person form (you, your, yours, yourself) in any exported text (standard 11), minus the sentences the world's own exemption list names for hits that are not about the player. A standalone "little" stays out of the script list (its adverb use, as in "a little tired", would flood every world with false hits); the model read covers it.
 
 Pass condition: the script report shows every check passed, with no failure. The name check (check 3) is report-only: it never fails, and its report is read before packaging.
 
