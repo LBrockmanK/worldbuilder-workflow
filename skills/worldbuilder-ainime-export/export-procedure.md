@@ -198,9 +198,9 @@ A world with no reference sheet skips this step. The step is not a pre-flight li
 
 ## 6a. The two-part audit
 
-Every export, for a full world as for a quick world, passes the audit in standard 11 in `standards.md` before the archive is built. Run it on the final `world.json`, after the pre-flight check, the can-this-ever-fire detection and the derived-output check. A world edit made to fix a finding makes earlier reports stale, so run both parts again after it.
+Every export, for a full world as for a quick world, passes the audit in standard 12 in `standards.md` before the archive is built. Run it on the final `world.json`, after the pre-flight check, the can-this-ever-fire detection and the derived-output check. A world edit made to fix a finding makes earlier reports stale, so run both parts again after it.
 
-- **Part 1, script check.** A script reads `world.json` and reports pass or fail for each check in standard 11, naming the field and the offending text. The Quick Worlds tool runs it on every world; a quick world names its world and game, and a full world gives its world file. For a full world:
+- **Part 1, script check.** A script reads `world.json` and reports pass or fail for each check in standard 12, naming the field and the offending text. The Quick Worlds tool runs it on every world; a quick world names its world and game, and a full world gives its world file. For a full world:
   ```bash
   python -I "<quick-worlds>/tools/audit_world.py" script --file "<project-root>/exports/ainime/world.json" --segments <the three names from calendarConfig.daySegments> [--patterns "<file of exact strings to flag, one per line>"]
   ```
