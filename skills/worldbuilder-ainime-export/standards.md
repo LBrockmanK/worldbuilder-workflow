@@ -16,7 +16,7 @@ Each standard has a short rule, then the reasons and details. Standard 12 descri
 Where the declaration lives:
 
 - **Full world:** the exported world file's `calendarConfig.daySegments` is the declaration. The audit is given those names with `--segments`.
-- **Quick world:** `config.json` holds a `segments` list of the three names.
+- **Quick world:** `config.json` holds a `segments` list of the three names; a game of the pair may declare its own `segments` under its `games` entry.
 
 Every field that names a segment uses exactly the declared names: `calendarConfig.daySegments`, each season in `calendarConfig.weatherPools`, `artStyle.background.time_contexts`, and the `locations` object. A world that renames its segments keeps all of these in step with the declaration.
 
@@ -145,7 +145,7 @@ Rewrite such a line as text about the world. Fix the line in the source (the wor
 
 ## 7. Character colours
 
-Every character `color` is a Tailwind text class `text-<hue>-<shade>` with a **mid-tone shade from 400 to 600**. A shade in that range reads on both light and dark backgrounds.
+Every character `color` is a Tailwind text class `text-<hue>-<shade>` with a **light shade from 300 to 400**. A shade in that range reads on the platform's dark background.
 
 - Take the hue from the character's own palette.
 - Every colour is unique within its world. Two characters may share a hue only with different shades.
@@ -219,7 +219,7 @@ A script reads the world file and reports each of these as pass or fail, naming 
 1. **Genre lines outside the genre field.** Bracketed meta lines (`[Genre:`, `[Genre/Writing style`, `[World Info:`, `[Instructions:`, `[Respond as`) anywhere but `genre`, and every exact string the world's own strip list names.
 2. **Working-document wording** (standard 6), from a default phrase list plus the world's own additions and exemptions.
 3. **Names with no matching entry.** Capitalised names in any text field that match no character, no lore keyword and no name on the world's known-names list. This check reports for the operator to read. Exempt a name by adding it to the known-names list.
-4. **Colours** outside the 400 to 600 range, outside the classes the platform's stylesheet defines, or repeated across the world's whole cast (standard 7).
+4. **Colours** outside the 300 to 400 range, outside the classes the platform's stylesheet defines, or repeated across the world's whole cast (standard 7).
 5. **Calendar settings** that differ from 14-day seasons or from the three declared segment names, fields that name segments with any other keys, and trigger days beyond twice the year length (standards 1 and 2).
    Also in this check: every story trigger declares a valid `kind`, and every `character` trigger carries a non-empty `justification` (standard 2).
 6. **Minor words about the player.** A minor word (child, children, kid, kids, boy, boys, girl, girls, little one, little brother, little sister, young, minor, underage) as a whole word in the same sentence as `{{user}}`, "the player" or a second-person form (you, your, yours, yourself) in any exported text (standard 11), minus the sentences the world's own exemption list names for hits that are not about the player. A standalone "little" stays out of the script list (its adverb use, as in "a little tired", would flood every world with false hits); the model read covers it.
