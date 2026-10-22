@@ -370,7 +370,7 @@ Read the Art style section of `project/foundation.md`. Translate the plain-langu
 
 **`artStyle.sprite` and emergent characters.** Ainime draws characters it invents during play from the sprite guidance alone. Tune `artStyle.sprite` for them under standard 9 in `standards.md`.
 
-**`artStyle.background` style text and the in-game image model.** Ainime draws backgrounds during play on its own image model. Tune the background `style_prefix` and `style_suffix` for it under standard 9 in `standards.md`.
+**`artStyle.background` style text.** The background style text must pass the background check in standard 9 in `standards.md`.
 
 ### Visual-Novel Scene Style
 
