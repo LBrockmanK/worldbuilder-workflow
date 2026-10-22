@@ -85,6 +85,7 @@ When the export needs condensing, use the adjustment order in section 4, then re
 ### Art style
 
 - [ ] `artStyle.background` has `style_prefix`, `style_suffix`, `negative_prompt` and a `time_contexts` entry for every day segment, keyed as standard 1 in `standards.md` says.
+- [ ] `artStyle.background` style text is tuned to the in-game image model and its test sheet is approved (standard 9 in `standards.md`).
 - [ ] `artStyle.sprite` has `style_prefix`, `style_suffix` and `negative_prompt`, tuned for emergent characters (standard 9 in `standards.md`).
 - [ ] `artStyle.vnScene` is set and approved (standard 10 in `standards.md`).
 - [ ] `artStyle.sprite.clothingRules`, when the world has world-wide costume rules, is a string array with one rule per entry.

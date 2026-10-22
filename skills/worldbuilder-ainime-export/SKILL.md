@@ -370,6 +370,8 @@ Read the Art style section of `project/foundation.md`. Translate the plain-langu
 
 **`artStyle.sprite` and emergent characters.** Ainime draws characters it invents during play from the sprite guidance alone. Tune `artStyle.sprite` for them under standard 9 in `standards.md`.
 
+**`artStyle.background` style text and the in-game image model.** Ainime draws backgrounds during play on its own image model. Tune the background `style_prefix` and `style_suffix` for it under standard 9 in `standards.md`.
+
 ### Visual-Novel Scene Style
 
 **`artStyle.vnScene`** (object) — The separate art style for visual-novel scenes, where characters stand inside a location. It sits in `artStyle` beside `background` and `sprite`. Keys: `enabled` (boolean), `style_prefix` (string), `style_suffix` (string) and `negative_prompt` (string). Every world sets it, and standard 10 in `standards.md` says how to write the value and when it passes.

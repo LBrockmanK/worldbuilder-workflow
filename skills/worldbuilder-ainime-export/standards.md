@@ -176,6 +176,10 @@ Tune the guide to that model:
 
 The guide passes when the world's owner approves a comparison sheet: four invented characters generated from the guide alone, set beside four canon sprites. The guide gets at most two revisions. If the sheet is still not approved after the second revision, stop and ask the owner.
 
+Backgrounds follow the same standard. Ainime draws backgrounds during play on its in-game image model, and they come out in a notably different style from packaged backgrounds drawn by another model. Each world's background style text (`artStyle.background.style_prefix` and `style_suffix`) is therefore tuned to the image model the platform uses in game. The project's own records name that model.
+
+The background text passes when the world's owner approves a background test sheet: a few locations drawn with the exact prompt Ainime builds, set beside the packaged image of the same place and time. That prompt joins the `style_prefix`, the location's scene text, the `time_contexts` entry and the `style_suffix` with single spaces. No negative prompt is sent. The background text gets at most two revisions. If the sheet is still not approved after the second revision, stop and ask the owner.
+
 ---
 
 ## 10. Visual-novel scene style
