@@ -36,7 +36,7 @@ A work item whose builder runs `worldbuilder-ainime-export`. Wide-phase notes ar
 
 | Skill | When to use |
 |---|---|
-| `worldbuilder-setup` | Starting a brand-new project — run once; adopts scraibe with the worldbuilder preset |
+| `worldbuilder-setup` | Starting a brand-new project — run once; adoption is plugin enablement, recorded by fleet's setup |
 | `worldbuilder-world-foundation` | Foundation phase — fills `project/foundation.md` and plans the Wide phase |
 | `worldbuilder-concept` | Wide phase — writes concept notes |
 | `worldbuilder-event` | Wide phase — writes event notes |

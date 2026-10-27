@@ -2,8 +2,7 @@
 
 Craft skills and type roster for building player world visions for the
 ainime-games.com world builder platform. Runs on the scraibe base plugin
-(hard dependency): scraibe owns file management, and its vault
-conventions govern this repo's own `.claude/`.
+(hard dependency): scraibe owns file management.
 
 ## Working in this repo
 

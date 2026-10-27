@@ -10,7 +10,6 @@ A player project after `worldbuilder-setup`:
 
 ```
 <project>/
-  .claude/inbox.md
   .obsidian/            ← scraibe defaults + app.json overlay (attachmentFolderPath)
   _templates/           ← generated (generate_templates.py)
   Home.md  _bases/  _attachments/   ← chrome

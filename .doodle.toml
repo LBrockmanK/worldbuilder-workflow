@@ -8,7 +8,12 @@
 # Project vocabulary the desc/typo spellcheck (doodle >= 1.0.0) must not
 # flag as misspellings. Case-insensitive; add words as they get flagged.
 [spelling]
-allow = ["scraibe", "okf", "worldbuilder", "worldbuilding", "ainime", "rpg", "npc"]
+allow = ["scraibe", "worldbuilder", "worldbuilding", "ainime", "rpg", "npc"]
+
+# Left unlinted by design: skills/creative-step.md, skills/writing-style.md and
+# skills/source-extraction-standard.md are shared references, not skills.
+# doodle 1.0.0 collects only SKILL.md files and cannot be told to accept a
+# file without frontmatter (parse/missing-frontmatter is not disableable).
 
 [[paths]]
 glob = "skills/worldbuilder-setup/SKILL.md"
