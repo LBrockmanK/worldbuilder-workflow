@@ -116,23 +116,31 @@ what the source says at the chosen granularity.
 
 ### Creating reference documents
 
-Use the scraibe plugin's `new_doc.py` for document creation
-(provenance stamping, frontmatter). Do not use scraibe:ingest's
-judgment pass (source ranking, contradiction resolution, relevance
-extraction) — those conflict with the no-inference principle.
+Write the reference note directly, with complete frontmatter, the
+way scraibe:ingest specifies for a reference. Do not use
+scraibe:ingest's judgment pass (source ranking, contradiction
+resolution, relevance extraction) — those conflict with the
+no-inference principle.
 
-```bash
-python "<scraibe-plugin>/scripts/new_doc.py" --type reference \
-  --title "<Topic> — <Source Label>" \
-  --description "<what this document contains>" \
-  --dir <world root>/reference
+```yaml
+---
+type: "[[reference]]"
+description: "<what this document contains>"
+tags:
+  - todo
+created: "[[<YYYY-MM-DD>]]"
+sources:
+  - <source path, inside a vault>
+---
 ```
 
-Record source paths in the frontmatter `resources` field.
+Name the file `<Topic> — <Source Label>.md`, with no date prefix. If
+that name is taken, use the lowest free counter suffix
+(`<Topic> — <Source Label> (1).md`). Place it in `<world root>/reference`.
 
-The date-prefixed filename from `new_doc.py` is the default. Rename
-only if the generated filename is misleading. The reference sheet has a
-fixed name (see `../source-extraction-standard.md`, Where files live).
+Record source paths in the frontmatter `sources` field. The reference
+sheet has a fixed name (see `../source-extraction-standard.md`, Where
+files live).
 
 ---
 

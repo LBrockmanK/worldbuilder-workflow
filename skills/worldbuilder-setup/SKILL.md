@@ -19,12 +19,12 @@ Two directories matter and they are usually different. The **project root** is w
 
 ### Step 1: Check scraibe
 
-Resolve the scraibe plugin root — the directory containing `scripts/new_doc.py`:
+Resolve the scraibe plugin root — the directory containing `scripts/validate.py`:
 
 1. Read `~/.claude/plugins/installed_plugins.json` and take the `installPath` of the entry whose key starts with `scraibe@`.
-2. If that file or key is missing, fall back to globbing `~/.claude/plugins/marketplaces/*/*/scripts/new_doc.py` — the plugin's directory is not necessarily named `scraibe` (older installs used `okf-enforcement`).
+2. If that file or key is missing, fall back to globbing `~/.claude/plugins/marketplaces/*/*/scripts/validate.py`. The plugin's directory is not necessarily named `scraibe`, so keep a match only when `.claude-plugin/plugin.json` in the directory that holds its `scripts/` folder has `"name": "scraibe"`. If more than one match survives, ask the user which one to use.
 
-If neither resolves, stop: "This plugin requires the scraibe plugin. Install it first."
+If nothing resolves, stop: "This plugin requires the scraibe plugin. Install it first."
 
 Record the resolved root — later steps use its scripts and defaults. Never hardcode this path; resolve it fresh each run.
 
@@ -44,7 +44,7 @@ Resolve this plugin's root, called `<worldbuilder>` (the same name Steps 5 and 6
 2. Otherwise read `~/.claude/plugins/installed_plugins.json` and take the `installPath` of the entry whose key starts with `worldbuilder-workflow@`. That entry is a list of installs: when it holds more than one, take the install whose `projectPath` equals `<session-root>`, and the first otherwise.
 3. Otherwise glob `~/.claude/plugins/cache/*/worldbuilder-workflow/*/scripts/check_enablement.py` and take the directory two levels above the newest match.
 
-Step 1's fallback does not apply here: it globs for scraibe's `new_doc.py` and finds nothing of this plugin. If no route resolves, **stop** and tell the user: "The worldbuilder-workflow plugin is not installed where Claude Code can find it. Run `fleet:setup` at `<session-root>`; its first step reinstalls the roster plugins."
+Step 1's fallback does not apply here: it globs for scraibe's `scripts/validate.py` and finds nothing of this plugin. If no route resolves, **stop** and tell the user: "The worldbuilder-workflow plugin is not installed where Claude Code can find it. Run `fleet:setup` at `<session-root>`; its first step reinstalls the roster plugins."
 
 Then run:
 
