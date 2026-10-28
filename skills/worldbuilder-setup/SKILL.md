@@ -22,9 +22,9 @@ Two directories matter and they are usually different. The **project root** is w
 Resolve the scraibe plugin root — the directory containing `scripts/validate.py`:
 
 1. Read `~/.claude/plugins/installed_plugins.json` and take the `installPath` of the entry whose key starts with `scraibe@`.
-2. If that file or key is missing, fall back to globbing `~/.claude/plugins/marketplaces/*/*/scripts/validate.py` — the plugin's directory is not necessarily named `scraibe`.
+2. If that file or key is missing, fall back to globbing `~/.claude/plugins/marketplaces/*/*/scripts/validate.py`. The plugin's directory is not necessarily named `scraibe`, so keep a match only when `.claude-plugin/plugin.json` in the directory that holds its `scripts/` folder has `"name": "scraibe"`. If more than one match survives, ask the user which one to use.
 
-If neither resolves, stop: "This plugin requires the scraibe plugin. Install it first."
+If nothing resolves, stop: "This plugin requires the scraibe plugin. Install it first."
 
 Record the resolved root — later steps use its scripts and defaults. Never hardcode this path; resolve it fresh each run.
 
