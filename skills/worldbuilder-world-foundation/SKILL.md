@@ -188,7 +188,7 @@ Coverage check before declaring the cast plan complete — verify against the fo
 
 Per-phase "done" definitions. If any item is unresolved, surface it to the user before closing the phase's work item.
 
-**Foundation complete** — `project/foundation.md` contains: all six foundational questions answered; Setting Summary; Genre & Tone; Inspirations and Tonal Inspirations with specifics; 8–12 Key Tropes & Themes; Community (social and emotional identity, not physical); World Introduction; Opening Situation; a locations list of 10–14 named locations, one sentence each; art style reference; musical theme; all 6–8 household clusters with function, internal tension, inter-household connections, trajectory, and narrative hook; every household has at least one named connection to another household.
+**Foundation complete** — `project/foundation.md` contains: all six foundational questions answered; Setting Summary; Genre & Tone; Inspirations and Tonal Inspirations with specifics; 8–12 Key Tropes & Themes; Community (the one- or two-sentence listing blurb); World Introduction; Opening Situation; a locations list of 10–14 named locations, one sentence each; art style reference; musical theme; all 6–8 household clusters with function, internal tension, inter-household connections, trajectory, and narrative hook; every household has at least one named connection to another household.
 
 **Direction complete** — `project/direction.md` has the sections the story skill's Ongoing Story Direction names, each present when it applies to the world (romance pacing only when the world weighs in on romance; the hidden layer only when the world has one), and the opening arc sketched at a broad level. A brief but complete document beats a detailed stub.
 
@@ -235,7 +235,7 @@ The foundation document is a platform-agnostic project proposal. Write each sect
 ### Sections
 
 **Setting Summary**
-Time, place, society, and general feel. The always-active context — concrete and specific.
+Time, place, society, and general feel. The always-active context — concrete and specific. It includes the community's social and emotional identity: how the community behaves and feels as a social entity, the answer to foundational question 2.
 
 **Genre and Tone**
 Primary genre, tonal range (how dark, how light), and any content notes.
@@ -250,7 +250,7 @@ Other media capturing the right feel — films, books, music, anime. One per lin
 8–12 recurring concerns of this world. Both setting tropes and emotional themes.
 
 **Community**
-The community's social and emotional identity — not its physical description, not a repeat of the Setting Summary. How the community behaves and feels as a social entity.
+The blurb shown in the platform's community world list: one or two sentences for a player browsing worlds, saying what the world is and why they might play it. It is a listing, not story context: what the story needs about the community belongs in the Setting Summary.
 
 **World Introduction**
 Pre-game text the player reads before starting. Sets expectations for tone and situation. This section is written evocatively and is exempt from the style reference. No other section of the foundation document is.

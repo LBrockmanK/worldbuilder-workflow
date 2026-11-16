@@ -53,7 +53,7 @@ When the export needs condensing, use the adjustment order in section 4, then re
 - [ ] Every sprite set has its own `appearance`, starting with the character's unchanged physical-features preamble.
 - [ ] `baseImage` matches the set's `expressions.neutral` where both exist.
 - [ ] `color` follows standard 7 in `standards.md`. `startingInfluence` is an integer or absent.
-- [ ] Every pronoun in `appearance`, per-set `appearance` and Future Storylines agrees with the note's `sex` field.
+- [ ] Every pronoun in `appearance`, per-set `appearance` and `futureStorySeeds` agrees with the note's `sex` field.
 - [ ] `baseProfile` prose is complete and in the target range (about 900 tokens supporting, about 1500 major), and all six influence bands are present in it.
 - [ ] Each `baseProfile` passes the reconciliation comparison in section 5.
 
@@ -66,7 +66,7 @@ When the export needs condensing, use the adjustment order in section 4, then re
 - [ ] All festival and observance events have `storyTriggers` entries with a repeating `recurrence`.
 - [ ] The calendar holds only what standard 2 in `standards.md` allows. Every returned character event and every other exception carries a written justification, and each justification names one of the reasons standard 2 lists.
 - [ ] `hiddenFromPlayer: true` is used only as standard 2 in `standards.md` allows.
-- [ ] Story intention notes with concrete triggers have `storyTriggers` entries, or stay in the character's Future Storylines under standard 2 in `standards.md`.
+- [ ] Story intention notes with concrete triggers have `storyTriggers` entries, or stay in the character's Future Storylines (`futureStorySeeds`) under standard 2 in `standards.md`.
 - [ ] `arcManagerGuidance` is creative compass guidance, not a game-master prompt.
 
 ### Lore entries
@@ -169,14 +169,14 @@ The general principle: adjust metadata and supplementary content first (keywords
 **The contract** is `card-assembly.md`:
 
 - Verbatim from the character note, apart from the markdown emphasis markers the export strips (shipped profile sections are plain text, so `**Eiland:**` ships as `Eiland:`): the preamble (no heading), Background, Body, Soul, Relationships and Voice / Dialogue. The one change of content is that Relationships ships without its archetype labels (`card-assembly.md`, Relationships).
-- Transformed: Future Storylines, rewritten from Story Seeds. Rewrite it when Story Seeds changed since the last export. Keep the exported section otherwise.
+- Transformed: Future Storylines, rewritten from Story Seeds into the separate `futureStorySeeds` field. Rewrite them when Story Seeds changed since the last export. Keep the exported field otherwise. A profile from an earlier export that still ends with a Future Storylines section has that section moved into `futureStorySeeds` at the next export.
 - Never shipped: Intimate Dynamics and Design Notes.
 
 **At every export, first or repeat:**
 
 1. Re-assemble each character's `baseProfile` from the current card under the contract.
 2. Diff the result against the exported `baseProfile` and apply the differences to the versioned `world.json`.
-3. Pre-flight comparison: for each profile, compare the preamble and each of the five verbatim sections with the card's, after whitespace normalisation, after removing markdown emphasis markers (`**` and `*`) from the card's text, and, for Relationships, after removing the card's archetype labels. A marker or label left in a profile's Relationships section fails the check. Require a Future Storylines section.
+3. Pre-flight comparison: for each profile, compare the preamble and each of the five verbatim sections with the card's, after whitespace normalisation, after removing markdown emphasis markers (`**` and `*`) from the card's text, and, for Relationships, after removing the card's archetype labels. A marker or label left in a profile's Relationships section fails the check. Require a non-empty `futureStorySeeds`, and fail a profile that still holds a Future Storylines section.
 
 **Condensing is made in the card.** If a profile must be shorter (adjustment order, item 4), shorten the character note and re-export. The next export then reproduces the change. A profile edited alone is overwritten by the next export.
 

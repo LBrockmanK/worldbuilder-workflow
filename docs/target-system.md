@@ -210,7 +210,7 @@ One object per character in the `characters` array.
 | `baseProfile` | Character Card | The character's full description — see below |
 | `appearance` | Appearance | Physical description for image generation and LLM reference |
 | `type` | Type | `"main"` or `"side"`; see below |
-| `futureStorySeeds` | Future story ideas | Possibilities for later arcs, read by the Arc Manager only; see below |
+| `futureStorySeeds` | Future story ideas | The card's Future Storylines, read by the Arc Manager only; see below |
 | `availableFromDay` | Available Day | Earliest possible introduction day |
 | `spriteSets` | Sprite Sets | Visual states for artwork |
 | `startingInfluence` | Starting Influence | Integer, may be negative; omit for the platform default ("Auto" in the UI) |
@@ -218,13 +218,13 @@ One object per character in the `characters` array.
 
 **`type`** — Mains are optional: a world with only side characters can start. Side characters are written at the same depth as mains. The one difference is that a side character gets no personal story arc until play promotes them: the characters the player spends time with become mains as the game goes on. A main whose `availableFromDay` arrives gets their arc, traits and likes that night.
 
-**`futureStorySeeds`** — String. Labelled "Future story ideas" in the character editor: possibilities the Arc Manager can develop into later arcs, not established facts or instructions for a scene. The Dungeon Master, the AI that plays scenes, does not receive this field. History, motives, relationships and secrets stay in `baseProfile`. The editor's "Find future story notes in profile" button finds a clearly labelled future-story section in `baseProfile` and offers to move it here. Our cards still ship Future Storylines inside `baseProfile` (see below); whether to move them to this field is an open decision.
+**`futureStorySeeds`** — String. Labelled "Future story ideas" in the character editor: possibilities the Arc Manager can develop into later arcs, not established facts or instructions for a scene. The Dungeon Master, the AI that plays scenes, does not receive this field. History, motives, relationships and secrets stay in `baseProfile`. The editor's "Find future story notes in profile" button finds a clearly labelled future-story section in `baseProfile` and offers to move it here. The export writes the card's Future Storylines, rewritten from Story Seeds, into this field and never into `baseProfile`.
 
-The character note also carries a `sex` field. It is internal worldbuilder schema, never written to `world.json`: the export reads it to keep pronouns accurate in `appearance`, per-set `appearance` and the card's Future Storylines.
+The character note also carries a `sex` field. It is internal worldbuilder schema, never written to `world.json`: the export reads it to keep pronouns accurate in `appearance`, per-set `appearance` and `futureStorySeeds`.
 
 ### `baseProfile` — structure
 
-The `baseProfile` field is a single text block with no JSON sub-fields. The character note's sections ship into it in order: an unheaded preamble, then Background, Body, Soul, Relationships, Voice / Dialogue and Future Storylines. Each section after the preamble opens with a plain-text heading line: the heading words on a line of their own, with no markdown heading marks and no `---` dividers. The **Future Storylines** section is required for every character.
+The `baseProfile` field is a single text block with no JSON sub-fields. The character note's sections ship into it in order: an unheaded preamble, then Background, Body, Soul, Relationships and Voice / Dialogue. Each section after the preamble opens with a plain-text heading line: the heading words on a line of their own, with no markdown heading marks and no `---` dividers. The card's Future Storylines ship in `futureStorySeeds`, not here, and are required for every character.
 
 See `worldbuilder-ainime-export/card-assembly.md` for the full assembly guide, register rules, and token targets.
 
@@ -558,7 +558,7 @@ notes/ (story, intention scope)
                        → storyTriggers[] (story events, where trigger day exists)
 
 notes/ (character)     → characters[].name, lastName, type, role, availableFromDay,
-                         baseProfile, appearance, spriteSets[] (incl. per-set
+                         baseProfile, futureStorySeeds, appearance, spriteSets[] (incl. per-set
                          appearance, baseImage, basePrompt); sex is read for
                          pronouns, never exported
                          [Body sections → artStyle.sprite.clothingRules]
@@ -585,7 +585,6 @@ These fields are auto-generated or configured by the platform — do not produce
 
 - `worldId` — UUID assigned by the platform
 - `generateSideCharacterOnNewGame`, `randomizedStart`, `romancePair`, `choices`, `quickSlots` — New Game options set in the platform; preserved on re-export, never derived from notes (see the Adventure tab)
-- `characters[].futureStorySeeds` — not written while our cards carry Future Storylines inside `baseProfile` (see the Characters tab)
 - `spriteSets[].cutouts`, `expressionPrompts` and platform-made version sets — produced by the platform's own sprite tools; preserved on re-export
 - `stage.*` other than the three keys standard 13 sets — stage tuning done in the platform's preview; preserved on re-export
 - `artStyle.*.style_reference`, `style_reference_enabled` — reference images imported in the platform

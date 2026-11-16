@@ -85,7 +85,8 @@ in the Anima vault's worldbuilder-workflow domain.
 | `characters[].lastName` | Structural | Character note filename |
 | `characters[].type` | Structural | Cast plan in `project/plan.md` (Major="main", Supporting="side") |
 | `characters[].role` | Derived | Agent derives from character note content (position, relationships, narrative function) |
-| `characters[].baseProfile` | Derived | Agent assembles from character note Background, Body, Soul, Relationships, and Story Beats sections per `card-assembly.md`; Story Beats are transformed to possibility-style framing in the Future Storylines subsection |
+| `characters[].baseProfile` | Derived | Agent assembles from character note preamble, Background, Body, Soul, Relationships and Voice / Dialogue sections per `card-assembly.md` |
+| `characters[].futureStorySeeds` | Derived | Agent rewrites the character note's Story Seeds as possibility-style Future Storylines per `card-assembly.md` |
 | `characters[].appearance` | Structural | Character note Body preamble (verbatim or lightly condensed) |
 | `characters[].availableFromDay` | Derived | Agent assigns based on narrative logic and introduction note timing |
 | `characters[].spriteSets[].name` | Constructed | Export-time convention ("default" for casual, descriptive name for others) |

@@ -272,7 +272,7 @@ For each character note in `notes/`, produce a character record. Process one cha
 
 **`role`** (optional) — Not stored in the character note. Derive from the character's function as established by the character note content (their position in the world, their relationship to the player, their narrative role). Write as plain text. Examples: "The player's mysterious neighbor; a hacker with a heart of gold."
 
-**`baseProfile`** (optional) — The character card prose. Include personality, psychology, backstory, motivations, quirks, speech patterns. Each section opens with a plain-text heading line (no markdown heading marks, no dividers). Shipped profile sections are plain text: the export strips markdown emphasis markers from them, so a relationship name written as `**Eiland:**` on the card ships as `Eiland:`. The "Future Storylines" section is required: it ends the profile and guides what happens after the character's initial story arcs conclude. See `card-assembly.md` for full assembly guidance. This is the most complex field; do not attempt it without reading that file.
+**`baseProfile`** (optional) — The character card prose. Include personality, psychology, backstory, motivations, quirks, speech patterns. Each section opens with a plain-text heading line (no markdown heading marks, no dividers). Shipped profile sections are plain text: the export strips markdown emphasis markers from them, so a relationship name written as `**Eiland:**` on the card ships as `Eiland:`. The profile ends with Voice / Dialogue; Future Storylines ship in `futureStorySeeds` instead. See `card-assembly.md` for full assembly guidance. This is the most complex field; do not attempt it without reading that file.
 
 **`appearance`** (optional) — Used for sprite generation and as context for all in-game AIs. Use the Body section's appearance preamble of the character note verbatim or lightly condensed. Cover species/type and sex if relevant, apparent age and body type, notable features, clothing style. For a long-lived character state the age they appear to be, never their real age (rule in `../worldbuilder-character/card-format.md`).
 
@@ -280,13 +280,15 @@ For each character note in `notes/`, produce a character record. Process one cha
 
 **`color`** (optional, string) — The character's name color in dialogue, as a Tailwind CSS text-color class of the form `text-<hue>-<shade>`. Pick a hue from the character's own palette (hair, signature garment). The allowed shades, the uniqueness rule and the classes the platform defines are in standard 7 in `standards.md`. Do not write a hex value or a bare color name.
 
-**`sex`** (internal, character note only) — The character note's `sex` field records the character's sex so every generated text uses the right pronouns. It is worldbuilder schema, not ainime schema: the export never writes a `sex` key to `world.json`. Read it before writing `appearance`, per-set `appearance` and Future Storylines, and check that every pronoun in those fields agrees with it. Where the character's sex matters to how they look, state it in `appearance` in plain words.
+**`sex`** (internal, character note only) — The character note's `sex` field records the character's sex so every generated text uses the right pronouns. It is worldbuilder schema, not ainime schema: the export never writes a `sex` key to `world.json`. Read it before writing `appearance`, per-set `appearance` and `futureStorySeeds`, and check that every pronoun in those fields agrees with it. Where the character's sex matters to how they look, state it in `appearance` in plain words.
 
 **Body preamble → appearance:** The Body appearance preamble provides
 the character's physical description for the appearance field.
 
+**`futureStorySeeds`** (required, string) — The character's Future Storylines: possibilities the Arc Manager can develop into later arcs, read by the Arc Manager only and never by the Dungeon Master. Labelled "Future story ideas" in the platform's character editor. It guides what happens after the character's initial story arcs conclude. See `card-assembly.md`.
+
 **Story Seeds → Future Storylines:** Each Story Seed entry maps to
-a future storyline. The export transforms definite scenario prose to
+a future storyline in `futureStorySeeds`. The export transforms definite scenario prose to
 possibility-style framing. Trigger conditions that the platform
 cannot mechanically enforce are woven into the storyline context as
 narrative framing.
