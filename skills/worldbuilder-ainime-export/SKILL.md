@@ -190,7 +190,7 @@ Every trigger declares a `kind`, and a `character` trigger also carries a `justi
 
 `triggerOnDay` is the absolute calendar day (1 to seasons × `daysPerSeason`; see `export-procedure.md` for the year-length rule). `promptInjection` is active direction to the story engine, not a neutral description of the event.
 
-**`hiddenFromPlayer`** (optional, boolean) — Hides the event from the player's calendar entirely; it still fires and injects its `promptInjection`. Which events may use it, and which character events stay off the calendar, is set by standard 2 in `standards.md`.
+**`hiddenFromPlayer`** (optional, boolean) — Hides the event from the player's calendar entirely. That it still fires and injects its `promptInjection` is inferred from how worlds use it, not confirmed against the platform. Which events may use it, and which character events stay off the calendar, is set by standard 2 in `standards.md`.
 
 ### Life Stages (`yearContexts`, optional)
 
@@ -245,7 +245,7 @@ Adjust thresholds based on world pacing if these defaults don't fit.
 
 **Enabled** — All entries default to `true`. Set `false` only for entries that should exist in the export but never activate.
 
-**Always-on and rolled entries** — An entry can instead fire on every scene (`alwaysOn: true`) or by a random roll (`dice`), as `../../docs/target-system.md` describes under the Lore tab. Concept notes map to keyword entries; use an always-on entry only for context every scene needs, because it is sent with every scene, and a rolled entry only for a chance event the world wants to happen now and then.
+**Always-on and rolled entries** — An entry can instead fire on every scene (`alwaysOn: true`) or by a random roll (`dice`), as `../../docs/target-system.md` describes under the Lore tab. Concept notes map to keyword entries, so the export writes neither kind.
 
 ---
 
@@ -332,7 +332,7 @@ Each sprite set carries three fields beyond `name`, `description` and `expressio
 - **`baseImage`** (optional, string) — The set's reference image: an `asset://sandboxWorldAssets/<uuid>` reference. Set it to the same asset as the set's `expressions.neutral` when that image exists, so the platform generates the other expressions from the same base.
 - **`basePrompt`** (optional, string) — The image-generation prompt for the set's base image. Not yet seen in an inspected export: the purpose here is read from the field name and its pairing with `baseImage`, and is unverified. Until it is confirmed, write it from the set's `appearance` only when the platform is to generate the base image, and leave it out when `baseImage` points to a bundled asset.
 
-**Sprite type.** A new world's sets are full-body cut-outs: each set carries `framing: "full"`, and its pictures are 9:16 with transparent backgrounds (standard 13 in `standards.md`). A set drawn in a second sprite type is a version set (`versionOf` and `framing`), described in `../../docs/target-system.md` under the Characters tab. An existing world keeps the sprites it has.
+**Sprite type.** In a new world every look has a full-body cut-out set: `framing: "full"`, 9:16 pictures with transparent backgrounds (standard 13 in `standards.md`). It is the look's own set, or a version set beside square chest-up pictures. A set drawn in a second sprite type is a version set (`versionOf` and `framing`), described in `../../docs/target-system.md` under the Characters tab. An existing world keeps the sprites it has.
 
 Two sets are standardized for convenience:
 - **Casual** (`name: "default"`) — at rest, natural state

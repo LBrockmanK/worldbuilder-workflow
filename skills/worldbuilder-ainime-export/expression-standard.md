@@ -88,8 +88,8 @@ A world may define its own list instead of a tier. Every sprite set then carries
 One rule covers the background of every sprite in a set, by how the set is drawn:
 
 - **A cut-out set** (every full-body set, standard 13 in `standards.md`) has a transparent background on every expression, so the scene shows around the character. A model without native transparency draws on one flat key colour absent from the character's palette, and that colour is removed afterwards.
-- **A set drawn on a backdrop** (the square chest-up sets of existing worlds) uses one fixed two-colour gradient drawn from the character's palette on every expression. The gradient is part of the set's visual identity and does not change with emotion.
+- **A set drawn on a backdrop** (square chest-up sets, such as those of existing worlds) uses one fixed two-colour gradient drawn from the character's palette on every expression. The gradient is part of the set's visual identity and does not change with emotion.
 
 Reasons for the gradient rule: an emotion-keyed colour clashes with some characters, and a character-specific adjustment per emotion breaks emotion consistency across the cast.
 
-This is the only statement of the rule. A preset or a prompt file points here and does not restate it. The `artStyle.sprite.style_suffix` text in `world.json` is written from this rule: the exported text is a derived copy, not a second statement of it. If the rule changes, change it here and rewrite the exported suffix. The platform's own `maintainConsistency` setting adds a same-character line to each sprite prompt; it does not change this rule.
+This is the only statement of the rule. A preset or a prompt file points here and does not restate it. The `artStyle.sprite.style_suffix` text in `world.json` is written from this rule: the exported text is a derived copy, not a second statement of it. If the rule changes, change it here and rewrite the exported suffix. The platform's own `same_character_consistency` setting adds a same-character line to each sprite prompt; it does not change this rule.

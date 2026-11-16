@@ -105,7 +105,7 @@ A character event returned to the calendar also carries a `justification`:
 
 `kind` and `justification` are audit-only keys (standard 2 in `skills/worldbuilder-ainime-export/standards.md`). They live in the tracked `world.json`, and packaging removes both from the shipped file.
 
-`hiddenFromPlayer` (boolean, optional) hides the event from the player's calendar entirely; the event still fires. Standard 2 in `skills/worldbuilder-ainime-export/standards.md` says which events may use it.
+`hiddenFromPlayer` (boolean, optional) hides the event from the player's calendar entirely. That the hidden event still fires is inferred from how worlds use it, not confirmed against the platform. Standard 2 in `skills/worldbuilder-ainime-export/standards.md` says which events may use it.
 
 Set `recurrence: "yearly"` for annual events (festivals, observances), `"weekly"` for a market day, `"seasonal"` for an event that returns every season, and `"once"` for a one-time event. A weekly or interval event is one entry, not one entry per occurrence.
 
@@ -157,7 +157,7 @@ Set `recurrence: "yearly"` for annual events (festivals, observances), `"weekly"
 }
 ```
 
-**`storyTriggers`** — The calendar events field. Both recurring annual events (`recurring: true`) and one-time events (`recurring: false`) are stored here. See the Adventure tab section above for the schema.
+**`storyTriggers`** — The calendar events field. Repeating events and one-time events are both stored here, told apart by `recurrence`. See the Adventure tab section above for the schema.
 
 **`eventCalendarSummary`** — Narrative overview of the full event calendar for LLM reference. A prose summary of the festival calendar and its emotional rhythms — written for the AI, not the player. Produced after all events are written.
 
@@ -207,7 +207,7 @@ One object per character in the `characters` array.
 | `name` | First Name | — |
 | `lastName` | Last Name | — |
 | `role` | Role | One or two phrases |
-| `baseProfile` | Character Card | Main character description — see below |
+| `baseProfile` | Character Card | The character's full description — see below |
 | `appearance` | Appearance | Physical description for image generation and LLM reference |
 | `type` | Type | `"main"` or `"side"`; see below |
 | `futureStorySeeds` | Future story ideas | Possibilities for later arcs, read by the Arc Manager only; see below |
@@ -256,7 +256,7 @@ Each sprite set is a named visual state (Casual, Working, Formal, etc.). The `de
 | `appearance` | string | This set's look: the character's invariant physical-features preamble, then the set's outfit |
 | `baseImage` | string (`asset://` URL) | The set's reference image, normally the same asset as `expressions.neutral` |
 | `basePrompt` | string | Generation prompt for the set's base image when no `baseImage` is bundled (not yet seen in an inspected export; purpose unverified) |
-| `framing` | string | The sprite type the set is drawn in: `"bust"` (chest up), `"thigh"` (thigh up), `"ankle"` (head to ankles) or `"full"` (full body). A set without it is a classic chest-up sprite |
+| `framing` | string | The sprite type the set is drawn in: `"bust"` (chest up), `"thigh"` (thigh up), `"ankle"` (head to ankles) or `"full"` (full body). A set without it is a classic sprite from before sprite types existed |
 | `versionOf` | string | On a version set only: the `name` of the set (the look) this one redraws in another `framing`. A version set is named `<look>--<framing>`, for example `default--full` |
 | `cutouts` | object | See-through copies of the set's pictures: `baseImage`, `expressions` (expression name to `asset://` URL) and the `baseSource` and `sources` they were cut from |
 | `expressionPrompts` | object | Expression name to the prompt last used to draw it, kept on version sets |
@@ -522,7 +522,7 @@ Each prompt set also holds its own Banned Words list, shared by every AI writer 
 
 ## Builder steering fields
 
-The World Builder's AI builders save the instructions typed into them with the world. They steer only the builders, never play, and the export does not write them.
+The World Builder's AI builders save the instructions typed into them with the world. They steer the builders, and the export does not write them.
 
 | JSON field | Builder |
 |---|---|

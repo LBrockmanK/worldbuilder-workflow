@@ -42,7 +42,7 @@ When the export needs condensing, use the adjustment order in section 4, then re
 
 ### Characters
 
-- [ ] A new world sets `stage.mode`, `stage.spriteFraming` and `stage.spriteShape` as standard 13 in `standards.md` says, and every look's sprite set is full-body (`framing: "full"`) with transparent backgrounds. An existing world keeps the `stage` it has.
+- [ ] A new world sets `stage.mode`, `stage.spriteFraming` and `stage.spriteShape` as standard 13 in `standards.md` says, and every look has a full-body set (`framing: "full"`, its own set or a version set) with transparent backgrounds. An existing world keeps the `stage` it has.
 - [ ] Every character has a non-empty `name`. `lastName` is optional: the live Fields of Mistria export leaves it empty for all 38 characters, and the platform does not need it.
 - [ ] Every character has `role`, `baseProfile`, `appearance`, `type` and `availableFromDay`.
 - [ ] Every character has at least one sprite set, and its Casual set is named `default`. Fewer than the two standardized sets (Casual and Working/Active) is allowed.

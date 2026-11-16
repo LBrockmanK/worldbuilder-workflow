@@ -159,7 +159,7 @@ Every character `color` is a Tailwind text class `text-<hue>-<shade>` with a **l
 - Take the hue from the character's own palette.
 - Every colour is unique within its world. Two characters may share a hue only with different shades.
 - In a world shared by two games, uniqueness holds across the whole cast. The quick-world audit reads the world's configuration, which holds the cast of every game, so its colour check covers both games. A full world is one game.
-- Every colour is a class the platform's stylesheet defines. A class the stylesheet lacks renders black. The defined set, with its source and read date, is kept in one data file the audit reads. The set grows with the platform: `text-zinc-300` and `text-neutral-300` were missing in October 2026 and are defined as of 2026-11-16, so re-read the stylesheet before trusting an old data file.
+- Every colour is a class the platform's stylesheet defines. A class the stylesheet lacks renders black. The defined set, with its source and read date, is kept in one data file the audit reads. The set grows with the platform: `text-zinc-300` and `text-neutral-300` were missing when this standard was first written and are defined as of 2026-11-16, so re-read the stylesheet before trusting an old data file.
 
 ---
 
@@ -268,9 +268,9 @@ A new world starts in the Visual novel layout with full-body cut-out sprites. It
 | `stage.spriteFraming` | `"full"` | Visual novel shows full-body sprites |
 | `stage.spriteShape` | `"tall"` | New sprites are drawn 9:16, head to feet |
 
-Every look's sprite set is drawn full-body (`framing: "full"`) on a transparent background, so it is a cut-out. The sprite method that produces these pictures is the Image Gen process standards' own; this standard sets only what the world declares. Leave `stage.cutoutSprites` unset: Visual novel turns cut-outs on by default.
+Every look has a full-body set (`framing: "full"`) drawn on a transparent background, so it is a cut-out. That set is either the look's own set or a version set of it. The sprite method that produces these pictures is the Image Gen process standards' own; this standard sets only what the world declares. Leave `stage.cutoutSprites` unset: Visual novel turns cut-outs on by default.
 
-Players can still switch to the Portraits layout, which shows the upper part of a full-body sprite when a look has no chest-up picture. A world that also wants square chest-up pictures for Portraits keeps them as the look's main set and adds the full-body pictures as a version set (`versionOf` the look, `framing: "full"`).
+Square chest-up pictures stay usable. Players can still switch to the Portraits layout, which shows the upper part of a full-body sprite when a look has no chest-up picture. A world that also wants square chest-up pictures for Portraits keeps them as the look's own set and adds the full-body pictures as a version set (`versionOf` the look, `framing: "full"`).
 
 Existing worlds keep the layout and sprites they have. Moving one to this standard is a separate decision for that world.
 
