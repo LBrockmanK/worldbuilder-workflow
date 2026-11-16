@@ -42,6 +42,7 @@ When the export needs condensing, use the adjustment order in section 4, then re
 
 ### Characters
 
+- [ ] A new world sets `stage.mode`, `stage.spriteFraming` and `stage.spriteShape` as standard 13 in `standards.md` says, and every look's sprite set is full-body (`framing: "full"`) with transparent backgrounds. An existing world keeps the `stage` it has.
 - [ ] Every character has a non-empty `name`. `lastName` is optional: the live Fields of Mistria export leaves it empty for all 38 characters, and the platform does not need it.
 - [ ] Every character has `role`, `baseProfile`, `appearance`, `type` and `availableFromDay`.
 - [ ] Every character has at least one sprite set, and its Casual set is named `default`. Fewer than the two standardized sets (Casual and Working/Active) is allowed.
@@ -60,9 +61,9 @@ When the export needs condensing, use the adjustment order in section 4, then re
 
 - [ ] Every non-recurring trigger has `triggerOnDay` of at most twice the calendar year length. A day past one year is a second-year scene: it is allowed and listed in section 3. The same ceiling applies to lore entries.
 - [ ] Two non-recurring triggers may share a day. The tone-conflict check in section 3 covers them. The live Fields of Mistria export has four such days, including two arrival-day scenes.
-- [ ] Every recurring trigger is one entry per occurrence, with an absolute `triggerOnDay` inside the calendar year. A weekly market gets one entry per week, each with its own day.
-- [ ] Every trigger has a non-empty `promptInjection`.
-- [ ] All festival and observance events have `storyTriggers` entries. Recurring events have `recurring: true`.
+- [ ] Every trigger declares `recurrence` (`once`, `yearly`, `seasonal`, `weekly` or `interval`), and every `interval` trigger has a positive `recurrenceIntervalDays`. A repeating trigger is one entry whose `triggerOnDay` is its first occurrence, inside the calendar year.
+- [ ] Every trigger has a non-empty `promptInjection` and a non-empty `playerBlurb`, and no `playerBlurb` gives away a surprise its `promptInjection` holds (standard 2 in `standards.md`).
+- [ ] All festival and observance events have `storyTriggers` entries with a repeating `recurrence`.
 - [ ] The calendar holds only what standard 2 in `standards.md` allows. Every returned character event and every other exception carries a written justification, and each justification names one of the reasons standard 2 lists.
 - [ ] `hiddenFromPlayer: true` is used only as standard 2 in `standards.md` allows.
 - [ ] Story intention notes with concrete triggers have `storyTriggers` entries, or stay in the character's Future Storylines under standard 2 in `standards.md`.
@@ -71,7 +72,7 @@ When the export needs condensing, use the adjustment order in section 4, then re
 ### Lore entries
 
 - [ ] Every major location has a concept note and a lore entry. The Background NPC guidelines entry is present.
-- [ ] Every lore entry has at least one keyword and non-empty `content`.
+- [ ] Every lore entry has non-empty `content`, and every entry that fires by keyword (neither `alwaysOn` nor `dice`) has at least one keyword.
 - [ ] `enabled` is explicitly set on every entry.
 - [ ] `availableFromDay` is set on every entry per layer and is at most twice the calendar year length.
 - [ ] Keywords are specific, with no partial-match traps and no multi-word compound keywords that need an unlikely exact match.
@@ -80,7 +81,7 @@ When the export needs condensing, use the adjustment order in section 4, then re
 
 - [ ] `locations` is an object keyed by day segment. Each segment named in `daySegments` has at least one location image.
 - [ ] Location prompts describe a ground-level perspective, not an aerial or establishing shot.
-- [ ] Location names use the slug format.
+- [ ] Location names use the slug format, in the order place, time of day, then any version (`cafe_night_rain`).
 
 ### Art style
 
