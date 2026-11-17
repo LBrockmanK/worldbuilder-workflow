@@ -8,7 +8,7 @@
 
 A character's card ships into two fields. The `baseProfile` field carries the character's complete profile — everything the engine reads as "who this character is": the preamble, Background, Body, Soul, Relationships and Voice / Dialogue, in that order. The `futureStorySeeds` field carries the Future Storylines, rewritten from the note's Story Seeds. Intimate Dynamics and Design Notes do not ship.
 
-The two fields have different readers. The Dungeon Master, the AI that plays scenes, reads `baseProfile`. Only the Arc Manager, which plans later story arcs, reads `futureStorySeeds`; the Dungeon Master, which plays scenes, never sees it. Future Storylines therefore never go into `baseProfile`, where the scene AI would treat possibilities as facts or play them too early. History, motives, relationships and secrets stay in `baseProfile`.
+The two fields have different readers. The platform describes `futureStorySeeds` as possibilities the Arc Manager, which plans later story arcs, can develop into later arcs, not established facts or instructions to play a scene now. The Dungeon Master, the AI that plays scenes, does not receive it. Future Storylines therefore go into `futureStorySeeds` and never into `baseProfile`. History, motives, relationships and secrets stay in `baseProfile`, as the platform asks.
 
 In `baseProfile`, every section after the preamble opens with a plain-text heading line: the heading words alone on a line, with no markdown heading marks (no `#`) and no `---` dividers between sections. `futureStorySeeds` has no heading line: it holds the storylines alone. Future Storylines are required for every character.
 
@@ -78,7 +78,8 @@ These apply to the one section that is rewritten (Future Storylines) and to any 
 - [ ] Introduction storyline present in `futureStorySeeds`
 - [ ] `baseProfile` ends with Voice / Dialogue and holds no Future Storylines
 - [ ] Intimate Dynamics and Design Notes excluded
-- [ ] Each section opens with a plain-text heading line; no markdown heading marks, no `---` dividers
+- [ ] Each `baseProfile` section after the preamble opens with a plain-text heading line; no markdown heading marks, no `---` dividers
+- [ ] `futureStorySeeds` has no heading line
 - [ ] No markdown emphasis markers in any shipped section or in `futureStorySeeds`; relationship names plain (`Eiland:`, not `**Eiland:**`)
 - [ ] No content rewritten, paraphrased, or summarized beyond the Story Seeds → Future Storylines reframing
 - [ ] Factual accuracy — no reversed attributions, no invented details

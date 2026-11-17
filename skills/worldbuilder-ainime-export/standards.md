@@ -61,7 +61,7 @@ The calendar holds events that happen whatever the player has done:
 - world events
 - quests that open after an earlier calendar event
 
-Every **character event** leaves the calendar by default. A character event is a scene that exists to move one character's story: a meeting, a visit, a confession, a conflict. That beat belongs in the character's Future Storylines (the `futureStorySeeds` field), which the Arc Manager develops into an arc when the story reaches it.
+Every **character event** leaves the calendar by default. A character event is a scene that exists to move one character's story: a meeting, a visit, a confession, a conflict. That beat belongs in the character's Future Storylines (the `futureStorySeeds` field), which the Arc Manager can develop into a later arc.
 
 ### Returning a character event
 

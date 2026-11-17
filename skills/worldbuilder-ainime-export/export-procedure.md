@@ -44,7 +44,7 @@ When the export needs condensing, use the adjustment order in section 4, then re
 
 - [ ] A new world sets `stage.mode`, `stage.spriteFraming` and `stage.spriteShape` as standard 13 in `standards.md` says, and every look has a full-body set (`framing: "full"`, its own set or a version set) with transparent backgrounds. An existing world keeps the `stage` it has.
 - [ ] Every character has a non-empty `name`. `lastName` is optional: the live Fields of Mistria export leaves it empty for all 38 characters, and the platform does not need it.
-- [ ] Every character has `role`, `baseProfile`, `appearance`, `type` and `availableFromDay`.
+- [ ] Every character has `role`, `baseProfile`, `futureStorySeeds`, `appearance`, `type` and `availableFromDay`.
 - [ ] Every character has at least one sprite set, and its Casual set is named `default`. Fewer than the two standardized sets (Casual and Working/Active) is allowed.
 - [ ] Every sprite set carries a `neutral` expression, and every expression key in every sprite set is named in `availableExpressions`. A set need not carry all of them: the live Fields of Mistria export has no set with all 28 names, and the most any set carries is 18. The tier a project chooses at the start sets how many expressions to generate (`expression-standard.md`); it is not a pre-flight check, because an existing list may predate the tiers.
 - [ ] No character has `availableFromDay` greater than the calendar year length.
@@ -111,7 +111,7 @@ An existing `.sbworld` holds generated assets (location images, character sprite
 
 Run after the pre-flight check passes. It finds content that will never reach the player.
 
-**Lore entry keyword analysis.** Search the keywords in every character's `baseProfile`, `settingSummary`, `introText`, `arcManagerGuidance`, `initialStoryArc` and every trigger's `promptInjection`.
+**Lore entry keyword analysis.** Search the keywords in every character's `baseProfile` and `futureStorySeeds`, `settingSummary`, `introText`, `arcManagerGuidance`, `initialStoryArc` and every trigger's `promptInjection`.
 
 *Will never fire (CRITICAL):*
 - Keywords that appear nowhere else in the export. If no in-world content would naturally mention the term, the player never meets it and the entry is dead content.
@@ -162,9 +162,9 @@ The general principle: adjust metadata and supplementary content first (keywords
 
 ---
 
-## 5. `baseProfile` reconciliation
+## 5. `baseProfile` and `futureStorySeeds` reconciliation
 
-**Decision, recorded here:** the export settles `baseProfile` drift by reconciliation, not by derivation. The profile is not a mechanical copy of the card: Future Storylines is writing, not a transform, so a generator would need a new card-to-profile contract. Reconciliation keeps the card-assembly contract and makes the export prove it.
+**Decision, recorded here:** the export settles drift in a character's two card fields by reconciliation, not by derivation. `baseProfile` is a near-verbatim copy of the card, which the export re-assembles and compares. `futureStorySeeds` is writing, not a mechanical copy: Future Storylines are rewritten from Story Seeds, so a generator would need a new card-to-field contract. Reconciliation keeps the card-assembly contract and makes the export prove it.
 
 **The contract** is `card-assembly.md`:
 
@@ -176,7 +176,8 @@ The general principle: adjust metadata and supplementary content first (keywords
 
 1. Re-assemble each character's `baseProfile` from the current card under the contract.
 2. Diff the result against the exported `baseProfile` and apply the differences to the versioned `world.json`.
-3. Pre-flight comparison: for each profile, compare the preamble and each of the five verbatim sections with the card's, after whitespace normalisation, after removing markdown emphasis markers (`**` and `*`) from the card's text, and, for Relationships, after removing the card's archetype labels. A marker or label left in a profile's Relationships section fails the check. Require a non-empty `futureStorySeeds`, and fail a profile that still holds a Future Storylines section.
+3. Compare each character's Story Seeds with the Story Seeds at the last export (the character note's history in git). Where they changed, rewrite that character's `futureStorySeeds` from the current Story Seeds. Then check that every Story Seed title appears as a storyline label in `futureStorySeeds`, and that every storyline label there matches a current Story Seed.
+4. Pre-flight comparison: for each profile, compare the preamble and each of the five verbatim sections with the card's, after whitespace normalisation, after removing markdown emphasis markers (`**` and `*`) from the card's text, and, for Relationships, after removing the card's archetype labels. A marker or label left in a profile's Relationships section fails the check. Require a non-empty `futureStorySeeds`, and fail a profile that still holds a Future Storylines section.
 
 **Condensing is made in the card.** If a profile must be shorter (adjustment order, item 4), shorten the character note and re-export. The next export then reproduces the change. A profile edited alone is overwritten by the next export.
 

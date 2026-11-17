@@ -250,7 +250,7 @@ Other media capturing the right feel — films, books, music, anime. One per lin
 8–12 recurring concerns of this world. Both setting tropes and emotional themes.
 
 **Community**
-The blurb shown in the platform's community world list: one or two sentences for a player browsing worlds, saying what the world is and why they might play it. It is a listing, not story context: what the story needs about the community belongs in the Setting Summary.
+The world's public listing blurb: one or two sentences for a player browsing worlds, saying what the world is and why they might play it. It is a listing, not story context: what the story needs about the community belongs in the Setting Summary.
 
 **World Introduction**
 Pre-game text the player reads before starting. Sets expectations for tone and situation. This section is written evocatively and is exempt from the style reference. No other section of the foundation document is.

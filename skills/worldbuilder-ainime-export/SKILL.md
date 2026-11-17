@@ -259,6 +259,7 @@ For each character note in `notes/`, produce a character record. Process one cha
 | Major/Supporting (cast plan entry in `project/plan.md`) | `type`: `"main"` or `"side"` | opt |
 | Derived by export skill | `role` | opt |
 | Assembled card prose | `baseProfile` | opt |
+| Story Seeds, rewritten as Future Storylines | `futureStorySeeds` | **req** |
 | Body preamble | `appearance` | opt |
 | Sprite sets (see below) | `spriteSets[]` | opt |
 | Available Day (see below) | `availableFromDay` | opt |
@@ -285,7 +286,7 @@ For each character note in `notes/`, produce a character record. Process one cha
 **Body preamble → appearance:** The Body appearance preamble provides
 the character's physical description for the appearance field.
 
-**`futureStorySeeds`** (required, string) — The character's Future Storylines: possibilities the Arc Manager can develop into later arcs, read by the Arc Manager only and never by the Dungeon Master. Labelled "Future story ideas" in the platform's character editor. It guides what happens after the character's initial story arcs conclude. See `card-assembly.md`.
+**`futureStorySeeds`** (required, string) — The character's Future Storylines: possibilities the Arc Manager can develop into later arcs. The Dungeon Master, the AI that plays scenes, does not receive this field. Labelled "Future story ideas" in the platform's character editor. See `card-assembly.md`.
 
 **Story Seeds → Future Storylines:** Each Story Seed entry maps to
 a future storyline in `futureStorySeeds`. The export transforms definite scenario prose to

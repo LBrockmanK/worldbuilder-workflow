@@ -210,7 +210,7 @@ One object per character in the `characters` array.
 | `baseProfile` | Character Card | The character's full description — see below |
 | `appearance` | Appearance | Physical description for image generation and LLM reference |
 | `type` | Type | `"main"` or `"side"`; see below |
-| `futureStorySeeds` | Future story ideas | The card's Future Storylines, read by the Arc Manager only; see below |
+| `futureStorySeeds` | Future story ideas | The card's Future Storylines, for the Arc Manager; the Dungeon Master does not receive it; see below |
 | `availableFromDay` | Available Day | Earliest possible introduction day |
 | `spriteSets` | Sprite Sets | Visual states for artwork |
 | `startingInfluence` | Starting Influence | Integer, may be negative; omit for the platform default ("Auto" in the UI) |
