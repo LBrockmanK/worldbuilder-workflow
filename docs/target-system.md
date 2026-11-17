@@ -35,7 +35,7 @@ All field names below are the exact JSON keys. These fields are produced by `wor
 
 **`keyTropesAndThemes`** — One string per item. 8–12 entries covering both setting tropes and emotional themes. These shape what the AI treats as thematically available throughout the game.
 
-**`communityDescription`** — The community's social and emotional identity. Not a physical description and not a repeat of `settingSummary` — this is specifically how the community behaves and feels as a social entity. Used as context for how background characters and social dynamics should read.
+**`communityDescription`** — A one- or two-sentence blurb for the community world list, written for players browsing worlds. With `tags` and `author` it makes up the world's listing. It is not in-game context about the setting's social life: that belongs in `settingSummary`.
 
 **`introText`** — Pre-game text the player reads before creating their character. Sets expectations for tone and situation. The player creates only name and appearance — the intro should reflect that. Typically 2–4 short paragraphs.
 
@@ -48,7 +48,11 @@ All field names below are the exact JSON keys. These fields are produced by `wor
 | `initialStoryArc` | Opening Story Arc | string | `worldbuilder-world-foundation` → `foundation.md` |
 | `arcManagerGuidance` | Ongoing Story Direction | string | `worldbuilder-story` → `project/direction.md` |
 | `storyTriggers` | Story Triggers (Events) | StoryTrigger[ ] | `worldbuilder-story` (intention notes) + `worldbuilder-concept` (recurring event notes) → `notes/` |
-| `generateSideCharacterOnNewGame` | AI generate side character | boolean | Builder choice in the platform; no note source |
+| `generateSideCharacterOnNewGame` | Invent a side character at New Game | boolean | Builder choice in the platform; no note source |
+| `randomizedStart` | Randomize the opening arc | object | Builder choice in the platform; no note source |
+| `romancePair` | Random NPC romance pair | object | Builder choice in the platform; no note source |
+| `quickSlots` | Quick slots | QuickSlot[ ] | Built in the platform from a played save; no note source |
+| `choices` | Choices | object | Builder choice in the platform; no note source |
 
 ### Field notes
 
@@ -56,7 +60,7 @@ All field names below are the exact JSON keys. These fields are produced by `wor
 
 **`arcManagerGuidance`** — The engine's standing creative brief throughout the game. The primary guard against escalation, flattening, and inappropriate pacing. Covers: author framing, romance pacing, dark themes, hidden layer handling, seasonal tone, pacing. This is one of the most important fields; a weak brief here degrades every scene the engine generates. See `worldbuilder-story` for the full template.
 
-**`storyTriggers`** — Named events with a day trigger and a narrative injection prompt. When the trigger day is reached (or when a recurring event's anniversary arrives), the `promptInjection` text is injected into the engine's context.
+**`storyTriggers`** — Named events with a day trigger and a narrative injection prompt. When the trigger day is reached, or the event repeats on its cadence, the `promptInjection` text is injected into the engine's context. Players see upcoming events on their in-game calendar: the event's `name` and its `playerBlurb`. The `promptInjection` stays private, so a public event can still hold a surprise.
 
 StoryTrigger schema:
 ```json
@@ -66,10 +70,22 @@ StoryTrigger schema:
   "kind": "world",
   "triggerOnDay": 8,
   "promptInjection": "Narrative direction text injected on this day.",
-  "recurring": false,
-  "hiddenFromPlayer": true
+  "playerBlurb": "One or two sentences the player reads on the in-game calendar.",
+  "recurrence": "once",
+  "hiddenFromPlayer": false
 }
 ```
+
+| StoryTrigger field | Type | Purpose |
+|---|---|---|
+| `promptInjection` | string | Direction for the story AI: what happens, how to stage it, the reveal it builds to |
+| `playerBlurb` | string | Text for the player, read on the in-game calendar days ahead. The platform's own event writer requires it on every event, and the Calendar tab offers "Write missing player text" for events without it |
+| `recurrence` | string | `once`, `yearly`, `seasonal`, `weekly` or `interval`, counted from `triggerOnDay` |
+| `recurrenceIntervalDays` | integer | The cadence in days when `recurrence` is `interval`; without it the platform falls back to a fortnight |
+| `recurring` | boolean | The older form of `recurrence`. The platform reads it only when `recurrence` is absent: `true` means `yearly`, `false` or absent means `once` |
+| `hiddenFromPlayer` | boolean, optional | Hides the event from the player's calendar entirely |
+
+Prefer a named `recurrence` mode to `interval` when one fits: a named mode stays correct if the calendar is resized later.
 
 A character event returned to the calendar also carries a `justification`:
 
@@ -81,18 +97,27 @@ A character event returned to the calendar also carries a `justification`:
   "justification": "Introduces the harbour guild through this character on a fixed day, which paces the opening days.",
   "triggerOnDay": 3,
   "promptInjection": "Narrative direction text injected on this day.",
-  "recurring": false,
+  "playerBlurb": "Player-facing calendar text.",
+  "recurrence": "once",
   "hiddenFromPlayer": false
 }
 ```
 
 `kind` and `justification` are audit-only keys (standard 2 in `skills/worldbuilder-ainime-export/standards.md`). They live in the tracked `world.json`, and packaging removes both from the shipped file.
 
-`hiddenFromPlayer` (boolean, optional) marks a trigger as hidden from the player. Standard 2 in `skills/worldbuilder-ainime-export/standards.md` says which events may use it; the runtime behavior (the trigger still fires, the player is not shown it in advance) is inferred, not confirmed against the platform.
+`hiddenFromPlayer` (boolean, optional) hides the event from the player's calendar entirely. That the hidden event still fires is inferred from how worlds use it, not confirmed against the platform. Standard 2 in `skills/worldbuilder-ainime-export/standards.md` says which events may use it.
 
-**`generateSideCharacterOnNewGame`** — When `true`, the platform has the AI generate a side character at New Game (count and basis not yet verified). A builder choice set in the platform; the export preserves the existing value and never derives it from notes. The Adventure tab's other New Game toggles (randomize the opening arc, ignore the opening arc, random NPC romance pair) are app-level settings and never appear in the `.sbworld`.
+Set `recurrence: "yearly"` for annual events (festivals, observances), `"weekly"` for a market day, `"seasonal"` for an event that returns every season, and `"once"` for a one-time event. A weekly or interval event is one entry, not one entry per occurrence.
 
-Set `recurring: true` for annual events (festivals, observances). One-time events use `recurring: false`. Recurrence is yearly only — there is no weekly or monthly repeat. To make a weekly event (e.g., a Saturday market), create a separate `storyTrigger` entry for every instance across the first year, each with its own `triggerOnDay` and `recurring: true` so it repeats in subsequent years.
+**New Game options** — The Adventure tab's New Game options are saved with the world and travel in the `.sbworld`. Each is a builder choice set in the platform: the export preserves the existing value and never derives it from notes.
+
+- **`generateSideCharacterOnNewGame`** (boolean) — "Invent a side character at New Game".
+- **`randomizedStart`** (object) — "Randomize the opening arc": dice woven through `initialStoryArc`, which may rewrite it. Holds an NPC `pool`, `threatTypes` and `roles`, among other keys; the full shape is not documented here.
+- **`romancePair`** (object) — "Random NPC romance pair": `enabled`, a `pool` and a list of `dynamics`.
+- **`choices`** (object) — How many reply choices the AI writes at the end of every reply, with optional labelled, coloured choice slots. The default is four unlabelled choices "in different directions".
+- **`quickSlots`** (array) — Quick starts: played saves bundled in the world, which the player picks on the new-game screen instead of starting a new story. Each slot holds an `id`, `title`, `description`, `adventureArc`, the player `persona` (`name`, `backstory`, `appearancePrompt`, `nameColor`), `sourcePlayerName`, the `day` and `segment` the save stands at, any characters the story invented (`emergent`, `alsoEmergent`), and `saveRef`, an `asset://` reference to the save file bundled in the archive.
+
+"Ignore Opening Story Arc" sits on the same tab; no world key for it was found.
 
 ---
 
@@ -132,7 +157,7 @@ Set `recurring: true` for annual events (festivals, observances). One-time event
 }
 ```
 
-**`storyTriggers`** — The calendar events field. Both recurring annual events (`recurring: true`) and one-time events (`recurring: false`) are stored here. See the Adventure tab section above for the schema.
+**`storyTriggers`** — The calendar events field. Repeating events and one-time events are both stored here, told apart by `recurrence`. See the Adventure tab section above for the schema.
 
 **`eventCalendarSummary`** — Narrative overview of the full event calendar for LLM reference. A prose summary of the festival calendar and its emotional rhythms — written for the AI, not the player. Produced after all events are written.
 
@@ -163,7 +188,13 @@ Set `recurring: true` for annual events (festivals, observances). One-time event
 
 **`enabled`** — Boolean. Disabled entries exist but never trigger.
 
-**Date gates** — The UI shows an "Available Day" field for lore entries. This controls when an entry becomes active. Set it to prevent deep lore from surfacing before the player has invested enough time. In the JSON, this field may appear as `availableFromDay` on individual entries. If not present, the entry is active from day 1.
+**`availableFromDay`** — Integer, optional. Shown as "Day" in the UI: the entry is held back until that in-game day. Absent means active from the start. Use it to keep deep lore from surfacing before the player has invested enough time.
+
+**`title`** — String, optional. A display name for the entry in the World Builder's list.
+
+**`alwaysOn`** — Boolean, optional. When `true` the entry is sent with every scene, even with no keyword match. It sits in the cached part of the prompt, so use it sparingly.
+
+**`dice`** — Object, optional. Fires the entry on a random roll instead of a keyword: `{ "dieMin": 1, "dieMax": 20, "hitMin": 1, "hitMax": 1 }` fires it on about 1 turn in 20. A roll can also carry several `outcomes`, of which one roll picks at most one text; the outcome shape is not documented here. An entry carries either `alwaysOn` or `dice`, not both. The UI's "Show on hit" lists a hit with the other lore that fired; the story receives the entry either way.
 
 ---
 
@@ -176,19 +207,24 @@ One object per character in the `characters` array.
 | `name` | First Name | — |
 | `lastName` | Last Name | — |
 | `role` | Role | One or two phrases |
-| `baseProfile` | Character Card | Main character description — see below |
+| `baseProfile` | Character Card | The character's full description — see below |
 | `appearance` | Appearance | Physical description for image generation and LLM reference |
-| `type` | Type | `"main"` or `"side"` |
+| `type` | Type | `"main"` or `"side"`; see below |
+| `futureStorySeeds` | Future story ideas | The card's Future Storylines, for the Arc Manager; the Dungeon Master does not receive it; see below |
 | `availableFromDay` | Available Day | Earliest possible introduction day |
 | `spriteSets` | Sprite Sets | Visual states for artwork |
 | `startingInfluence` | Starting Influence | Integer, may be negative; omit for the platform default ("Auto" in the UI) |
 | `color` | Name Color | Tailwind CSS text-color class string, e.g. `"text-<hue>-<shade>"` |
 
-The character note also carries a `sex` field. It is internal worldbuilder schema, never written to `world.json`: the export reads it to keep pronouns accurate in `appearance`, per-set `appearance` and the card's Future Storylines.
+**`type`** — Mains are optional: a world with only side characters can start. Side characters are written at the same depth as mains. The one difference is that a side character gets no personal story arc until play promotes them: the characters the player spends time with become mains as the game goes on. A main whose `availableFromDay` arrives gets their arc, traits and likes that night.
+
+**`futureStorySeeds`** — String. Labelled "Future story ideas" in the character editor: possibilities the Arc Manager can develop into later arcs, not established facts or instructions for a scene. The Dungeon Master, the AI that plays scenes, does not receive this field. History, motives, relationships and secrets stay in `baseProfile`. The editor's "Find future story notes in profile" button finds a clearly labelled future-story section in `baseProfile` and offers to move it here. The export writes the card's Future Storylines, rewritten from Story Seeds, into this field and never into `baseProfile`.
+
+The character note also carries a `sex` field. It is internal worldbuilder schema, never written to `world.json`: the export reads it to keep pronouns accurate in `appearance`, per-set `appearance` and `futureStorySeeds`.
 
 ### `baseProfile` — structure
 
-The `baseProfile` field is a single text block with no JSON sub-fields. The character note's sections ship into it in order: an unheaded preamble, then Background, Body, Soul, Relationships, Voice / Dialogue and Future Storylines. Each section after the preamble opens with a plain-text heading line: the heading words on a line of their own, with no markdown heading marks and no `---` dividers. The **Future Storylines** section is required for every character.
+The `baseProfile` field is a single text block with no JSON sub-fields. The character note's sections ship into it in order: an unheaded preamble, then Background, Body, Soul, Relationships and Voice / Dialogue. Each section after the preamble opens with a plain-text heading line: the heading words on a line of their own, with no markdown heading marks and no `---` dividers. The card's Future Storylines ship in `futureStorySeeds`, not here, and are required for every character.
 
 See `worldbuilder-ainime-export/card-assembly.md` for the full assembly guide, register rules, and token targets.
 
@@ -220,6 +256,16 @@ Each sprite set is a named visual state (Casual, Working, Formal, etc.). The `de
 | `appearance` | string | This set's look: the character's invariant physical-features preamble, then the set's outfit |
 | `baseImage` | string (`asset://` URL) | The set's reference image, normally the same asset as `expressions.neutral` |
 | `basePrompt` | string | Generation prompt for the set's base image when no `baseImage` is bundled (not yet seen in an inspected export; purpose unverified) |
+| `framing` | string | The sprite type the set is drawn in: `"bust"` (chest up), `"thigh"` (thigh up), `"ankle"` (head to ankles) or `"full"` (full body). A set without it is a classic sprite from before sprite types existed |
+| `versionOf` | string | On a version set only: the `name` of the set (the look) this one redraws in another `framing`. A version set is named `<look>--<framing>`, for example `default--full` |
+| `cutouts` | object | See-through copies of the set's pictures: `baseImage`, `expressions` (expression name to `asset://` URL) and the `baseSource` and `sources` they were cut from |
+| `expressionPrompts` | object | Expression name to the prompt last used to draw it, kept on version sets |
+
+### Sprite types and versions
+
+A character's look (Casual, Working, a uniform) is one sprite set. The platform can hold the same look in several sprite types: each extra type is a version set with `versionOf` pointing at the look and its own `framing`, outfit `appearance`, `baseImage` and `expressions`. In the Visual novel layout the stage shows each look in the sprite type the world picks under `stage.spriteFraming`, or the nearest version the look has. The Portraits layout always shows chest up; when a look has only a longer sprite, its upper part is used.
+
+A cut-out is a see-through copy of a picture, so the scene shows around the character. A set drawn with a transparent background is already a cut-out. A set drawn on a backdrop can gain cut-outs later, in the `cutouts` object, for the whole cast, one character or one set. Image models that cannot draw transparency (Gemini, for example) paint one flat key colour, which the platform removes; NovelAI and OpenAI GPT Image models draw the transparency themselves.
 
 ---
 
@@ -268,7 +314,7 @@ The Locations tab manages image pools — sets of location images by time of day
 
 Each entry has three fields:
 
-- **`name`** — Snake-case identifier. Convention for time-variant locations: `{location_slug}_{time_segment}` (e.g., `blacksmith_forge_<segment>`).
+- **`name`** — Snake-case identifier, and the only thing the story sees when it picks a background, so it says what the place is. Order: the place, then the time of day, then any version that changes its look: `{location_slug}_{time_segment}` or `{location_slug}_{time_segment}_{version}` (e.g., `cafe_evening`, `cafe_night_rain`). The World Builder's Places view groups names by the part before the time of day; a name with the version before the time of day shows as a separate place.
 - **`url`** — Either an asset reference (`asset://sandboxWorldAssets/<uuid>`) for a bundled image registered in `manifest.json` with `kind: "location"`, or empty string `""` when no image is provided (the platform can generate one from `prompt`).
 - **`prompt`** — Optional. A text description of the location used by the platform's built-in AI image generator. Omit when a bundled image is provided. Prompts describe the empty scene only — no people, characters, or figures unless a specific location is deliberately designed to include them. Each prompt is self-contained: describe the location on its own terms without referencing other locations (no "near the blacksmith" or "across from the inn").
 
@@ -291,6 +337,8 @@ The Art Style tab configures image generation prompts for backgrounds and charac
 | `artStyle.sprite.negative_prompt` | Negative prompt for sprites |
 | `artStyle.sprite.clothingRules` | String array of clothing directives for sprite generation, one rule per entry |
 | `artStyle.vnScene` | Object for visual-novel scenes: `enabled` (boolean) and the strings `style_prefix`, `style_suffix`, `negative_prompt`. Standard 10 in `skills/worldbuilder-ainime-export/standards.md` says how to write it |
+| `artStyle.{background,sprite,vnScene}.style_reference` | A Style Reference Image for that kind of picture, sent with every picture of that kind the world draws, in the World Builder and in play. The image model is told to copy only how it is drawn |
+| `artStyle.{background,sprite,vnScene}.style_reference_enabled` | Boolean switch for the matching reference image, so it can stop being sent without being removed |
 
 The Foundation phase produces a **plain-language art style reference** describing the desired visual style, color palette, and reference works. This is translated into prompt-engineering format during export.
 
@@ -417,15 +465,44 @@ Global style modifiers for AI-generated music, analogous to `artStyle` for image
 
 ---
 
-## Theme Tab
+## UI Tab (formerly Theme)
 
-UI color theme. Not part of the worldbuilding workflow. Configure after content is complete.
+How the game screen looks: the sprite stage, the text box, colours, typography and the main menu picture.
+
+### Sprite stage (`stage`)
+
+The platform shows characters in one of two layouts. **Portraits** puts a chest-up picture of each character above the text box, up to six in two rows. **Visual novel** stands the characters in front of the background, with a one-line text box; cut-outs look best there, and other pictures show as cards. Players can switch layouts in Options, so a world sets both.
+
+| JSON path | UI label | Content |
+|---|---|---|
+| `stage.mode` | Layout | `"grid"` (Portraits) or `"stage"` (Visual novel): the layout the world starts in. Absent means Portraits |
+| `stage.spriteFraming` | Sprite type | `"bust"`, `"thigh"`, `"ankle"` or `"full"`: the sprite type Visual novel shows on desktop. Each look shows that type, or the nearest version it has. New sprites start in this type |
+| `stage.phone.*` | Sprite type, phone, and the phone column of each setting below | The phone's own values; phone follows desktop until it has its own |
+| `stage.vnReferenceFraming` | VN scene references | The sprite type sent as the character reference when a VN scene picture is drawn. A VN model profile can override it |
+| `stage.spriteShape` | Shape | `"square"` (1:1, chest up), `"portrait"` (2:3, thigh up) or `"tall"` (9:16, full body): the shape new sprites are drawn in |
+| `stage.cutoutSprites` | Background | `true` for cut-outs (see-through around the character), `false` for a painted backdrop. Absent means on in Visual novel and off in Portraits |
+| `stage.keyColor` | Colour to remove | The flat colour a model without transparency paints behind a sprite, which the platform then removes. Automatic picks magenta for a character whose appearance mentions green |
+| `stage.maxVisible` | On screen at once | Stage capacity per device (`desktop`, `mobile`); the remaining characters show as small pictures in a corner |
+| `stage.floor`, `stage.floorOffset` | Where they stand, Floor position | Feet on `"screen"` (the screen bottom, sprites continue behind the text box) or on `"textBox"`, shifted by a fraction of the play area |
+| `stage.spriteHeight` | Base sprite height | One scale for every sprite |
+| `stage.slots`, `stage.phoneSlots` | Places | Horizontal positions in percent, one list per number of characters on stage |
+| `stage.speakerPortrait` | Speaker portrait | Shows the speaker's chest-up picture beside the text box. Off by default |
+| `stage.focus` | Darken everyone but the speaker | `"dim"` (the default) or `"none"` |
+| `stage.characters.<name>`, `stage.phone.characters.<name>` | Character adjustments | One character's own `scale` (60% to 140%), vertical offset or facing, per device |
+
+The World Builder's "Convert the cast" redraws every sprite set as a taller sprite type from the pictures the cast has, as version sets (see the Characters tab); the existing pictures stay. The tab also stores the world's default text box size (desktop height and width, phone height), which players can override.
+
+### Colours, typography and menu picture
 
 | JSON field | Content |
 |---|---|
 | `uiTheme.primaryColor` | Primary accent color |
 | `uiTheme.secondaryColor` | Secondary color |
 | `uiTheme.textboxGradient1/2/3` | Dialog box gradient colors |
+| `uiTheme.fontFamily`, `fontGoogleUrl`, `fontSize`, `fontLineHeight`, `fontLetterSpacing`, `overridePlayerFont` | Typography: a font from the list or any Google Font, and whether the world's font overrides the player's own |
+| `mainMenuBackground`, `mainMenuBackgroundThumbnail` | The world's main menu picture |
+
+The colour presets (33, in six groups) and a custom palette both write the `uiTheme` keys above.
 
 ---
 
@@ -437,6 +514,22 @@ Advanced overrides for specific engine prompts, organized into switchable prompt
 |---|---|
 | `customPrompts` | Object with keys: `dm` (director), `am` (arc manager), `na` (narrator), `td` (translator), and others; holds persona sub-section and World Builder generation-template overrides from a user-created prompt set; empty while the Default prompt set is active |
 | `activePromptSet` | Reference to the active prompt set, e.g. `{ "kind": "default" }` |
+| `worldPromptSet` | A prompt set stored in the world, which travels with its export (marked "world" in the Prompts tab) |
+
+Each prompt set also holds its own Banned Words list, shared by every AI writer in that set.
+
+---
+
+## Builder steering fields
+
+The World Builder's AI builders save the instructions typed into them with the world. They steer the builders, and the export does not write them.
+
+| JSON field | Builder |
+|---|---|
+| `locationPreferences` | AI Location Builder: which places to write |
+| `weatherInstructions` | AI Location Builder: weather and atmosphere for location prompts |
+| `moodPreferences` | Music builder |
+| `loreBuilderPreferences`, `loreBuilderTopics` | Lorebook Builder |
 
 ---
 
@@ -465,7 +558,7 @@ notes/ (story, intention scope)
                        → storyTriggers[] (story events, where trigger day exists)
 
 notes/ (character)     → characters[].name, lastName, type, role, availableFromDay,
-                         baseProfile, appearance, spriteSets[] (incl. per-set
+                         baseProfile, futureStorySeeds, appearance, spriteSets[] (incl. per-set
                          appearance, baseImage, basePrompt); sex is read for
                          pronouns, never exported
                          [Body sections → artStyle.sprite.clothingRules]
@@ -476,6 +569,8 @@ project/foundation.md (music ref)
 notes/ (character)     → moods[] (character_theme entries, linked via characterRef)
 project/foundation.md (expressions)
                        → availableExpressions[]
+standard 13 in standards.md
+                       → stage.mode, stage.spriteFraming, stage.spriteShape
 ```
 
 ### Export skill deliverables
@@ -489,7 +584,12 @@ The `worldbuilder-ainime-export` skill produces formatted output ready for entry
 These fields are auto-generated or configured by the platform — do not produce content for them:
 
 - `worldId` — UUID assigned by the platform
-- `generateSideCharacterOnNewGame` — builder's platform toggle; preserved on re-export, never derived from notes (see the Adventure tab)
+- `generateSideCharacterOnNewGame`, `randomizedStart`, `romancePair`, `choices`, `quickSlots` — New Game options set in the platform; preserved on re-export, never derived from notes (see the Adventure tab)
+- `spriteSets[].cutouts`, `expressionPrompts` and platform-made version sets — produced by the platform's own sprite tools; preserved on re-export
+- `stage.*` other than the three keys standard 13 sets — stage tuning done in the platform's preview; preserved on re-export
+- `artStyle.*.style_reference`, `style_reference_enabled` — reference images imported in the platform
+- `locationPreferences`, `weatherInstructions`, `moodPreferences`, `loreBuilderPreferences`, `loreBuilderTopics` — builder steering (see Builder steering fields)
+- `worldPromptSet` — prompt-set customization
 - `characters[].image` — generated artwork
 - `activePromptSet` — prompt-set reference; prompt sets are builder customization
 - `locations.<segment>[].url` — when platform-generated; bundled location images use `asset://sandboxWorldAssets/<uuid>` and are export-produced

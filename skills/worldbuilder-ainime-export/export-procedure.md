@@ -42,8 +42,9 @@ When the export needs condensing, use the adjustment order in section 4, then re
 
 ### Characters
 
+- [ ] A new world sets `stage.mode`, `stage.spriteFraming` and `stage.spriteShape` as standard 13 in `standards.md` says, and every look has a full-body set (`framing: "full"`, its own set or a version set) with transparent backgrounds. An existing world keeps the `stage` it has.
 - [ ] Every character has a non-empty `name`. `lastName` is optional: the live Fields of Mistria export leaves it empty for all 38 characters, and the platform does not need it.
-- [ ] Every character has `role`, `baseProfile`, `appearance`, `type` and `availableFromDay`.
+- [ ] Every character has `role`, `baseProfile`, `futureStorySeeds`, `appearance`, `type` and `availableFromDay`.
 - [ ] Every character has at least one sprite set, and its Casual set is named `default`. Fewer than the two standardized sets (Casual and Working/Active) is allowed.
 - [ ] Every sprite set carries a `neutral` expression, and every expression key in every sprite set is named in `availableExpressions`. A set need not carry all of them: the live Fields of Mistria export has no set with all 28 names, and the most any set carries is 18. The tier a project chooses at the start sets how many expressions to generate (`expression-standard.md`); it is not a pre-flight check, because an existing list may predate the tiers.
 - [ ] No character has `availableFromDay` greater than the calendar year length.
@@ -52,7 +53,7 @@ When the export needs condensing, use the adjustment order in section 4, then re
 - [ ] Every sprite set has its own `appearance`, starting with the character's unchanged physical-features preamble.
 - [ ] `baseImage` matches the set's `expressions.neutral` where both exist.
 - [ ] `color` follows standard 7 in `standards.md`. `startingInfluence` is an integer or absent.
-- [ ] Every pronoun in `appearance`, per-set `appearance` and Future Storylines agrees with the note's `sex` field.
+- [ ] Every pronoun in `appearance`, per-set `appearance` and `futureStorySeeds` agrees with the note's `sex` field.
 - [ ] `baseProfile` prose is complete and in the target range (about 900 tokens supporting, about 1500 major), and all six influence bands are present in it.
 - [ ] Each `baseProfile` passes the reconciliation comparison in section 5.
 
@@ -60,18 +61,18 @@ When the export needs condensing, use the adjustment order in section 4, then re
 
 - [ ] Every non-recurring trigger has `triggerOnDay` of at most twice the calendar year length. A day past one year is a second-year scene: it is allowed and listed in section 3. The same ceiling applies to lore entries.
 - [ ] Two non-recurring triggers may share a day. The tone-conflict check in section 3 covers them. The live Fields of Mistria export has four such days, including two arrival-day scenes.
-- [ ] Every recurring trigger is one entry per occurrence, with an absolute `triggerOnDay` inside the calendar year. A weekly market gets one entry per week, each with its own day.
-- [ ] Every trigger has a non-empty `promptInjection`.
-- [ ] All festival and observance events have `storyTriggers` entries. Recurring events have `recurring: true`.
+- [ ] Every trigger declares `recurrence` (`once`, `yearly`, `seasonal`, `weekly` or `interval`), and every `interval` trigger has a positive `recurrenceIntervalDays`. A repeating trigger is one entry whose `triggerOnDay` is its first occurrence, inside the calendar year.
+- [ ] Every trigger has a non-empty `promptInjection` and a non-empty `playerBlurb`, and no `playerBlurb` gives away a surprise its `promptInjection` holds (standard 2 in `standards.md`).
+- [ ] All festival and observance events have `storyTriggers` entries with a repeating `recurrence`.
 - [ ] The calendar holds only what standard 2 in `standards.md` allows. Every returned character event and every other exception carries a written justification, and each justification names one of the reasons standard 2 lists.
 - [ ] `hiddenFromPlayer: true` is used only as standard 2 in `standards.md` allows.
-- [ ] Story intention notes with concrete triggers have `storyTriggers` entries, or stay in the character's Future Storylines under standard 2 in `standards.md`.
+- [ ] Story intention notes with concrete triggers have `storyTriggers` entries, or stay in the character's Future Storylines (`futureStorySeeds`) under standard 2 in `standards.md`.
 - [ ] `arcManagerGuidance` is creative compass guidance, not a game-master prompt.
 
 ### Lore entries
 
 - [ ] Every major location has a concept note and a lore entry. The Background NPC guidelines entry is present.
-- [ ] Every lore entry has at least one keyword and non-empty `content`.
+- [ ] Every lore entry has non-empty `content`, and every entry that fires by keyword (neither `alwaysOn` nor `dice`) has at least one keyword.
 - [ ] `enabled` is explicitly set on every entry.
 - [ ] `availableFromDay` is set on every entry per layer and is at most twice the calendar year length.
 - [ ] Keywords are specific, with no partial-match traps and no multi-word compound keywords that need an unlikely exact match.
@@ -80,7 +81,7 @@ When the export needs condensing, use the adjustment order in section 4, then re
 
 - [ ] `locations` is an object keyed by day segment. Each segment named in `daySegments` has at least one location image.
 - [ ] Location prompts describe a ground-level perspective, not an aerial or establishing shot.
-- [ ] Location names use the slug format.
+- [ ] Location names use the slug format, in the order place, time of day, then any version (`cafe_night_rain`).
 
 ### Art style
 
@@ -110,7 +111,7 @@ An existing `.sbworld` holds generated assets (location images, character sprite
 
 Run after the pre-flight check passes. It finds content that will never reach the player.
 
-**Lore entry keyword analysis.** Search the keywords in every character's `baseProfile`, `settingSummary`, `introText`, `arcManagerGuidance`, `initialStoryArc` and every trigger's `promptInjection`.
+**Lore entry keyword analysis.** Search the keywords in every character's `baseProfile` and `futureStorySeeds`, `settingSummary`, `introText`, `arcManagerGuidance`, `initialStoryArc` and every trigger's `promptInjection`.
 
 *Will never fire (CRITICAL):*
 - Keywords that appear nowhere else in the export. If no in-world content would naturally mention the term, the player never meets it and the entry is dead content.
@@ -161,21 +162,22 @@ The general principle: adjust metadata and supplementary content first (keywords
 
 ---
 
-## 5. `baseProfile` reconciliation
+## 5. `baseProfile` and `futureStorySeeds` reconciliation
 
-**Decision, recorded here:** the export settles `baseProfile` drift by reconciliation, not by derivation. The profile is not a mechanical copy of the card: Future Storylines is writing, not a transform, so a generator would need a new card-to-profile contract. Reconciliation keeps the card-assembly contract and makes the export prove it.
+**Decision, recorded here:** the export settles drift in a character's two card fields by reconciliation, not by derivation. `baseProfile` is a near-verbatim copy of the card, which the export re-assembles and compares. `futureStorySeeds` is writing, not a mechanical copy: Future Storylines are rewritten from Story Seeds, so a generator would need a new card-to-field contract. Reconciliation keeps the card-assembly contract and makes the export prove it.
 
 **The contract** is `card-assembly.md`:
 
 - Verbatim from the character note, apart from the markdown emphasis markers the export strips (shipped profile sections are plain text, so `**Eiland:**` ships as `Eiland:`): the preamble (no heading), Background, Body, Soul, Relationships and Voice / Dialogue. The one change of content is that Relationships ships without its archetype labels (`card-assembly.md`, Relationships).
-- Transformed: Future Storylines, rewritten from Story Seeds. Rewrite it when Story Seeds changed since the last export. Keep the exported section otherwise.
+- Transformed: Future Storylines, rewritten from Story Seeds into the separate `futureStorySeeds` field. Rewrite them when Story Seeds changed since the last export. Keep the exported field otherwise. A profile from an earlier export that still ends with a Future Storylines section has that section moved into `futureStorySeeds` at the next export.
 - Never shipped: Intimate Dynamics and Design Notes.
 
 **At every export, first or repeat:**
 
 1. Re-assemble each character's `baseProfile` from the current card under the contract.
 2. Diff the result against the exported `baseProfile` and apply the differences to the versioned `world.json`.
-3. Pre-flight comparison: for each profile, compare the preamble and each of the five verbatim sections with the card's, after whitespace normalisation, after removing markdown emphasis markers (`**` and `*`) from the card's text, and, for Relationships, after removing the card's archetype labels. A marker or label left in a profile's Relationships section fails the check. Require a Future Storylines section.
+3. On a first export, write each character's `futureStorySeeds` from the current Story Seeds. On a repeat export, the last export is the most recent commit that changed the versioned `exports/ainime/world.json`; find it with `git log -1 -- exports/ainime/world.json`. Compare each character's Story Seeds with that character note's Story Seeds at that commit. Where they changed, or the character is new, rewrite that character's `futureStorySeeds` from the current Story Seeds. Then check that every Story Seed title appears as a storyline label in `futureStorySeeds`, and that every storyline label there matches a current Story Seed.
+4. Pre-flight comparison: for each profile, compare the preamble and each of the five verbatim sections with the card's, after whitespace normalisation, after removing markdown emphasis markers (`**` and `*`) from the card's text, and, for Relationships, after removing the card's archetype labels. A marker or label left in a profile's Relationships section fails the check. Require a non-empty `futureStorySeeds`, and fail a profile that still holds a Future Storylines section.
 
 **Condensing is made in the card.** If a profile must be shorter (adjustment order, item 4), shorten the character note and re-export. The next export then reproduces the change. A profile edited alone is overwritten by the next export.
 

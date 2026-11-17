@@ -52,7 +52,8 @@ in the Anima vault's worldbuilder-workflow domain.
 | `storyTriggers[].name` | Structural | Event or intention note title |
 | `storyTriggers[].triggerOnDay` | Derived | Agent assigns absolute calendar day from timing language in event note's What Happens section or intention note trigger condition |
 | `storyTriggers[].promptInjection` | Derived | Agent converts event note Scene Effects or intention note content into active engine direction |
-| `storyTriggers[].recurring` | Derived | Agent determines from event note whether the event repeats annually; intention story triggers default to `false` |
+| `storyTriggers[].recurrence` | Derived | Agent determines from event note how the event repeats (`yearly`, `seasonal`, `weekly`, `interval`) or that it happens `once`; intention story triggers default to `once` |
+| `storyTriggers[].playerBlurb` | Derived | Agent writes the player-facing calendar text from the event note, keeping back any surprise the `promptInjection` holds |
 
 ## Calendar fields
 
@@ -84,7 +85,8 @@ in the Anima vault's worldbuilder-workflow domain.
 | `characters[].lastName` | Structural | Character note filename |
 | `characters[].type` | Structural | Cast plan in `project/plan.md` (Major="main", Supporting="side") |
 | `characters[].role` | Derived | Agent derives from character note content (position, relationships, narrative function) |
-| `characters[].baseProfile` | Derived | Agent assembles from character note Background, Body, Soul, Relationships, and Story Beats sections per `card-assembly.md`; Story Beats are transformed to possibility-style framing in the Future Storylines subsection |
+| `characters[].baseProfile` | Derived | Agent assembles from character note preamble, Background, Body, Soul, Relationships and Voice / Dialogue sections per `card-assembly.md` |
+| `characters[].futureStorySeeds` | Derived | Agent rewrites the character note's Story Seeds as possibility-style Future Storylines per `card-assembly.md` |
 | `characters[].appearance` | Structural | Character note Body preamble (verbatim or lightly condensed) |
 | `characters[].availableFromDay` | Derived | Agent assigns based on narrative logic and introduction note timing |
 | `characters[].spriteSets[].name` | Constructed | Export-time convention ("default" for casual, descriptive name for others) |

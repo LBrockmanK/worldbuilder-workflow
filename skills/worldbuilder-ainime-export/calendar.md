@@ -53,9 +53,9 @@ The festival count, the layout and its one worked example are in standard 1 in `
 
 ## Mapping Event Notes to storyTriggers
 
-Event notes in `notes/` become `storyTriggers` entries; events whose timing repeats get `recurring: true` in the output.
+Event notes in `notes/` become `storyTriggers` entries. Each entry declares its `recurrence` from the event note's timing: `yearly` for an annual festival, `seasonal` for an event that returns every season, `weekly` for a market day, `interval` with `recurrenceIntervalDays` for any other cadence, and `once` for a one-time event (standard 2 in `standards.md`).
 
-**Finding the calendar day:** Read the opening of the event note's What Happens section — it states when the event takes place and how often ("early spring," "the darkest night of winter," "midway through harvest"). Assign an absolute calendar day that fits: `(season_number - 1) × days_per_season + day_within_season`. The event note does not specify an exact day — the exporter makes this decision based on the note content and the world's calendar structure.
+**Finding the calendar day:** Read the opening of the event note's What Happens section — it states when the event takes place and how often ("early spring," "the darkest night of winter," "midway through harvest"). Assign an absolute calendar day that fits: `(season_number - 1) × days_per_season + day_within_season`. The event note does not specify an exact day — the exporter makes this decision based on the note content and the world's calendar structure. For a repeating event, `triggerOnDay` is its first occurrence, and the cadence counts from that day.
 
 **Constructing the entry:**
 ```json
@@ -65,7 +65,8 @@ Event notes in `notes/` become `storyTriggers` entries; events whose timing repe
   "kind": "world",
   "triggerOnDay": 8,
   "promptInjection": "...",
-  "recurring": true
+  "playerBlurb": "The square fills with stalls and music on the first warm week of spring.",
+  "recurrence": "yearly"
 }
 ```
 
@@ -76,7 +77,9 @@ A character event that standard 2 in `standards.md` lets back onto the calendar 
 > ❌ "Today is the Spring Harvest Festival. People gather at the village center."
 > ✅ "The Spring Harvest Festival transforms every interaction today. Characters are expansive, the usual social distances relax, and introductions that might otherwise take weeks happen naturally. The player should feel the community as a whole for the first time."
 
-**One-time narrative events** from intention story notes that have a concrete calendar day also become `storyTriggers` entries with `recurring: false`.
+**Writing `playerBlurb`:** One or two sentences for the player, who reads them on the in-game calendar days ahead. Write what someone living in the world would know: when and where, and why the player might go. Never give away what the `promptInjection` keeps for a surprise (standard 2 in `standards.md`).
+
+**One-time narrative events** from intention story notes that have a concrete calendar day also become `storyTriggers` entries with `recurrence: "once"`.
 
 ---
 

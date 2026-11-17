@@ -2,7 +2,7 @@
 
 *Reference file for `worldbuilder-ainime-export`. These standards apply to every world exported to ainime-games.com, whether it is a full world built through the Wide phase or a quick world assembled from existing character cards. Other files in this skill point here for the values below and restate none of them.*
 
-Each standard has a short rule, then the reasons and details. Standard 12 describes the audit that checks them before packaging.
+Each standard has a short rule, then the reasons and details. Standard 12 describes the audit that checks them before packaging. Standard 13 sets the layout a new world starts in.
 
 ---
 
@@ -61,7 +61,7 @@ The calendar holds events that happen whatever the player has done:
 - world events
 - quests that open after an earlier calendar event
 
-Every **character event** leaves the calendar by default. A character event is a scene that exists to move one character's story: a meeting, a visit, a confession, a conflict. That beat belongs in the character's Future Storylines section, where it fires when the story reaches it.
+Every **character event** leaves the calendar by default. A character event is a scene that exists to move one character's story: a meeting, a visit, a confession, a conflict. That beat belongs in the character's Future Storylines (the `futureStorySeeds` field), which the Arc Manager can develop into a later arc.
 
 ### Returning a character event
 
@@ -79,9 +79,15 @@ Every story trigger in the world file declares a `kind`: one of `opening`, `worl
 
 `kind` and `justification` are audit-only keys. They live in the tracked world file, and packaging strips them from the shipped one.
 
+### Player text and recurrence
+
+Every event carries a `playerBlurb`: one or two sentences the player reads on the in-game calendar days ahead. The player sees the event's `name` and its `playerBlurb`; the `promptInjection` stays private to the story AI. The blurb says what the player would know in the world: when and where, and why they might go. It never gives away what the `promptInjection` keeps for a surprise. An event that must stay a surprise keeps a plain public blurb ("The harvest fair fills the square") and holds the surprise in its `promptInjection`.
+
+Every event declares its `recurrence`: `once`, `yearly`, `seasonal`, `weekly`, or `interval` with `recurrenceIntervalDays`. Use a named mode wherever one fits, because a named mode stays correct if the calendar is resized. A repeating event is one entry, never one entry per occurrence.
+
 ### Hidden events
 
-`hiddenFromPlayer: true` is kept only for **player-independent surprises**: events that happen in the world whatever the player does, which the player should discover in play rather than see announced. A hidden event that exists to stage a character beat leaves the calendar under the character-event rule above, or returns with its written justification.
+`hiddenFromPlayer: true` removes the event from the player's calendar entirely. Because a public event can already hold a private surprise in its `promptInjection`, hiding is kept only for **player-independent surprises** whose very existence the player should discover in play: events that happen in the world whatever the player does. A hidden event that exists to stage a character beat leaves the calendar under the character-event rule above, or returns with its written justification.
 
 Scripted story beats, arrival sequences and a character's first appearance are not hidden events by default. They follow the character-event rule.
 
@@ -153,7 +159,7 @@ Every character `color` is a Tailwind text class `text-<hue>-<shade>` with a **l
 - Take the hue from the character's own palette.
 - Every colour is unique within its world. Two characters may share a hue only with different shades.
 - In a world shared by two games, uniqueness holds across the whole cast. The quick-world audit reads the world's configuration, which holds the cast of every game, so its colour check covers both games. A full world is one game.
-- Every colour is a class the platform's stylesheet defines. A class the stylesheet lacks (for example `text-zinc-300` or `text-neutral-300`) renders black. The defined set, with its source and read date, is kept in one data file the audit reads.
+- Every colour is a class the platform's stylesheet defines. A class the stylesheet lacks renders black. The defined set, with its source and read date, is kept in one data file the audit reads. The set grows with the platform: `text-zinc-300` and `text-neutral-300` were missing when this standard was first written and are defined as of 2026-11-16, so re-read the stylesheet before trusting an old data file.
 
 ---
 
@@ -249,3 +255,23 @@ Pass condition:
 - Every finding is either fixed (the fix changes the file, so a fresh read follows) or carries a recorded disposition: one sentence, kept with the export record, saying why the text stands.
 
 The two parts are independent. A clean script report does not replace the model read, and the model read does not replace the script.
+
+---
+
+## 13. Visual novel layout and full-body sprites
+
+A new world starts in the Visual novel layout with full-body cut-out sprites. Its `world.json` sets:
+
+| Key | Value | Meaning |
+|---|---|---|
+| `stage.mode` | `"stage"` | The world starts in Visual novel, with the characters standing in front of the background |
+| `stage.spriteFraming` | `"full"` | Visual novel shows full-body sprites |
+| `stage.spriteShape` | `"tall"` | New sprites are drawn 9:16, head to feet |
+
+Every look has a full-body set (`framing: "full"`) drawn on a transparent background, so it is a cut-out. That set is either the look's own set or a version set of it. The sprite method that produces these pictures is the Image Gen process standards' own; this standard sets only what the world declares. Leave `stage.cutoutSprites` unset: Visual novel turns cut-outs on by default.
+
+Square chest-up pictures stay usable. Players can still switch to the Portraits layout, which shows the upper part of a full-body sprite when a look has no chest-up picture. A world that also wants square chest-up pictures for Portraits keeps them as the look's own set and adds the full-body pictures as a version set (`versionOf` the look, `framing: "full"`).
+
+Existing worlds keep the layout and sprites they have. Moving one to this standard is a separate decision for that world.
+
+Every other `stage` key (capacity, floor, sprite height, places, per-character adjustments, speaker portrait) is tuned in the platform's UI tab preview against the world's real sprites, and a re-export preserves it.

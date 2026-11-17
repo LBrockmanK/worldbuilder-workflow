@@ -52,7 +52,8 @@ Fields are marked **required** or **optional**. Required fields must be present 
 | builder-specified | `calendarConfig.earliestClosePrompts`, `minPromptsBeforeTransition`, `usualMaxPrompts` | opt |
 | builder-specified | `calendarConfig.dailyPlannerDirective` | opt |
 | `project/direction.md` + story arc notes in `notes/` | `yearContexts` | opt |
-| builder-specified (set in the platform's Adventure tab) | `generateSideCharacterOnNewGame` | opt |
+| builder-specified (set in the platform's Adventure tab) | `generateSideCharacterOnNewGame`, `randomizedStart`, `romancePair`, `choices`, `quickSlots` | opt |
+| standard 13 in `standards.md` (new worlds) | `stage.mode`, `stage.spriteFraming`, `stage.spriteShape` | opt |
 | `project/direction.md` | `arcManagerGuidance` | opt |
 | intention story notes + event notes in `notes/` | `storyTriggers[]` (including `hiddenFromPlayer`) | opt |
 | event notes in `notes/` | `calendarConfig.weatherPools`, `eventCalendarSummary` | opt |
@@ -66,7 +67,7 @@ Fields are marked **required** or **optional**. Required fields must be present 
 | location notes in `notes/` (image prompts), builder-specified (names) | `locations` | opt |
 | `project/foundation.md` — music reference | `musicStyle.prefix`, `musicStyle.suffix` | opt |
 | builder-specified | `moods` | opt |
-| builder-specified | `theme` | opt |
+| builder-specified (the platform's UI tab) | `uiTheme`, other `stage` keys | opt |
 | builder-specified | `customPrompts` | opt |
 
 ---
@@ -126,7 +127,7 @@ Read `project/foundation.md` and extract the following. The section names in the
 
 **`calendarConfig.startingYear`** / **`calendarConfig.baseYear`** (optional, integer) — The calendar year Day 1 starts in. Use 1400 for medieval, 3025 for sci-fi, etc. Newer platform builds read `baseYear`; current exports carry both keys with the same value. Write both, and keep them equal.
 
-**`generateSideCharacterOnNewGame`** (optional, boolean) — The Adventure tab's "AI generate side character" toggle. When `true`, the platform has the AI generate a side character at New Game (how many, and on what basis, is not yet verified against the platform). This is a builder choice, not world content: no note supplies it, and the export never sets it from the notes. A re-export preserves whatever value the existing `.sbworld` holds. The Adventure tab's other New Game toggles (randomize the opening arc, ignore the opening arc, random NPC romance pair) are app-level settings that never appear in the `.sbworld`.
+**`generateSideCharacterOnNewGame`** (optional, boolean) — The Adventure tab's "AI generate side character" toggle. When `true`, the platform has the AI generate a side character at New Game (how many, and on what basis, is not yet verified against the platform). This is a builder choice, not world content: no note supplies it, and the export never sets it from the notes. A re-export preserves whatever value the existing `.sbworld` holds. The Adventure tab's other New Game options (`randomizedStart`, `romancePair`, `choices` and the quick starts in `quickSlots`) are also saved in the world; they are builder choices too, and a re-export preserves them the same way (`../../docs/target-system.md`, Adventure tab).
 
 ---
 
@@ -168,7 +169,7 @@ Every season carries one key per declared segment name (standard 1 in `standards
 
 **`eventCalendarSummary`** (optional) — Prose overview of the event calendar for LLM reference. Summarize the festival calendar and its emotional rhythms after all events are written.
 
-**`storyTriggers[]` (calendar events)** — Which events sit on the calendar, and which character events return with a written justification, is set by standard 2 in `standards.md`. Recurring annual events use `recurring: true` in the output. See `calendar.md` for how to derive `triggerOnDay` from the timing language that opens each event note's What Happens section, and how to write effective `promptInjection` content.
+**`storyTriggers[]` (calendar events)** — Which events sit on the calendar, and which character events return with a written justification, is set by standard 2 in `standards.md`, which also sets the `playerBlurb` and `recurrence` every event carries. See `calendar.md` for how to derive `triggerOnDay` and `recurrence` from the timing language that opens each event note's What Happens section, and how to write effective `promptInjection` and `playerBlurb` content.
 
 ```json
 {
@@ -177,16 +178,19 @@ Every season carries one key per declared segment name (standard 1 in `standards
   "kind": "world",
   "triggerOnDay": 8,
   "promptInjection": "Active creative direction injected on this day.",
-  "recurring": true,
+  "playerBlurb": "What the player reads about this event on the in-game calendar.",
+  "recurrence": "yearly",
   "hiddenFromPlayer": false
 }
 ```
+
+**`playerBlurb`** (string) — The player sees each upcoming event's `name` and `playerBlurb` on the in-game calendar; the `promptInjection` stays private. **`recurrence`** (string) — `once`, `yearly`, `seasonal`, `weekly`, or `interval` with `recurrenceIntervalDays`. The older boolean `recurring` is read by the platform only when `recurrence` is absent; the export writes `recurrence`.
 
 Every trigger declares a `kind`, and a `character` trigger also carries a `justification`. Both are audit-only keys that the build strips (standard 2 in `standards.md`).
 
 `triggerOnDay` is the absolute calendar day (1 to seasons × `daysPerSeason`; see `export-procedure.md` for the year-length rule). `promptInjection` is active direction to the story engine, not a neutral description of the event.
 
-**`hiddenFromPlayer`** (optional, boolean) — Marks a trigger as hidden from the player. The intended reading is that the trigger still fires and injects its `promptInjection` while the player is not shown it in advance; that runtime behavior is inferred from the field name and from how existing exports use it, not confirmed against the platform. Which events may use it, and which character events stay off the calendar, is set by standard 2 in `standards.md`.
+**`hiddenFromPlayer`** (optional, boolean) — Hides the event from the player's calendar entirely. That it still fires and injects its `promptInjection` is inferred from how worlds use it, not confirmed against the platform. Which events may use it, and which character events stay off the calendar, is set by standard 2 in `standards.md`.
 
 ### Life Stages (`yearContexts`, optional)
 
@@ -241,6 +245,8 @@ Adjust thresholds based on world pacing if these defaults don't fit.
 
 **Enabled** — All entries default to `true`. Set `false` only for entries that should exist in the export but never activate.
 
+**Always-on and rolled entries** — An entry can instead fire on every scene (`alwaysOn: true`) or by a random roll (`dice`), as `../../docs/target-system.md` describes under the Lore tab. Concept notes map to keyword entries, so the export writes neither kind.
+
 ---
 
 ## Character Export
@@ -253,6 +259,7 @@ For each character note in `notes/`, produce a character record. Process one cha
 | Major/Supporting (cast plan entry in `project/plan.md`) | `type`: `"main"` or `"side"` | opt |
 | Derived by export skill | `role` | opt |
 | Assembled card prose | `baseProfile` | opt |
+| Story Seeds, rewritten as Future Storylines | `futureStorySeeds` | **req** |
 | Body preamble | `appearance` | opt |
 | Sprite sets (see below) | `spriteSets[]` | opt |
 | Available Day (see below) | `availableFromDay` | opt |
@@ -262,11 +269,11 @@ For each character note in `notes/`, produce a character record. Process one cha
 
 **`name`** (required) / **`lastName`** (optional) — Extract from the character note filename.
 
-**`type`** (optional) — `"main"` for major characters, `"side"` for supporting. Main characters get dedicated story arcs, fully generated personality traits, likes/dislikes, and relationship dynamics. All characters are romanceable. Maps from the character's Major/Supporting designation in the cast plan (`project/plan.md`).
+**`type`** (optional) — `"main"` for major characters, `"side"` for supporting. Mains are optional, and side characters are written at the same depth as mains. The one difference: a main gets a personal story arc from the start, and a side character gets one only when play promotes them, which happens to the characters the player spends time with. All characters are romanceable. Maps from the character's Major/Supporting designation in the cast plan (`project/plan.md`).
 
 **`role`** (optional) — Not stored in the character note. Derive from the character's function as established by the character note content (their position in the world, their relationship to the player, their narrative role). Write as plain text. Examples: "The player's mysterious neighbor; a hacker with a heart of gold."
 
-**`baseProfile`** (optional) — The character card prose. Include personality, psychology, backstory, motivations, quirks, speech patterns. Each section opens with a plain-text heading line (no markdown heading marks, no dividers). Shipped profile sections are plain text: the export strips markdown emphasis markers from them, so a relationship name written as `**Eiland:**` on the card ships as `Eiland:`. The "Future Storylines" section is required: it ends the profile and guides what happens after the character's initial story arcs conclude. See `card-assembly.md` for full assembly guidance. This is the most complex field; do not attempt it without reading that file.
+**`baseProfile`** (optional) — The character card prose. Include personality, psychology, backstory, motivations, quirks, speech patterns. Each section opens with a plain-text heading line (no markdown heading marks, no dividers). Shipped profile sections are plain text: the export strips markdown emphasis markers from them, so a relationship name written as `**Eiland:**` on the card ships as `Eiland:`. The profile ends with Voice / Dialogue; Future Storylines ship in `futureStorySeeds` instead. See `card-assembly.md` for full assembly guidance. This is the most complex field; do not attempt it without reading that file.
 
 **`appearance`** (optional) — Used for sprite generation and as context for all in-game AIs. Use the Body section's appearance preamble of the character note verbatim or lightly condensed. Cover species/type and sex if relevant, apparent age and body type, notable features, clothing style. For a long-lived character state the age they appear to be, never their real age (rule in `../worldbuilder-character/card-format.md`).
 
@@ -274,13 +281,15 @@ For each character note in `notes/`, produce a character record. Process one cha
 
 **`color`** (optional, string) — The character's name color in dialogue, as a Tailwind CSS text-color class of the form `text-<hue>-<shade>`. Pick a hue from the character's own palette (hair, signature garment). The allowed shades, the uniqueness rule and the classes the platform defines are in standard 7 in `standards.md`. Do not write a hex value or a bare color name.
 
-**`sex`** (internal, character note only) — The character note's `sex` field records the character's sex so every generated text uses the right pronouns. It is worldbuilder schema, not ainime schema: the export never writes a `sex` key to `world.json`. Read it before writing `appearance`, per-set `appearance` and Future Storylines, and check that every pronoun in those fields agrees with it. Where the character's sex matters to how they look, state it in `appearance` in plain words.
+**`sex`** (internal, character note only) — The character note's `sex` field records the character's sex so every generated text uses the right pronouns. It is worldbuilder schema, not ainime schema: the export never writes a `sex` key to `world.json`. Read it before writing `appearance`, per-set `appearance` and `futureStorySeeds`, and check that every pronoun in those fields agrees with it. Where the character's sex matters to how they look, state it in `appearance` in plain words.
 
 **Body preamble → appearance:** The Body appearance preamble provides
 the character's physical description for the appearance field.
 
+**`futureStorySeeds`** (required, string) — The character's Future Storylines: possibilities the Arc Manager can develop into later arcs. The Dungeon Master, the AI that plays scenes, does not receive this field. Labelled "Future story ideas" in the platform's character editor. See `card-assembly.md`.
+
 **Story Seeds → Future Storylines:** Each Story Seed entry maps to
-a future storyline. The export transforms definite scenario prose to
+a future storyline in `futureStorySeeds`. The export transforms definite scenario prose to
 possibility-style framing. Trigger conditions that the platform
 cannot mechanically enforce are woven into the storyline context as
 narrative framing.
@@ -326,6 +335,8 @@ Each sprite set carries three fields beyond `name`, `description` and `expressio
 - **`baseImage`** (optional, string) — The set's reference image: an `asset://sandboxWorldAssets/<uuid>` reference. Set it to the same asset as the set's `expressions.neutral` when that image exists, so the platform generates the other expressions from the same base.
 - **`basePrompt`** (optional, string) — The image-generation prompt for the set's base image. Not yet seen in an inspected export: the purpose here is read from the field name and its pairing with `baseImage`, and is unverified. Until it is confirmed, write it from the set's `appearance` only when the platform is to generate the base image, and leave it out when `baseImage` points to a bundled asset.
 
+**Sprite type.** In a new world every look has a full-body cut-out set: `framing: "full"`, 9:16 pictures with transparent backgrounds (standard 13 in `standards.md`). It is the look's own set, or a version set beside square chest-up pictures. A set drawn in a second sprite type is a version set (`versionOf` and `framing`), described in `../../docs/target-system.md` under the Characters tab. An existing world keeps the sprites it has.
+
 Two sets are standardized for convenience:
 - **Casual** (`name: "default"`) — at rest, natural state
 - **Working/Active** — doing their primary activity
@@ -362,11 +373,13 @@ Read the Art style section of `project/foundation.md`. Translate the plain-langu
 
 ### Sprite Generation
 
-**`artStyle.sprite.style_prefix`** / **`style_suffix`** / **`negative_prompt`** (optional) — Same structure for character sprites. Sprite style should be consistent with background style but may have different technical requirements (consistent character proportions). Write the `style_suffix` background text from the Background rule in `expression-standard.md`: one fixed two-colour gradient per sprite set, unchanged by emotion. The exported text is a derived copy of that rule. Only image models that take a negative prompt use it; the others ignore it.
+**`artStyle.sprite.style_prefix`** / **`style_suffix`** / **`negative_prompt`** (optional) — Same structure for character sprites. Sprite style should be consistent with background style but may have different technical requirements (consistent character proportions). Write the `style_suffix` background text from the Background rule in `expression-standard.md`: a transparent background for cut-out sprites, and one fixed two-colour gradient per set for sprites drawn on a backdrop. The exported text is a derived copy of that rule. Only image models that take a negative prompt use it; the others ignore it.
 
 **`artStyle.sprite.clothingRules`** (optional, string array) — Clothing directives for sprite generation, one rule per array entry (the UI shows one per line). Use them for world-wide costume rules: recognizable silhouettes and color motifs per character, a uniform element a faction always wears, a ban on copying costumes from existing franchises. Derive them from the character notes' Body sections and the foundation document's art style reference.
 
-**`artStyle.sprite.maintainConsistency`** (optional) — When enabled, appends a same-character consistency line to each sprite prompt to improve visual consistency across expressions.
+**`artStyle.sprite.same_character_consistency`** (optional, boolean) — When enabled, appends a same-character consistency line to each sprite prompt to improve visual consistency across expressions.
+
+**Style Reference Images** (`artStyle.background.style_reference`, `artStyle.sprite.style_reference`, `artStyle.vnScene.style_reference`, each with a `style_reference_enabled` switch) — A picture in the wanted look, sent with every picture of that kind the world draws. They are imported in the platform, and the export does not write them.
 
 **`artStyle.sprite` and emergent characters.** Ainime draws characters it invents during play from the sprite guidance alone. Tune `artStyle.sprite` for them under standard 9 in `standards.md`.
 
