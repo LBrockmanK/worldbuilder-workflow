@@ -79,7 +79,7 @@ When the reference sheets lack a fact the card needs, the writer does not guess.
 2. Read the source itself for the character, fresh in the new context, for things the sweep overlooked. Record anything found in the sheet with its provenance.
 3. If the fact is still missing, ask the human.
 
-An inference rests on facts a reference document holds or scenes the anime or manga show, and is recorded as `inferred:` in the ledger. A claim with no evidence to rest on is a gap, and the gap rule applies. The writer never fills a gap from invention.
+An inference rests on the sheet facts and the anime or manga addresses its `inferred:` cell names, and is recorded as `inferred:` in the ledger. A claim with no evidence to rest on is a gap, and the gap rule applies. The writer never fills a gap from invention.
 
 ## The evidence readback
 
@@ -91,7 +91,7 @@ After a group of cards, check every Connections row against each card that carri
 
 - A relationship may be one-sided: a card may name a cast member whose own card names it differently or not at all, and a missing entry on the other card is not a discrepancy.
 - Where two cards name each other, ownership names the same owner on both cards.
-- Where two cards name each other, sibling order, where both cards state it, is the same on both cards and is the order the Connections row states.
+- Where two cards name each other as siblings, both cards state the sibling order, and it is the order the Connections row states.
 - Each character's occupations are complete against the sheet.
 
 Fix every discrepancy in the cards, or return it to the human. The boundary is the cast as the sheets list it. A relationship that names a cast member who has no card yet must appear in the Connections table.
@@ -110,7 +110,7 @@ Every difference is reported. The checker script (`scripts/check_coverage.py`, `
 
 `scripts/check_coverage.py` checks what a script can check. The writer runs its `world` mode at the end of each group of cards, after the cross-card pass, and fixes every FAIL line or returns it to the human before the group counts as done.
 
-- `world` mode, over a world root: every character note has a ledger; every entry of every card section present (Intimate Dynamics included) and every Body preamble clause has a ledger row; every ledger row names an entry the note has; every named source exists under `reference/`, and flagged rows are listed apart, and `inferred:` rows are accepted as written claims; every Contradictions row of every sheet has two sources; every character note's ledger source stays inside `reference/`; no character sheet has two sets with identical hashes.
+- `world` mode, over a world root: every character note has a ledger; every entry of every card section present (Intimate Dynamics included) and every Body preamble clause has a ledger row; every ledger row names an entry the note has; every named source exists under `reference/`, and flagged rows are listed apart, and `inferred:` rows are accepted as written claims; every Contradictions row of every sheet has two sources; every file-path source in a character note's ledger stays inside `reference/`, and `inferred:` cells are not read as paths; no character sheet has two sets with identical hashes.
 - `export` mode, over a world root and a `world.json`: the derived-output check.
 
 The checker does not read meaning. The evidence readback and the judgement that a source supports a claim stay with the writer and the critic.
@@ -127,5 +127,5 @@ Each failure from the Fields of Mistria world, and the component here that catch
 | Wrong pet ownership | Sprite-set descriptions named Holt as the owner of Dozy and Henrietta; the cards were right. | The Connections table holds the ownership; the derived-output check reads the descriptions against it. |
 | Job omitted from a role field | Celine's General Store job was in the extraction and dropped when the export wrote `role`. | The sheet's Occupations table lists every job the source states; the derived-output check requires `role` to contain them. |
 | Savant instead of hobbyist | Celine was written as an autistic savant where the source gives a hobbyist, with lecture-shaped voice samples. | The evidence readback compares each claim's degree with the cited lines. |
-| Sibling order unstated | March's card said "his brother Olric" without the birth order that Olric's card stated. | The Connections table states the order; the cross-card pass checks that no card contradicts it. |
+| Sibling order unstated | March's card said "his brother Olric" without the birth order that Olric's card stated. | The Connections table states the order; the cross-card pass checks that both cards state the order the Connections table gives. |
 | Details not derivable from the source | Unsourced details stood in cards: capes in every season, a cabin in the Narrows, a fireplace habit, an invented scene. | The claim-level ledger with flagged rows; the gap rule when the sheet lacks the fact. |

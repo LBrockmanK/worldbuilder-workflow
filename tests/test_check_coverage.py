@@ -373,7 +373,7 @@ class WorldModeTests(CheckerCase):
     def test_a_capitalised_inferred_cell_is_accepted(self):
         ledger = ALICE_LEDGER.replace(
             '| Soul | 1 | claim | alice-source.md |',
-            '| Soul | 1 | claim | Inferred: the sheet Facts |')
+            '| Soul | 1 | claim | Inferred: Alice keeps goats (alice sheet Facts); anime ep 3 02:10 |')
         self.put('notes/Alice.md', alice_note(ledger=ledger))
         result = self.world()
         self.assertEqual(result.returncode, 0, result.stdout)
