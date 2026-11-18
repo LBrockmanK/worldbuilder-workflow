@@ -43,7 +43,7 @@ Stages and Where files live.
 
 The reference documents hold extracted, provenance-bearing material
 and nothing else: no reading of what the material means. The creative
-step does the reading, and the reference sheet is its evidence base.
+step does the reading, and the reference sheets are its evidence base.
 
 Do not skip ingestion to write the card faster. A card written
 directly from raw source material without organized reference

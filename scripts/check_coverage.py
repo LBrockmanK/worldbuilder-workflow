@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check a world's coverage ledgers and reference sheet.
+"""Check a world's coverage ledgers and reference sheets.
 
 Implements the checks of skills/source-extraction-standard.md that a script
 can make. It reads meaning nowhere: whether a source supports a claim stays
@@ -9,11 +9,17 @@ Usage:
     python check_coverage.py world  --world-root <root>
     python check_coverage.py export --world-root <root> --world-json <file>
 
-`world` mode checks every character note's coverage ledger, and the
-reference sheet (contradictions, asset inventory), and the mirrored
-relationships between cards. `export` mode compares the derived fields of an
-exported world.json (`role`, `appearance`, `spriteSets[].description`) with
-the reference sheet and the cards.
+The reference sheets are the files directly in `reference/sheets/` under the
+world root: one `<name>.md` per character and `world <n> <topic>.md` for the
+world files. Subfolders are ignored. A character's name is its file name
+without a leading number, plus the names in the sheet's `aliases` list; every
+name lookup goes through that mapping, case-insensitively.
+
+`world` mode checks every character note's coverage ledger, the reference
+sheets (contradictions, asset inventory), and the mirrored relationships
+between cards. `export` mode compares the derived fields of an exported
+world.json (`role`, `appearance`, `spriteSets[].description`) with the
+reference sheets and the cards.
 
 Report lines start with FAIL, FLAGGED or PENDING. FAIL lines make the exit
 code 1. FLAGGED lists ledger rows for claims left unwritten for want of a
@@ -30,7 +36,8 @@ import sys
 
 import yaml
 
-SHEET_NAME = 'Reference sheet.md'
+SHEETS_DIR = 'reference/sheets'
+WORLD_FILE = re.compile(r'world \d+ ')
 LEDGER_HEADING = 'Coverage ledger'
 CARD_SECTIONS = ['Background', 'Body', 'Soul', 'Relationships',
                  'Intimate Dynamics', 'Voice / Dialogue', 'Story Seeds']
@@ -176,29 +183,86 @@ class Note:
         return names
 
 
-# -- the reference sheet --------------------------------------------------
+# -- the reference sheets ------------------------------------------------
 
-class Sheet:
+def name_list(value):
+    """Names from an `aliases` value: a list of strings, or one string."""
+    if isinstance(value, str):
+        value = [value]
+    if not isinstance(value, list):
+        return []
+    return [str(v).strip() for v in value if v is not None and str(v).strip()]
+
+
+class SheetFile:
+    """One file of reference/sheets/: a character sheet or a world file."""
+
     def __init__(self, path):
-        _, body = split_front_matter(read(path))
+        self.file = os.path.basename(path)
+        stem = os.path.splitext(self.file)[0]
+        self.is_world = bool(WORLD_FILE.match(self.file))
+        front, body = split_front_matter(read(path))
         top = sections(body, 2)
-        chars = sections(top.get('Characters', []), 3)
-        self.cast = list(chars)
-        self.occupations = {}
-        for name, lines in chars.items():
-            rows = table_rows(sections(lines, 4).get('Occupations', []))[1]
-            self.occupations[name.casefold()] = [
-                r.get('Occupation', '') for r in rows if r.get('Occupation')]
+        self.name = None if self.is_world else re.sub(r'^\d+ ', '', stem)
+        self.aliases = [] if self.is_world else name_list(front.get('aliases'))
+        self.occupations = [r['Occupation'] for r in table_rows(
+            top.get('Occupations', []))[1] if r.get('Occupation')]
         self.connections = table_rows(top.get('Connections', []))[1]
         self.contradiction_header, self.contradictions = table_rows(
             top.get('Contradictions', []))
-        self.assets = {name: table_rows(lines)[1] for name, lines in
-                       sections(top.get('Asset inventory', []), 3).items()}
+        self.assets = table_rows(top.get('Asset inventory', []))[1]
+        if self.is_world:
+            self.occupations, self.assets = [], []
+
+
+class Sheets:
+    """Every sheet of a world, and the mapping from names to cast members."""
+
+    def __init__(self, folder):
+        self.files = []
+        for fn in sorted(os.listdir(folder)):
+            path = os.path.join(folder, fn)
+            if fn.endswith('.md') and os.path.isfile(path):
+                self.files.append(SheetFile(path))
+        self.names = {}      # casefolded name -> casefolded canonical name
+        self.members = {}    # casefolded canonical name -> SheetFile
+        self.problems = []
+        claimed = {}         # casefolded name -> SheetFile that claims it
+        for sf in self.files:
+            if sf.name is None:
+                continue
+            key = sf.name.casefold()
+            for name in [sf.name] + sf.aliases:
+                other = claimed.get(name.casefold())
+                if other is not None and other is not sf:
+                    self.problems.append(
+                        f'{other.file} and {sf.file} both claim the name '
+                        f'{name}')
+                    continue
+                claimed[name.casefold()] = sf
+                self.names[name.casefold()] = key
+            self.members.setdefault(key, sf)
+
+    def resolve(self, name):
+        """The casefolded canonical name of the cast member `name` names, or
+        None."""
+        return self.names.get(name.strip().casefold())
+
+    def key(self, name):
+        return self.resolve(name) or name.strip().casefold()
+
+    def names_of(self, member):
+        sf = self.members[member]
+        return [sf.name] + sf.aliases
+
+    def connections(self):
+        return [r for sf in self.files for r in sf.connections]
 
     def owners_of(self, name):
-        return {r['From'] for r in self.connections
+        member = self.key(name)
+        return {r['From'] for r in self.connections()
                 if r.get('Kind', '').casefold() == 'ownership'
-                and r.get('To', '').casefold() == name.casefold()}
+                and self.key(r.get('To', '')) == member}
 
 
 # -- the checks -------------------------------------------------------------
@@ -220,6 +284,8 @@ class Report:
 
 
 def load_world(root):
+    folder = os.path.join(root, *SHEETS_DIR.split('/'))
+    sheets = Sheets(folder) if os.path.isdir(folder) else None
     notes = {}
     notes_dir = os.path.join(root, 'notes')
     if os.path.isdir(notes_dir):
@@ -227,10 +293,10 @@ def load_world(root):
             if fn.endswith('.md'):
                 note = Note(os.path.join(notes_dir, fn))
                 if note.is_character():
-                    notes[note.name.casefold()] = note
-    sheet_path = os.path.join(root, 'reference', SHEET_NAME)
-    sheet = Sheet(sheet_path) if os.path.isfile(sheet_path) else None
-    return notes, sheet
+                    key = (sheets.key(note.name) if sheets
+                           else note.name.casefold())
+                    notes[key] = note
+    return notes, sheets
 
 
 def source_exists(root, item):
@@ -307,55 +373,64 @@ def check_ledger(root, note, report):
             report.fail(f'{note.name}: {key[0]} {key[1]} has no ledger row')
 
 
-def check_sheet(sheet, report):
-    sources = [h for h in sheet.contradiction_header
-               if h.casefold().startswith('source')]
-    for row in sheet.contradictions:
-        count = sum(1 for h in sources if row.get(h, '').strip())
-        if count < 2:
-            report.fail(f'Contradictions: "{row.get("Fact", "")}" has '
-                        f'{count} source(s); a contradiction needs two')
-    for name, rows in sheet.assets.items():
+def check_sheets(sheets, report):
+    for problem in sheets.problems:
+        report.fail(f'{problem}; a name belongs to one cast member')
+    for sf in sheets.files:
+        sources = [h for h in sf.contradiction_header
+                   if h.casefold().startswith('source')]
+        for row in sf.contradictions:
+            count = sum(1 for h in sources if row.get(h, '').strip())
+            if count < 2:
+                report.fail(f'{sf.file}: Contradictions: '
+                            f'"{row.get("Fact", "")}" has {count} '
+                            'source(s); a contradiction needs two')
         sets = {}
-        for r in rows:
+        for r in sf.assets:
             sets.setdefault(r.get('Set', ''), set()).add(r.get('Hash', ''))
         names = list(sets)
         for i, a in enumerate(names):
             for b in names[i + 1:]:
                 if sets[a] == sets[b]:
-                    report.fail(f'Asset inventory: {name}: sets "{a}" and '
-                                f'"{b}" have identical file hashes; record '
-                                'them as one set')
+                    report.fail(f'{sf.file}: Asset inventory: {sf.name}: '
+                                f'sets "{a}" and "{b}" have identical file '
+                                'hashes; record them as one set')
 
 
-def check_mirrors(notes, sheet, report):
-    cast = {n.casefold() for n in sheet.cast} if sheet else set()
-    for note in notes.values():
+def check_mirrors(notes, sheets, report):
+    def key(name):
+        return sheets.key(name) if sheets else name.strip().casefold()
+
+    for me, note in notes.items():
         for other in note.relationship_names():
-            key = other.casefold()
-            if key == note.name.casefold():
+            k = key(other)
+            if k == me:
                 continue
-            if key in notes:
-                back = [n.casefold() for n in notes[key].relationship_names()]
-                if note.name.casefold() not in back:
+            if k in notes:
+                back = [key(n) for n in notes[k].relationship_names()]
+                if me not in back:
                     report.fail(f'Relationships: {note.name} names {other}, '
-                                f'but {notes[key].name} has no mirror entry '
+                                f'but {notes[k].name} has no mirror entry '
                                 f'naming {note.name}')
-            elif key in cast:
+            elif sheets and k in sheets.members:
                 report.pending.append(f'{note.name} names {other}, who has '
                                       'no note yet; mirror pending')
 
 
+def missing_sheets(report):
+    report.fail(f'{SHEETS_DIR}/ does not exist')
+
+
 def check_world(root):
     report = Report()
-    notes, sheet = load_world(root)
+    notes, sheets = load_world(root)
     for note in notes.values():
         check_ledger(root, note, report)
-    if sheet is None:
-        report.fail(f'reference/{SHEET_NAME} does not exist')
+    if sheets is None:
+        missing_sheets(report)
     else:
-        check_sheet(sheet, report)
-    check_mirrors(notes, sheet, report)
+        check_sheets(sheets, report)
+    check_mirrors(notes, sheets, report)
     return report
 
 
@@ -411,35 +486,43 @@ def named_owners(text, name, known):
 
 def check_export(root, world_json):
     report = Report()
-    notes, sheet = load_world(root)
-    if sheet is None:
-        report.fail(f'reference/{SHEET_NAME} does not exist')
+    notes, sheets = load_world(root)
+    if sheets is None:
+        missing_sheets(report)
         return report
+    for problem in sheets.problems:
+        report.fail(f'{problem}; a name belongs to one cast member')
     with open(world_json, encoding='utf-8') as f:
         data = json.load(f)
     for char in data.get('characters', []):
         name = full_name(char)
-        note = notes.get(name.casefold())
+        member = sheets.key(name)
+        note = notes.get(member)
         if note is None:
             report.fail(f'{name}: exported character has no character note')
             continue
         if normalize(char.get('appearance') or '') != note.preamble:
             report.fail(f'{name}: appearance differs from the note\'s '
                         'Body preamble')
-        if name.casefold() not in {c.casefold() for c in sheet.cast}:
+        if member not in sheets.members:
             report.fail(f'{name}: exported character has a card but no '
-                        'subsection under Characters in the reference sheet')
+                        f'character sheet under {SHEETS_DIR}/')
             continue
         role = char.get('role', '')
-        for occ in sheet.occupations.get(name.casefold(), []):
+        for occ in sheets.members[member].occupations:
             if not re.search(rf'(?<!\w){re.escape(occ)}(?!\w)', role,
                              re.IGNORECASE):
                 report.fail(f'{name}: role lacks the occupation "{occ}" '
                             'that the reference sheet lists')
-        owners = sheet.owners_of(name)
-        allowed = {o.casefold() for o in owners}
-        known = ({c.casefold() for c in sheet.cast}
-                 | {r.get(k, '').casefold() for r in sheet.connections
+        owners = sheets.owners_of(name)
+        allowed = set()
+        for o in owners:
+            allowed.add(o.casefold())
+            om = sheets.resolve(o)
+            if om in sheets.members:
+                allowed |= {n.casefold() for n in sheets.names_of(om)}
+        known = (set(sheets.names)
+                 | {r.get(k, '').casefold() for r in sheets.connections()
                     for k in ('From', 'To')})
         for sset in char.get('spriteSets', []):
             for owner in named_owners(sset.get('description', ''), name,
@@ -450,7 +533,7 @@ def check_export(root, world_json):
                     listed = ', '.join(sorted(owners)) or 'no owner'
                     report.fail(f'{name}: sprite set "{sset.get("name", "")}" '
                                 f'description names {owner} as owner; the '
-                                f'Connections table lists {listed}')
+                                f'Connections tables list {listed}')
     return report
 
 

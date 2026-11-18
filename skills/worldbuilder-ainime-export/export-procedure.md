@@ -11,7 +11,7 @@
 3. Reconcile each character's `baseProfile` with its card (section 5).
 4. Run the pre-flight check (section 1). Every line is pass or fail. A failure blocks the export until resolved.
 5. Run the can-this-ever-fire detection (section 3). It runs only after the pre-flight check passes.
-6. Run the derived-output check (section 6) when the world has a reference sheet.
+6. Run the derived-output check (section 6) when the world has `reference/sheets/`.
 7. Run the two-part audit (section 6a) on the final `world.json`.
 8. Build the archive (section 7).
 
@@ -187,7 +187,7 @@ The general principle: adjust metadata and supplementary content first (keywords
 
 ## 6. Derived-output check
 
-When the world has `reference/Reference sheet.md`, run the checker after `world.json` is written and reconciled, and before the archive is built:
+When the world has `reference/sheets/`, run the checker after `world.json` is written and reconciled, and before the archive is built:
 
 ```bash
 python "<worldbuilder>/scripts/check_coverage.py" export --world-root "<project-root>" --world-json "<project-root>/exports/ainime/world.json"
@@ -195,7 +195,7 @@ python "<worldbuilder>/scripts/check_coverage.py" export --world-root "<project-
 
 A FAIL line (or a non-zero exit) blocks the build. Fix the card or the export and run the check again. List any FLAGGED and PENDING lines in the Export item's record so the human sees them.
 
-A world with no reference sheet skips this step. The step is not a pre-flight line, because the check needs the sheet and the checker stops at once without one.
+A world with no `reference/sheets/` folder skips this step. The step is not a pre-flight line, because the check needs the sheets and the checker stops at once without the folder.
 
 ---
 
