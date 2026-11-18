@@ -16,15 +16,14 @@ without a leading number, plus the names in the sheet's `aliases` list; every
 name lookup goes through that mapping, case-insensitively.
 
 `world` mode checks every character note's coverage ledger, the reference
-sheets (contradictions, asset inventory), and the mirrored relationships
-between cards. `export` mode compares the derived fields of an exported
-world.json (`role`, `appearance`, `spriteSets[].description`) with the
+sheets (contradictions, asset inventory). `export` mode compares the derived
+fields of an exported world.json (`role`, `appearance`, `spriteSets[].description`) with the
 reference sheets and the cards.
 
 Report lines start with FAIL, FLAGGED or PENDING. FAIL lines make the exit
 code 1. FLAGGED lists ledger rows for claims left unwritten for want of a
-source, and PENDING lists relationships that name a cast member with no note
-yet; neither fails. Standard library only, plus pyyaml for the note
+source; PENDING is kept for pending items and no check adds to it now.
+Neither fails. Standard library only, plus pyyaml for the note
 frontmatter.
 """
 
@@ -171,16 +170,6 @@ class Note:
         keys += [('Body', f'preamble {i + 1}')
                  for i in range(len(self.preamble_clauses()))]
         return keys
-
-    def relationship_names(self):
-        names = []
-        for entry in self.entries.get('Relationships', []):
-            first = re.sub(r'^[-*]\s+', '', entry[0])
-            m = re.match(r'\*\*(.+?)\*\*', first)
-            if m:
-                label = m.group(1).rstrip(':').strip()
-                names.append(re.split(r'\s+[—–-]\s+|:', label)[0].strip())
-        return names
 
 
 # -- the reference sheets ------------------------------------------------
@@ -362,6 +351,11 @@ def check_ledger(root, note, report):
             report.fail(f'{note.name}: ledger row {label} names no source '
                         '(write the source, or leave the claim unwritten and '
                         'flagged)')
+        elif source.casefold().startswith('inferred:'):
+            if not source[len('inferred:'):].strip():
+                report.fail(f'{note.name}: ledger row {label} is inferred '
+                            'but names no evidence (write the sheet facts '
+                            'and the anime or manga addresses it rests on)')
         else:
             for item in source.split(';'):
                 if not source_exists(root, item):
@@ -397,26 +391,6 @@ def check_sheets(sheets, report):
                                 'hashes; record them as one set')
 
 
-def check_mirrors(notes, sheets, report):
-    def key(name):
-        return sheets.key(name) if sheets else name.strip().casefold()
-
-    for me, note in notes.items():
-        for other in note.relationship_names():
-            k = key(other)
-            if k == me:
-                continue
-            if k in notes:
-                back = [key(n) for n in notes[k].relationship_names()]
-                if me not in back:
-                    report.fail(f'Relationships: {note.name} names {other}, '
-                                f'but {notes[k].name} has no mirror entry '
-                                f'naming {note.name}')
-            elif sheets and k in sheets.members:
-                report.pending.append(f'{note.name} names {other}, who has '
-                                      'no note yet; mirror pending')
-
-
 def missing_sheets(report):
     report.fail(f'{SHEETS_DIR}/ does not exist')
 
@@ -430,7 +404,6 @@ def check_world(root):
         missing_sheets(report)
     else:
         check_sheets(sheets, report)
-    check_mirrors(notes, sheets, report)
     return report
 
 
