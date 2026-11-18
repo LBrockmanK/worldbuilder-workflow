@@ -7,6 +7,7 @@ assert on the checker's exit code and report lines.
 """
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -70,74 +71,52 @@ BOB_LEDGER = """| Background | 1 | claim | bob-source.md | |
 | Soul | 1 | claim | bob-source.md | |
 | Relationships | 1 | claim | alice-source.md | |"""
 
-SHEET = """---
-type: reference
-title: Reference sheet
-tags: []
----
+OCC_HEAD = "| Occupation | Source | Ids |\n|---|---|---|"
+CONN_HEAD = "| Kind | From | To | Fact | Source | Ids |\n|---|---|---|---|---|---|"
+CONTRA_HEAD = ("| Fact | Side A | Source A | Side B | Source B | Settled reading "
+               "| Reason | Ids |\n|---|---|---|---|---|---|---|---|")
+ASSET_HEAD = "| Set | File | Hash | Ids |\n|---|---|---|---|"
 
-## Characters
 
-### Alice
+def char_sheet(name, facts="", occupations="", connections="",
+               contradictions="", assets="", aliases=None):
+    front = f"type: reference\ntitle: {name}\ndescription: x\n"
+    if aliases is not None:
+        front += "aliases: [" + ", ".join(aliases) + "]\n"
+    return (f"---\n{front}tags: []\n---\n\n## Profile\n\n- Name: {name}\n\n"
+            f"## Facts\n\n{facts}\n\n"
+            f"## Occupations\n\n{occupations}\n\n"
+            f"## Connections\n\n{connections}\n\n"
+            f"## Contradictions\n\n{contradictions}\n\n"
+            f"## Asset inventory\n\n{assets}\n\n"
+            "## Provenance\n\n- none\n")
 
-#### Facts
 
-- Alice keeps goats (source: alice-source.md)
+ALICE_SHEET = char_sheet(
+    'Alice', facts="- Alice keeps goats (source: alice-source.md)",
+    occupations=OCC_HEAD + "\n| gardener | alice-source.md | 1 |"
+                "\n| General Store | alice-source.md | 2 |",
+    connections=CONN_HEAD + "\n| friend | Alice | Bob | Alice and Bob are "
+                "friends | alice-source.md | 1 |",
+    contradictions=CONTRA_HEAD + "\n| Alice's age | 20 | alice-source.md | 21 "
+                   "| bob-source.md | 21 | newer file | 1 |")
 
-#### Occupations
+BOB_SHEET = char_sheet(
+    'Bob', facts="- Bob owns a dog called Rex (source: bob-source.md)",
+    occupations=OCC_HEAD + "\n| smith | bob-source.md | 1 |",
+    connections=CONN_HEAD + "\n| ownership | Bob | Rex | Bob owns Rex "
+                "| bob-source.md | 1 |")
 
-| Occupation | Source |
-|---|---|
-| gardener | alice-source.md |
-| General Store | alice-source.md |
+REX_SHEET = char_sheet(
+    'Rex', facts="- Rex is a dog (source: bob-source.md)",
+    occupations=OCC_HEAD,
+    assets=ASSET_HEAD + "\n| spring | rex/spring/a.png | h1 | 1 |"
+           "\n| spring | rex/spring/b.png | h2 | 1 |"
+           "\n| winter | rex/winter/a.png | h3 | 1 |"
+           "\n| winter | rex/winter/b.png | h4 | 1 |")
 
-### Bob
-
-#### Facts
-
-- Bob owns a dog called Rex (source: bob-source.md)
-
-#### Occupations
-
-| Occupation | Source |
-|---|---|
-| smith | bob-source.md |
-
-### Rex
-
-#### Facts
-
-- Rex is a dog (source: bob-source.md)
-
-#### Occupations
-
-| Occupation | Source |
-|---|---|
-
-## Connections
-
-| Kind | From | To | Fact | Source |
-|---|---|---|---|---|
-| ownership | Bob | Rex | Bob owns Rex | bob-source.md |
-| friend | Alice | Bob | Alice and Bob are friends | alice-source.md |
-
-## Contradictions
-
-| Fact | Side A | Source A | Side B | Source B | Settled reading | Reason |
-|---|---|---|---|---|---|---|
-| Alice's age | 20 | alice-source.md | 21 | bob-source.md | 21 | newer file |
-
-## Asset inventory
-
-### Rex
-
-| Set | File | Hash |
-|---|---|---|
-| spring | rex/spring/a.png | h1 |
-| spring | rex/spring/b.png | h2 |
-| winter | rex/winter/a.png | h3 |
-| winter | rex/winter/b.png | h4 |
-"""
+WORLD_SHEET = ("---\ntype: reference\ntitle: world 1\ndescription: x\n"
+               "tags: []\n---\n\n## Facts\n\n- The town is small.\n")
 
 
 def alice_note(ledger=ALICE_LEDGER, soul="- Soul one.\n- Soul two.",
@@ -170,7 +149,10 @@ class CheckerCase(unittest.TestCase):
         self.root = self.tmp.name
         self.put('notes/Alice.md', alice_note())
         self.put('notes/Bob.md', bob_note())
-        self.put('reference/Reference sheet.md', SHEET)
+        self.put('reference/sheets/1001 Alice.md', ALICE_SHEET)
+        self.put('reference/sheets/1002 Bob.md', BOB_SHEET)
+        self.put('reference/sheets/Rex.md', REX_SHEET)
+        self.put('reference/sheets/world 1 town.md', WORLD_SHEET)
         self.put('reference/alice-source.md', 'alice\n')
         self.put('reference/bob-source.md', 'bob\n')
 
@@ -319,7 +301,7 @@ class WorldModeTests(CheckerCase):
                             for l in self.fails(result)), result.stdout)
 
     def test_a_contradiction_with_one_source_fails(self):
-        self.put('reference/Reference sheet.md', SHEET.replace(
+        self.put('reference/sheets/1001 Alice.md', ALICE_SHEET.replace(
             '| 21 | bob-source.md |', '| 21 |  |'))
         result = self.world()
         self.assertEqual(result.returncode, 1)
@@ -327,9 +309,9 @@ class WorldModeTests(CheckerCase):
                             for l in self.fails(result)), result.stdout)
 
     def test_two_sets_with_identical_hashes_fail(self):
-        self.put('reference/Reference sheet.md', SHEET.replace(
-            '| winter | rex/winter/a.png | h3 |\n| winter | rex/winter/b.png | h4 |',
-            '| winter | rex/winter/a.png | h1 |\n| winter | rex/winter/b.png | h2 |'))
+        self.put('reference/sheets/Rex.md', REX_SHEET.replace(
+            '| winter | rex/winter/a.png | h3 | 1 |\n| winter | rex/winter/b.png | h4 | 1 |',
+            '| winter | rex/winter/a.png | h1 | 1 |\n| winter | rex/winter/b.png | h2 | 1 |'))
         result = self.world()
         self.assertEqual(result.returncode, 1)
         self.assertTrue(any('Rex' in l and 'spring' in l and 'winter' in l
@@ -423,7 +405,7 @@ class ExportModeTests(CheckerCase):
         chars = self.good() + [{'name': 'Dave', 'role': 'x',
                                 'appearance': 'Red hair. Green eyes.'}]
         result = self.export(chars)
-        self.assertTrue(any('Dave' in l and 'reference sheet' in l
+        self.assertTrue(any('Dave' in l and 'sheet' in l
                             for l in self.fails(result)), result.stdout)
 
     def test_a_multi_word_owner_name_is_read_whole(self):
@@ -435,10 +417,10 @@ class ExportModeTests(CheckerCase):
                             for l in self.fails(result)), result.stdout)
 
     def know_mary(self):
-        self.put('reference/Reference sheet.md', SHEET.replace(
-            '| friend | Alice | Bob | Alice and Bob are friends | alice-source.md |',
-            '| friend | Alice | Bob | Alice and Bob are friends | alice-source.md |\n'
-            '| friend | Mary | Bob | Mary knows Bob | bob-source.md |'))
+        self.put('reference/sheets/1002 Bob.md', BOB_SHEET.replace(
+            '| ownership | Bob | Rex | Bob owns Rex | bob-source.md | 1 |',
+            '| ownership | Bob | Rex | Bob owns Rex | bob-source.md | 1 |\n'
+            '| friend | Mary | Bob | Mary knows Bob | bob-source.md | 2 |'))
 
     def test_owned_by_matches_a_known_name_in_any_case(self):
         self.know_mary()
@@ -473,7 +455,7 @@ class ExportModeTests(CheckerCase):
         fails = self.fails(result)
         self.assertTrue(any('Dave' in l and 'appearance' in l
                             for l in fails), result.stdout)
-        self.assertTrue(any('Dave' in l and 'reference sheet' in l
+        self.assertTrue(any('Dave' in l and 'sheet' in l
                             for l in fails), result.stdout)
 
     def test_a_farm_animal_word_counts_as_a_pet_word(self):
@@ -506,18 +488,244 @@ class ExportModeTests(CheckerCase):
     def test_a_last_name_is_part_of_the_identity(self):
         self.put('notes/Carol Smith.md', alice_note().replace(
             'title: Alice', 'title: Carol Smith'))
-        carol = ('### Carol Smith\n\n#### Facts\n\n'
-                 '- Carol is a baker (source: alice-source.md)\n\n'
-                 '#### Occupations\n\n| Occupation | Source |\n|---|---|\n'
-                 '| baker | alice-source.md |\n\n### Bob\n')
-        self.put('reference/Reference sheet.md',
-                 SHEET.replace('### Bob\n', carol, 1))
+        self.put('reference/sheets/1003 Carol Smith.md', char_sheet(
+            'Carol Smith', occupations=OCC_HEAD + '\n| baker | alice-source.md | 1 |'))
         chars = self.good() + [{'name': 'Carol', 'lastName': 'Smith',
                                 'role': 'Cook',
                                 'appearance': 'Red hair. Green eyes.'}]
         result = self.export(chars)
         self.assertTrue(any('Carol Smith' in l and 'baker' in l
                             for l in self.fails(result)), result.stdout)
+
+
+WORLD_TWO = ("---\ntype: reference\ntitle: world 2\ndescription: x\n"
+             "tags: []\n---\n\n## Facts\n\n- A fact.\n\n"
+             "## Connections\n\n" + CONN_HEAD +
+             "\n| ownership | Mary | Rex | Mary owns Rex | bob-source.md | 1 |"
+             "\n| friend | Nobody | Alice | Nobody likes Alice "
+             "| alice-source.md | 2 |\n\n"
+             "## Contradictions\n\n" + CONTRA_HEAD +
+             "\n| Town size | big | alice-source.md | small |  | small "
+             "| newer | 1 |\n")
+
+
+class SheetFolderTests(CheckerCase):
+    def test_a_missing_sheet_folder_gives_one_line_in_world_mode(self):
+        shutil.rmtree(os.path.join(self.root, 'reference', 'sheets'))
+        result = self.world()
+        self.assertEqual(result.returncode, 1)
+        fails = self.fails(result)
+        self.assertEqual(len(fails), 1, result.stdout)
+        self.assertIn('reference/sheets/', fails[0])
+
+    def test_a_missing_sheet_folder_gives_one_line_in_export_mode(self):
+        shutil.rmtree(os.path.join(self.root, 'reference', 'sheets'))
+        result = self.export([{'name': 'Alice', 'role': 'x'}])
+        self.assertEqual(result.returncode, 1)
+        fails = self.fails(result)
+        self.assertEqual(len(fails), 1, result.stdout)
+        self.assertIn('reference/sheets/', fails[0])
+
+    def test_a_subfolder_and_a_stray_merged_sheet_change_nothing(self):
+        self.put('reference/sheets/checks/9999 Zed.md', char_sheet(
+            'Zed', contradictions=CONTRA_HEAD +
+            "\n| Bad | a | s |  |  | a | r | 1 |"))
+        self.put('reference/' + 'Reference ' + 'sheet.md',
+                 '## Characters\n\n### Zed\n\n#### Occupations\n\n'
+                 '| Occupation | Source |\n|---|---|\n| king | x |\n')
+        self.put('notes/Alice.md', alice_note(
+            relationships="- **Bob:** She trusts him.\n- **Zed:** Hm.")
+            .replace('| Relationships | 1 | claim | bob-source.md | |',
+                     '| Relationships | 1 | claim | bob-source.md | |\n'
+                     '| Relationships | 2 | claim | bob-source.md | |'))
+        result = self.world()
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertNotIn('Zed', result.stdout)
+
+    def test_a_world_file_with_only_facts_and_empty_sections_read_fine(self):
+        self.put('reference/sheets/1004 Dee.md',
+                 '---\ntype: reference\n---\n\n## Facts\n\n- Dee exists.\n')
+        result = self.world()
+        self.assertEqual(result.returncode, 0, result.stdout)
+
+    def test_a_world_file_contradiction_with_one_source_fails_naming_it(self):
+        self.put('reference/sheets/world 2 more.md', WORLD_TWO)
+        result = self.world()
+        self.assertEqual(result.returncode, 1)
+        self.assertTrue(any('world 2 more.md' in l and 'Town size' in l
+                            for l in self.fails(result)), result.stdout)
+
+    def test_a_contradiction_fail_names_the_character_sheet_file(self):
+        self.put('reference/sheets/1001 Alice.md', ALICE_SHEET.replace(
+            '| 21 | bob-source.md |', '| 21 |  |'))
+        result = self.world()
+        self.assertTrue(any('1001 Alice.md' in l
+                            for l in self.fails(result)), result.stdout)
+
+    def test_a_world_file_adds_no_cast_member(self):
+        self.put('reference/sheets/world 2 more.md',
+                 WORLD_TWO.replace('| Town size | big | alice-source.md '
+                                   '| small |  |', '| Town size | big | a '
+                                   '| small | b |'))
+        self.put('notes/Alice.md', alice_note(
+            relationships="- **Bob:** She trusts him.\n- **Nobody:** Hm.")
+            .replace('| Relationships | 1 | claim | bob-source.md | |',
+                     '| Relationships | 1 | claim | bob-source.md | |\n'
+                     '| Relationships | 2 | claim | bob-source.md | |'))
+        result = self.world()
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertEqual([l for l in result.stdout.splitlines()
+                          if l.startswith('PENDING')], [])
+
+    def test_the_same_asset_sets_in_two_sheets_do_not_fail(self):
+        self.put('reference/sheets/Fido.md', char_sheet(
+            'Fido', assets=ASSET_HEAD + "\n| spring | f/a.png | h1 | 1 |"
+                          "\n| spring | f/b.png | h2 | 1 |"))
+        result = self.world()
+        self.assertEqual(result.returncode, 0, result.stdout)
+
+    def test_two_sheets_claiming_one_name_fail_naming_both_files(self):
+        self.put('reference/sheets/2001 Alice.md', char_sheet('Alice'))
+        result = self.world()
+        self.assertEqual(result.returncode, 1)
+        self.assertTrue(any('1001 Alice.md' in l and '2001 Alice.md' in l
+                            for l in self.fails(result)), result.stdout)
+
+    def test_a_sheet_name_loses_only_its_leading_number(self):
+        self.put('reference/sheets/1076 Sakura Laurel.md',
+                 char_sheet('Sakura Laurel'))
+        self.put('notes/Alice.md', alice_note(
+            relationships="- **Bob:** She trusts him.\n"
+                          "- **Sakura Laurel:** Hm.")
+            .replace('| Relationships | 1 | claim | bob-source.md | |',
+                     '| Relationships | 1 | claim | bob-source.md | |\n'
+                     '| Relationships | 2 | claim | bob-source.md | |'))
+        result = self.world()
+        pending = [l for l in result.stdout.splitlines()
+                   if l.startswith('PENDING')]
+        self.assertEqual(len(pending), 1, result.stdout)
+        self.assertIn('Sakura Laurel', pending[0])
+
+
+class AliasTests(CheckerCase):
+    def setUp(self):
+        super().setUp()
+        self.put('reference/sheets/1001 Alice.md',
+                 ALICE_SHEET.replace('description: x\n',
+                                     'description: x\naliases: [Allie, '
+                                     'Alice Liddell]\n'))
+        self.put('reference/sheets/1002 Bob.md',
+                 BOB_SHEET.replace('description: x\n',
+                                   'description: x\naliases: [Robert]\n'))
+
+    def card_names(self, rel, bob=None):
+        if bob is not None:
+            self.put('notes/Bob.md', bob_note(relationships=bob))
+        self.put('notes/Alice.md', alice_note(relationships=rel))
+
+    def test_a_mirror_written_under_an_alias_satisfies_the_check(self):
+        self.card_names("- **Bob:** She trusts him.",
+                        bob="- **allie — Friend:** He waves.")
+        result = self.world()
+        self.assertEqual(result.returncode, 0, result.stdout)
+
+    def test_a_relationship_under_an_alias_is_checked_as_a_mirror(self):
+        self.card_names("- **ROBERT:** She trusts him.")
+        self.put('notes/Bob.md', bob_note(
+            ledger="| Background | 1 | claim | bob-source.md | |\n"
+                   "| Soul | 1 | claim | bob-source.md | |",
+            relationships=""))
+        result = self.world()
+        self.assertEqual(result.returncode, 1)
+        self.assertTrue(any('mirror' in l and 'Bob' in l
+                            for l in self.fails(result)), result.stdout)
+        self.assertEqual([l for l in result.stdout.splitlines()
+                          if l.startswith('PENDING')], [])
+
+    def test_a_relationship_under_an_alias_with_a_mirror_passes(self):
+        self.card_names("- **Robert:** She trusts him.",
+                        bob="- **Alice Liddell:** He waves.")
+        result = self.world()
+        self.assertEqual(result.returncode, 0, result.stdout)
+
+    def test_a_cast_member_with_no_card_is_pending_under_an_alias(self):
+        self.put('reference/sheets/Rex.md',
+                 REX_SHEET.replace('description: x\n',
+                                   'description: x\naliases: [Rexy]\n'))
+        self.put('notes/Alice.md', alice_note(
+            relationships="- **Bob:** She trusts him.\n- **rexy:** Pats.")
+            .replace('| Relationships | 1 | claim | bob-source.md | |',
+                     '| Relationships | 1 | claim | bob-source.md | |\n'
+                     '| Relationships | 2 | claim | bob-source.md | |'))
+        result = self.world()
+        pending = [l for l in result.stdout.splitlines()
+                   if l.startswith('PENDING')]
+        self.assertEqual(len(pending), 1, result.stdout)
+
+    def test_a_card_filed_under_an_alias_is_mirrored_by_canonical_names(self):
+        os.remove(os.path.join(self.root, 'notes', 'Alice.md'))
+        self.put('notes/Allie.md', alice_note().replace(
+            'title: Alice', 'title: Allie'))
+        result = self.world()
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertEqual([l for l in result.stdout.splitlines()
+                          if l.startswith('PENDING')], [])
+        self.put('notes/Bob.md', bob_note(
+            ledger="| Background | 1 | claim | bob-source.md | |\n"
+                   "| Soul | 1 | claim | bob-source.md | |",
+            relationships=""))
+        result = self.world()
+        self.assertTrue(any('mirror' in l for l in self.fails(result)),
+                        result.stdout)
+
+    def test_a_single_string_alias_is_accepted(self):
+        self.put('reference/sheets/1002 Bob.md',
+                 BOB_SHEET.replace('description: x\n',
+                                   'description: x\naliases: Robert\n'))
+        self.card_names("- **Robert:** She trusts him.")
+        self.put('notes/Bob.md', bob_note(
+            ledger="| Background | 1 | claim | bob-source.md | |\n"
+                   "| Soul | 1 | claim | bob-source.md | |",
+            relationships=""))
+        result = self.world()
+        self.assertTrue(any('mirror' in l for l in self.fails(result)),
+                        result.stdout)
+
+
+class ExportIdentityTests(CheckerCase):
+    good = ExportModeTests.good
+
+    def setUp(self):
+        super().setUp()
+        self.put('notes/Rex.md', NOTE.format(
+            name='Rex', ledger='', background='', preamble='', body='',
+            soul='', relationships='', voice='', seeds=''))
+        self.put('reference/sheets/1002 Bob.md',
+                 BOB_SHEET.replace('description: x\n',
+                                   'description: x\naliases: [Robert]\n'))
+
+    def test_an_exported_alias_resolves_to_the_card_and_the_sheet(self):
+        chars = self.good()
+        chars[1]['name'] = 'robert'
+        self.assertEqual(self.export(chars).returncode, 0)
+        chars[1]['role'] = 'Village baker'
+        result = self.export(chars)
+        self.assertTrue(any('smith' in l for l in self.fails(result)),
+                        result.stdout)
+
+    def test_an_owner_written_under_an_alias_passes(self):
+        chars = self.good()
+        chars[2]['spriteSets'][0]['description'] = 'Pet of Robert, sitting'
+        result = self.export(chars)
+        self.assertEqual(result.returncode, 0, result.stdout)
+
+    def test_an_ownership_row_in_a_world_file_counts_as_an_owner(self):
+        self.put('reference/sheets/world 2 more.md', WORLD_TWO.replace(
+            '| small |  |', '| small | b |'))
+        chars = self.good()
+        chars[2]['spriteSets'][0]['description'] = 'Pet of Mary, sitting'
+        result = self.export(chars)
+        self.assertEqual(result.returncode, 0, result.stdout)
 
 
 if __name__ == '__main__':
