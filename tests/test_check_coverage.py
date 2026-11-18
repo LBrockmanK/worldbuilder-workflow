@@ -317,16 +317,16 @@ class WorldModeTests(CheckerCase):
         self.assertTrue(any('Rex' in l and 'spring' in l and 'winter' in l
                             for l in self.fails(result)), result.stdout)
 
-    def test_an_unmirrored_relationship_fails(self):
+    def test_a_one_sided_relationship_passes(self):
         self.put('notes/Bob.md', bob_note(
             ledger="| Background | 1 | claim | bob-source.md | |\n"
                    "| Soul | 1 | claim | bob-source.md | |",
             relationships=""))
         result = self.world()
-        self.assertTrue(any('Alice' in l and 'Bob' in l and 'mirror' in l
-                            for l in self.fails(result)), result.stdout)
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertEqual(self.fails(result), [])
 
-    def test_a_relationship_with_a_cast_member_who_has_no_note_is_pending(self):
+    def test_a_relationship_with_a_cast_member_who_has_no_note_is_not_pending(self):
         self.put('notes/Alice.md', alice_note(
             relationships="- **Bob:** She trusts him.\n- **Rex:** She pats him."
         ).replace('| Relationships | 1 | claim | bob-source.md | |',
@@ -334,10 +334,58 @@ class WorldModeTests(CheckerCase):
                   '| Relationships | 2 | claim | bob-source.md | |'))
         result = self.world()
         self.assertEqual(result.returncode, 0, result.stdout)
-        pending = [l for l in result.stdout.splitlines()
-                   if l.startswith('PENDING')]
-        self.assertEqual(len(pending), 1)
-        self.assertIn('Rex', pending[0])
+        self.assertEqual([l for l in result.stdout.splitlines()
+                          if l.startswith('PENDING')], [])
+
+    def test_an_inferred_row_on_a_written_entry_is_a_written_claim(self):
+        evidence = ('inferred: alice sheet Facts; anime ep 3 02:10 # scene; '
+                    'manga ch 5 p 12')
+        ledger = ALICE_LEDGER.replace(
+            '| Soul | 1 | claim | alice-source.md |',
+            f'| Soul | 1 | claim | {evidence} |')
+        self.put('notes/Alice.md', alice_note(ledger=ledger))
+        result = self.world()
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertEqual(self.fails(result), [])
+        self.assertEqual([l for l in result.stdout.splitlines()
+                          if l.startswith('FLAGGED')], [])
+
+    def test_an_inferred_row_on_an_unwritten_entry_fails(self):
+        ledger = ALICE_LEDGER + (
+            "\n| Soul | unwritten | She fears water | inferred: a sheet fact "
+            "| |")
+        self.put('notes/Alice.md', alice_note(ledger=ledger))
+        result = self.world()
+        self.assertEqual(result.returncode, 1)
+        self.assertTrue(any('unwritten' in l and 'must have Source flagged' in l
+                            for l in self.fails(result)), result.stdout)
+
+    def test_an_inferred_cell_with_no_evidence_fails(self):
+        ledger = ALICE_LEDGER.replace(
+            '| Soul | 1 | claim | alice-source.md |',
+            '| Soul | 1 | claim | inferred:   |')
+        self.put('notes/Alice.md', alice_note(ledger=ledger))
+        result = self.world()
+        self.assertEqual(result.returncode, 1)
+        self.assertTrue(any('Soul 1' in l and 'inferred' in l
+                            for l in self.fails(result)), result.stdout)
+
+    def test_a_capitalised_inferred_cell_is_accepted(self):
+        ledger = ALICE_LEDGER.replace(
+            '| Soul | 1 | claim | alice-source.md |',
+            '| Soul | 1 | claim | Inferred: the sheet Facts |')
+        self.put('notes/Alice.md', alice_note(ledger=ledger))
+        result = self.world()
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertEqual(self.fails(result), [])
+
+    def test_a_clean_world_with_a_one_sided_relationship_has_a_zero_summary(self):
+        self.put('notes/Bob.md', bob_note(
+            ledger="| Background | 1 | claim | bob-source.md | |\n"
+                   "| Soul | 1 | claim | bob-source.md | |",
+            relationships=""))
+        result = self.world()
+        self.assertIn('0 failure(s), 0 flagged, 0 pending', result.stdout)
 
 
 class ExportModeTests(CheckerCase):
@@ -591,21 +639,6 @@ class SheetFolderTests(CheckerCase):
         self.assertTrue(any('1001 Alice.md' in l and '2001 Alice.md' in l
                             for l in self.fails(result)), result.stdout)
 
-    def test_a_sheet_name_loses_only_its_leading_number(self):
-        self.put('reference/sheets/1076 Sakura Laurel.md',
-                 char_sheet('Sakura Laurel'))
-        self.put('notes/Alice.md', alice_note(
-            relationships="- **Bob:** She trusts him.\n"
-                          "- **Sakura Laurel:** Hm.")
-            .replace('| Relationships | 1 | claim | bob-source.md | |',
-                     '| Relationships | 1 | claim | bob-source.md | |\n'
-                     '| Relationships | 2 | claim | bob-source.md | |'))
-        result = self.world()
-        pending = [l for l in result.stdout.splitlines()
-                   if l.startswith('PENDING')]
-        self.assertEqual(len(pending), 1, result.stdout)
-        self.assertIn('Sakura Laurel', pending[0])
-
 
 class AliasTests(CheckerCase):
     def setUp(self):
@@ -623,44 +656,29 @@ class AliasTests(CheckerCase):
             self.put('notes/Bob.md', bob_note(relationships=bob))
         self.put('notes/Alice.md', alice_note(relationships=rel))
 
-    def test_a_mirror_written_under_an_alias_satisfies_the_check(self):
-        self.card_names("- **Bob:** She trusts him.",
-                        bob="- **allie — Friend:** He waves.")
-        result = self.world()
-        self.assertEqual(result.returncode, 0, result.stdout)
-
-    def test_a_relationship_under_an_alias_is_checked_as_a_mirror(self):
+    def test_a_one_sided_relationship_under_an_alias_passes(self):
         self.card_names("- **ROBERT:** She trusts him.")
         self.put('notes/Bob.md', bob_note(
             ledger="| Background | 1 | claim | bob-source.md | |\n"
                    "| Soul | 1 | claim | bob-source.md | |",
             relationships=""))
         result = self.world()
-        self.assertEqual(result.returncode, 1)
-        self.assertTrue(any('mirror' in l and 'Bob' in l
-                            for l in self.fails(result)), result.stdout)
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertEqual(self.fails(result), [])
         self.assertEqual([l for l in result.stdout.splitlines()
                           if l.startswith('PENDING')], [])
+
+    def test_a_mirror_written_under_an_alias_satisfies_the_check(self):
+        self.card_names("- **Bob:** She trusts him.",
+                        bob="- **allie — Friend:** He waves.")
+        result = self.world()
+        self.assertEqual(result.returncode, 0, result.stdout)
 
     def test_a_relationship_under_an_alias_with_a_mirror_passes(self):
         self.card_names("- **Robert:** She trusts him.",
                         bob="- **Alice Liddell:** He waves.")
         result = self.world()
         self.assertEqual(result.returncode, 0, result.stdout)
-
-    def test_a_cast_member_with_no_card_is_pending_under_an_alias(self):
-        self.put('reference/sheets/Rex.md',
-                 REX_SHEET.replace('description: x\n',
-                                   'description: x\naliases: [Rexy]\n'))
-        self.put('notes/Alice.md', alice_note(
-            relationships="- **Bob:** She trusts him.\n- **rexy:** Pats.")
-            .replace('| Relationships | 1 | claim | bob-source.md | |',
-                     '| Relationships | 1 | claim | bob-source.md | |\n'
-                     '| Relationships | 2 | claim | bob-source.md | |'))
-        result = self.world()
-        pending = [l for l in result.stdout.splitlines()
-                   if l.startswith('PENDING')]
-        self.assertEqual(len(pending), 1, result.stdout)
 
     def test_a_card_filed_under_an_alias_is_mirrored_by_canonical_names(self):
         os.remove(os.path.join(self.root, 'notes', 'Alice.md'))
@@ -670,26 +688,6 @@ class AliasTests(CheckerCase):
         self.assertEqual(result.returncode, 0, result.stdout)
         self.assertEqual([l for l in result.stdout.splitlines()
                           if l.startswith('PENDING')], [])
-        self.put('notes/Bob.md', bob_note(
-            ledger="| Background | 1 | claim | bob-source.md | |\n"
-                   "| Soul | 1 | claim | bob-source.md | |",
-            relationships=""))
-        result = self.world()
-        self.assertTrue(any('mirror' in l for l in self.fails(result)),
-                        result.stdout)
-
-    def test_a_single_string_alias_is_accepted(self):
-        self.put('reference/sheets/1002 Bob.md',
-                 BOB_SHEET.replace('description: x\n',
-                                   'description: x\naliases: Robert\n'))
-        self.card_names("- **Robert:** She trusts him.")
-        self.put('notes/Bob.md', bob_note(
-            ledger="| Background | 1 | claim | bob-source.md | |\n"
-                   "| Soul | 1 | claim | bob-source.md | |",
-            relationships=""))
-        result = self.world()
-        self.assertTrue(any('mirror' in l for l in self.fails(result)),
-                        result.stdout)
 
 
 class ExportIdentityTests(CheckerCase):
@@ -712,6 +710,29 @@ class ExportIdentityTests(CheckerCase):
         result = self.export(chars)
         self.assertTrue(any('smith' in l for l in self.fails(result)),
                         result.stdout)
+
+    def test_a_single_string_alias_resolves_in_export_mode(self):
+        self.put('reference/sheets/1002 Bob.md',
+                 BOB_SHEET.replace('description: x\n',
+                                   'description: x\naliases: Robert\n'))
+        chars = self.good()
+        chars[1]['name'] = 'robert'
+        self.assertEqual(self.export(chars).returncode, 0)
+        chars[1]['role'] = 'Village baker'
+        result = self.export(chars)
+        self.assertTrue(any('smith' in l for l in self.fails(result)),
+                        result.stdout)
+
+    def test_a_sheet_name_loses_only_its_leading_number(self):
+        self.put('reference/sheets/1076 Sakura Laurel.md',
+                 char_sheet('Sakura Laurel'))
+        self.put('notes/Sakura Laurel.md', alice_note().replace(
+            'title: Alice', 'title: Sakura Laurel'))
+        chars = self.good() + [{'name': 'Sakura Laurel', 'role': '',
+                                'appearance': 'Red hair. Green eyes.'}]
+        result = self.export(chars)
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertNotIn('no character sheet', result.stdout)
 
     def test_an_owner_written_under_an_alias_passes(self):
         chars = self.good()

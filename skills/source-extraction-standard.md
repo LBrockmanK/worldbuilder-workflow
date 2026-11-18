@@ -14,7 +14,7 @@ The no-inference principle in `worldbuilder-source-ingestion` binds stage one: t
 
 **Stage two, distillation.** Its own step, run by one worker at the builder role, separate from the sweep workers. It reads only the sweep's documents and writes the reference sheets. It is permitted to settle contradictions, as the reference sheets section sets out. The no-inference principle of the ingestion skill covers the sweep only; distillation is not ingestion, and nothing in the sweep settles anything.
 
-**Card writing.** Each card is written from its reference sheet by the creative step, which reads the sheet and does not build it. Each card carries a coverage ledger. After a group of cards is written, the cross-card pass and the checker run.
+**Card writing.** Each card is written from its reference sheet by the creative step, which reads the sheet and does not build it. Each card carries a coverage ledger. A claim the writer infers from the sheet facts and the anime or manga is recorded as inferred in the coverage ledger. After a group of cards is written, the cross-card pass and the checker run.
 
 ## Where files live
 
@@ -66,7 +66,7 @@ Every character note carries a `### Coverage ledger` subsection under `## Design
 - `Section` is one of `Background`, `Body`, `Soul`, `Relationships`, `Intimate Dynamics`, `Voice / Dialogue`, `Story Seeds`. Intimate Dynamics rows exist only when the note has that section.
 - `Entry` is the entry's number, counted as `card-format.md` defines an entry for the section: a top-level bullet in Background, Body, Soul, Relationships and Intimate Dynamics; a labelled block in Story Seeds and Voice / Dialogue, which begins at a bullet, a bold title line or a `####` heading. Several claims in one entry are keyed `1.a`, `1.b`. The Body preamble is prose, so it is split into clauses: one clause is one sentence of the preamble, written `preamble 1`, `preamble 2` and so on. Write one sentence for each feature group (hair, eyes, skin, build, distinguishing features, clothing, hidden features) so each group gets its own row.
 - `Claim` is the claim in a few words.
-- `Source` lists the reference documents the claim came from, separated by `;`. Each is a path relative to `reference/` that stays inside `reference/`, optionally followed by `#` and a heading. A claim with no source is not written into the card. Its row stays in the ledger with `Entry` set to `unwritten` (`unwritten 1`, `unwritten 2` for several) and `Source` set to `flagged`, so the gap is visible. A flagged row for a claim that is written into the card is an error. The writer returns each flagged row to the human; it never passes silently.
+- `Source` lists the reference documents the claim came from, separated by `;`. Each is a path relative to `reference/` that stays inside `reference/`, optionally followed by `#` and a heading. A claim with no source is not written into the card. Its row stays in the ledger with `Entry` set to `unwritten` (`unwritten 1`, `unwritten 2` for several) and `Source` set to `flagged`, so the gap is visible. A flagged row for a claim that is written into the card is an error. The writer returns each flagged row to the human; it never passes silently. A claim the writer inferred from cited evidence is written into the card, and its `Source` cell reads `inferred:` followed by the sheet facts and the anime or manga addresses the claim rests on, all in that one cell. The cell contains no `|` character, because the ledger is a table. The checker accepts the row as a written claim and does not read the evidence as file paths. An `inferred:` cell with nothing after the colon is an error. The writer and the critic read the evidence. The `flagged` state keeps its meaning: the claim is unwritten.
 - `Derived copies` lists the export fields that reproduce the fact (`appearance` from the Body preamble, `role` from occupations, `spriteSets[].description` from ownership and appearance), so a correction visits every copy. It is not machine-checked.
 
 The ledger covers every section a card can have, taken from `worldbuilder-character/card-format.md`.
@@ -79,22 +79,22 @@ When the reference sheets lack a fact the card needs, the writer does not guess.
 2. Read the source itself for the character, fresh in the new context, for things the sweep overlooked. Record anything found in the sheet with its provenance.
 3. If the fact is still missing, ask the human.
 
-The writer never fills a gap from invention.
+An inference rests on facts a reference document holds or scenes the anime or manga show, and is recorded as `inferred:` in the ledger. A claim with no evidence to rest on is a gap, and the gap rule applies. The writer never fills a gap from invention.
 
 ## The evidence readback
 
-After a card is written, the writer re-reads every Background, Soul and Voice / Dialogue entry against the evidence its ledger row cites. The degree of each claim must be the degree the evidence shows. A word of extent or intensity (always, never, expert, obsessive, scientific, savant) stands only where the cited lines show it. An entry that outruns its evidence is rewritten down to the evidence, or returned to the human as a question. This is a reading of meaning. The writer does it as a self-check and the critic does it again. The checker script never does it.
+After a card is written, the writer re-reads every Background, Soul and Voice / Dialogue entry against the evidence its ledger row cites; an `inferred:` row is read back against the facts and addresses its cell names. The degree of each claim must be the degree the evidence shows. A word of extent or intensity (always, never, expert, obsessive, scientific, savant) stands only where the cited lines show it. An entry that outruns its evidence is rewritten down to the evidence, or returned to the human as a question. This is a reading of meaning. The writer does it as a self-check and the critic does it again. The checker script never does it.
 
 ## The cross-card pass
 
 After a group of cards, check every Connections row against each card that carries it:
 
-- A relationship is mirrored on both cards.
-- Ownership is named the same on both cards.
-- Sibling order is stated on both cards.
+- A relationship may be one-sided: a card may name a cast member whose own card names it differently or not at all, and a missing entry on the other card is not a discrepancy.
+- Where two cards name each other, ownership names the same owner on both cards.
+- Where two cards name each other, sibling order, where both cards state it, is the same on both cards and is the order the Connections row states.
 - Each character's occupations are complete against the sheet.
 
-Fix every discrepancy in the cards, or return it to the human. The boundary is the cast as the sheets list it. A relationship that names a cast member who has no card yet must appear in the Connections table, and is recorded as a pending mirror, not a failure. It becomes a failure when that character's card exists without the mirror entry.
+Fix every discrepancy in the cards, or return it to the human. The boundary is the cast as the sheets list it. A relationship that names a cast member who has no card yet must appear in the Connections table.
 
 ## The derived-output check
 
@@ -110,7 +110,7 @@ Every difference is reported. The checker script (`scripts/check_coverage.py`, `
 
 `scripts/check_coverage.py` checks what a script can check. The writer runs its `world` mode at the end of each group of cards, after the cross-card pass, and fixes every FAIL line or returns it to the human before the group counts as done.
 
-- `world` mode, over a world root: every character note has a ledger; every entry of every card section present (Intimate Dynamics included) and every Body preamble clause has a ledger row; every ledger row names an entry the note has; every named source exists under `reference/`, and flagged rows are listed apart; every Contradictions row of every sheet has two sources; every character note's ledger source stays inside `reference/`; no character sheet has two sets with identical hashes; every Relationships entry that names a cast member with a note is mirrored on that note, and those that name a cast member with no note are listed as pending.
+- `world` mode, over a world root: every character note has a ledger; every entry of every card section present (Intimate Dynamics included) and every Body preamble clause has a ledger row; every ledger row names an entry the note has; every named source exists under `reference/`, and flagged rows are listed apart, and `inferred:` rows are accepted as written claims; every Contradictions row of every sheet has two sources; every character note's ledger source stays inside `reference/`; no character sheet has two sets with identical hashes.
 - `export` mode, over a world root and a `world.json`: the derived-output check.
 
 The checker does not read meaning. The evidence readback and the judgement that a source supports a claim stay with the writer and the critic.
@@ -127,5 +127,5 @@ Each failure from the Fields of Mistria world, and the component here that catch
 | Wrong pet ownership | Sprite-set descriptions named Holt as the owner of Dozy and Henrietta; the cards were right. | The Connections table holds the ownership; the derived-output check reads the descriptions against it. |
 | Job omitted from a role field | Celine's General Store job was in the extraction and dropped when the export wrote `role`. | The sheet's Occupations table lists every job the source states; the derived-output check requires `role` to contain them. |
 | Savant instead of hobbyist | Celine was written as an autistic savant where the source gives a hobbyist, with lecture-shaped voice samples. | The evidence readback compares each claim's degree with the cited lines. |
-| Sibling order unstated | March's card said "his brother Olric" without the birth order that Olric's card stated. | The Connections table states the order; the cross-card pass checks both cards state it. |
+| Sibling order unstated | March's card said "his brother Olric" without the birth order that Olric's card stated. | The Connections table states the order; the cross-card pass checks that no card contradicts it. |
 | Details not derivable from the source | Unsourced details stood in cards: capes in every season, a cabin in the Narrows, a fireplace habit, an invented scene. | The claim-level ledger with flagged rows; the gap rule when the sheet lacks the fact. |
