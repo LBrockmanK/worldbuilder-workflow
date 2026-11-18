@@ -75,7 +75,7 @@ OCC_HEAD = "| Occupation | Source | Ids |\n|---|---|---|"
 CONN_HEAD = "| Kind | From | To | Fact | Source | Ids |\n|---|---|---|---|---|---|"
 CONTRA_HEAD = ("| Fact | Side A | Source A | Side B | Source B | Settled reading "
                "| Reason | Ids |\n|---|---|---|---|---|---|---|---|")
-ASSET_HEAD = "| Set | File | Hash |\n|---|---|---|"
+ASSET_HEAD = "| Set | File | Hash | Ids |\n|---|---|---|---|"
 
 
 def char_sheet(name, facts="", occupations="", connections="",
@@ -110,10 +110,10 @@ BOB_SHEET = char_sheet(
 REX_SHEET = char_sheet(
     'Rex', facts="- Rex is a dog (source: bob-source.md)",
     occupations=OCC_HEAD,
-    assets=ASSET_HEAD + "\n| spring | rex/spring/a.png | h1 |"
-           "\n| spring | rex/spring/b.png | h2 |"
-           "\n| winter | rex/winter/a.png | h3 |"
-           "\n| winter | rex/winter/b.png | h4 |")
+    assets=ASSET_HEAD + "\n| spring | rex/spring/a.png | h1 | 1 |"
+           "\n| spring | rex/spring/b.png | h2 | 1 |"
+           "\n| winter | rex/winter/a.png | h3 | 1 |"
+           "\n| winter | rex/winter/b.png | h4 | 1 |")
 
 WORLD_SHEET = ("---\ntype: reference\ntitle: world 1\ndescription: x\n"
                "tags: []\n---\n\n## Facts\n\n- The town is small.\n")
@@ -310,8 +310,8 @@ class WorldModeTests(CheckerCase):
 
     def test_two_sets_with_identical_hashes_fail(self):
         self.put('reference/sheets/Rex.md', REX_SHEET.replace(
-            '| winter | rex/winter/a.png | h3 |\n| winter | rex/winter/b.png | h4 |',
-            '| winter | rex/winter/a.png | h1 |\n| winter | rex/winter/b.png | h2 |'))
+            '| winter | rex/winter/a.png | h3 | 1 |\n| winter | rex/winter/b.png | h4 | 1 |',
+            '| winter | rex/winter/a.png | h1 | 1 |\n| winter | rex/winter/b.png | h2 | 1 |'))
         result = self.world()
         self.assertEqual(result.returncode, 1)
         self.assertTrue(any('Rex' in l and 'spring' in l and 'winter' in l
@@ -530,7 +530,7 @@ class SheetFolderTests(CheckerCase):
         self.put('reference/sheets/checks/9999 Zed.md', char_sheet(
             'Zed', contradictions=CONTRA_HEAD +
             "\n| Bad | a | s |  |  | a | r | 1 |"))
-        self.put('reference/Reference sheet.md',
+        self.put('reference/' + 'Reference ' + 'sheet.md',
                  '## Characters\n\n### Zed\n\n#### Occupations\n\n'
                  '| Occupation | Source |\n|---|---|\n| king | x |\n')
         self.put('notes/Alice.md', alice_note(
@@ -579,8 +579,8 @@ class SheetFolderTests(CheckerCase):
 
     def test_the_same_asset_sets_in_two_sheets_do_not_fail(self):
         self.put('reference/sheets/Fido.md', char_sheet(
-            'Fido', assets=ASSET_HEAD + "\n| spring | f/a.png | h1 |"
-                          "\n| spring | f/b.png | h2 |"))
+            'Fido', assets=ASSET_HEAD + "\n| spring | f/a.png | h1 | 1 |"
+                          "\n| spring | f/b.png | h2 | 1 |"))
         result = self.world()
         self.assertEqual(result.returncode, 0, result.stdout)
 
@@ -661,6 +661,22 @@ class AliasTests(CheckerCase):
         pending = [l for l in result.stdout.splitlines()
                    if l.startswith('PENDING')]
         self.assertEqual(len(pending), 1, result.stdout)
+
+    def test_a_card_filed_under_an_alias_is_mirrored_by_canonical_names(self):
+        os.remove(os.path.join(self.root, 'notes', 'Alice.md'))
+        self.put('notes/Allie.md', alice_note().replace(
+            'title: Alice', 'title: Allie'))
+        result = self.world()
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertEqual([l for l in result.stdout.splitlines()
+                          if l.startswith('PENDING')], [])
+        self.put('notes/Bob.md', bob_note(
+            ledger="| Background | 1 | claim | bob-source.md | |\n"
+                   "| Soul | 1 | claim | bob-source.md | |",
+            relationships=""))
+        result = self.world()
+        self.assertTrue(any('mirror' in l for l in self.fails(result)),
+                        result.stdout)
 
     def test_a_single_string_alias_is_accepted(self):
         self.put('reference/sheets/1002 Bob.md',
